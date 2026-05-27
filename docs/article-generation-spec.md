@@ -163,7 +163,10 @@ Before generating the article, check whether any business in `places_data` match
 - Use a **followed** website link (no `rel` attribute) for that business only
 - All other businesses use `rel="nofollow noopener noreferrer"` on their website links
 
+Each H3 section must be preceded by `<a id="business-{N}"></a>` on the line immediately before it. This creates the anchor target that PicksList company names link to.
+
 ```mdx
+<a id="business-1"></a>
 ### 1. Bloom & Stem, Best Overall
 
 Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon. The business sources flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. They responded to our test enquiry within 18 minutes, fastest of all businesses we contacted.
@@ -175,6 +178,7 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 
 > "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events.", *James T. ★★★★★*
 
+<a id="business-2"></a>
 ### 2. Petal & Co., Best for Weddings
 
 [description]
@@ -582,6 +586,7 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 - **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
 - **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
 - **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score (after featured company re-ranking if applicable).
+- **Add `<a id="business-{N}"></a>` on the line immediately before every H3 section.** N = the rank number. This creates anchor targets for PicksList company name links.
 - **PicksList and H3 sections must be in identical order.** Rank 1 in PicksList = first H3.
 - **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).
 - **Never add H1 to body.** The page template renders `title` as H1 automatically.

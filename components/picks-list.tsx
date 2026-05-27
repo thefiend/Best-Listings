@@ -28,7 +28,12 @@ export function PicksList({ picks }: PicksListProps) {
               {pick.rank}
             </span>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-900 text-sm">{pick.name}</p>
+              <a
+                href={`#business-${pick.rank}`}
+                className="font-semibold text-gray-900 text-sm hover:text-brand-blue hover:underline"
+              >
+                {pick.name}
+              </a>
               <p className="text-gray-500 text-xs">{pick.label}</p>
             </div>
             <RatingBadge score={pick.score} />
