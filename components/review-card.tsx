@@ -1,5 +1,6 @@
 // components/review-card.tsx
 import Link from 'next/link'
+import Image from 'next/image'
 import { Review } from '@/lib/types'
 import { CategoryBadge } from './category-badge'
 import { RatingBadge } from './rating-badge'
@@ -9,15 +10,22 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {
-  const { title, category, slug, excerpt, rating, publishedAt } = review
+  const { title, category, slug, excerpt, rating, publishedAt, coverImage } = review
   const href = `/${category}/${slug}`
 
   return (
     <Link href={href} className="group block rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow bg-white">
-      {/* Placeholder image area */}
-      <div className="h-36 bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-        Cover image
-      </div>
+      {coverImage ? (
+        <Image
+          src={coverImage}
+          alt={title}
+          width={600}
+          height={314}
+          className="w-full h-36 object-cover"
+        />
+      ) : (
+        <div className="h-36 bg-gray-100" />
+      )}
 
       <div className="p-4">
         <div className="flex items-center justify-between mb-2">

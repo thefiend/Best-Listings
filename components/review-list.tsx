@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Review } from '@/lib/types'
 
 type SortKey = 'newest' | 'top-rated' | 'alpha'
@@ -56,8 +57,16 @@ export function ReviewList({ reviews }: ReviewListProps) {
         <div className="flex flex-col gap-4">
           {sorted.map(review => (
             <div key={review.slug} className="flex gap-4 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow">
-              <div className="w-28 flex-shrink-0 bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
-                Image
+              <div className="w-28 h-24 flex-shrink-0 bg-gray-100 relative overflow-hidden">
+                {review.coverImage && (
+                  <Image
+                    src={review.coverImage}
+                    alt={review.title}
+                    fill
+                    className="object-cover"
+                    sizes="112px"
+                  />
+                )}
               </div>
               <div className="flex-1 p-4">
                 <div className="flex items-center gap-2 mb-1.5">

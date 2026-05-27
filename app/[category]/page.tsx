@@ -40,7 +40,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   if (!VALID_CATEGORIES.includes(category)) notFound()
 
   const allReviews = getReviewsByCategory(category)
-  const reviews = allReviews.map(({ title, category: cat, slug, excerpt, rating, featured, publishedAt, updatedAt }) => ({
+  const reviews = allReviews.map(({ title, category: cat, slug, excerpt, rating, featured, publishedAt, updatedAt, coverImage }) => ({
     title,
     category: cat,
     slug,
@@ -49,7 +49,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     featured,
     publishedAt,
     updatedAt,
-    content: '',  // ReviewList doesn't render content; omit the full MDX body
+    coverImage,
+    content: '',
   }))
   const { label, description } = CATEGORY_META[category]
 
