@@ -3,6 +3,7 @@ import { getFeaturedReviews } from '@/lib/content'
 import { ReviewCard } from '@/components/review-card'
 import { Category } from '@/lib/types'
 import Link from 'next/link'
+import { SearchDropdown } from '@/components/search-dropdown'
 
 const CATEGORIES: { slug: Category; label: string; emoji: string }[] = [
   { slug: 'tech',      label: 'Tech & Gadgets', emoji: '⚡' },
@@ -26,13 +27,13 @@ export default function HomePage() {
           <p className="text-white/75 text-lg mb-8">
             Expert reviews trusted by thousands of readers
           </p>
-          <input
-            type="search"
-            placeholder="Search reviews, categories, products..."
-            disabled
-            aria-label="Search (coming soon)"
-            className="w-full max-w-lg px-5 py-3 rounded-lg text-gray-900 text-sm placeholder-gray-400 cursor-not-allowed"
-          />
+          <div className="w-full max-w-lg mx-auto">
+            <SearchDropdown
+              placeholder="Search reviews, categories, products..."
+              inputClassName="w-full px-5 py-3 rounded-lg text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-navy/30"
+              dropdownClassName="w-full"
+            />
+          </div>
         </div>
       </section>
 
