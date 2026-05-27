@@ -1867,9 +1867,10 @@ export default function ReviewPage({ params }: { params: { category: string; slu
 npm install -D @tailwindcss/typography
 ```
 
-Add to `tailwind.config.ts` plugins array:
-```typescript
-plugins: [require('@tailwindcss/typography')],
+**Note: Project uses Tailwind v4 — do NOT add to tailwind.config.ts (it is ignored in v4).** Instead, add to `app/globals.css` after the `@import "tailwindcss"` line:
+
+```css
+@plugin "@tailwindcss/typography";
 ```
 
 - [ ] **Step 3: Verify review page renders**

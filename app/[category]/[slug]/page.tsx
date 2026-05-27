@@ -1,13 +1,24 @@
 // app/[category]/[slug]/page.tsx
+import React from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { MDXRemote } from 'next-mdx-remote/rsc'
+import { compile, run } from '@mdx-js/mdx'
+import * as runtime from 'react/jsx-runtime'
 import { getAllReviews, getReview } from '@/lib/content'
 import { Category } from '@/lib/types'
 import { RatingBadge } from '@/components/rating-badge'
 import { CategoryBadge } from '@/components/category-badge'
 import { mdxComponents } from '@/lib/mdx-components'
+
+async function MDXContent({ source }: { source: string }) {
+  const code = await compile(source, { outputFormat: 'function-body' })
+  const { default: Content } = await run(String(code), {
+    ...runtime,
+    baseUrl: import.meta.url,
+  }) as { default: React.ComponentType<{ components: Record<string, React.ComponentType> }> }
+  return <Content components={mdxComponents as Record<string, React.ComponentType>} />
+}
 
 export const dynamicParams = false
 
@@ -80,7 +91,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
 
       {/* MDX body */}
       <article className="prose prose-gray prose-headings:text-brand-navy prose-a:text-brand-blue max-w-none">
-        <MDXRemote source={content} components={mdxComponents} />
+        <MDXContent source={content} />
       </article>
     </div>
   )
