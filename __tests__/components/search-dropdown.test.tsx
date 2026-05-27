@@ -41,7 +41,7 @@ test('does not fetch for query shorter than 2 chars', () => {
 })
 
 test('does not fetch before 300ms debounce', () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => [] })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => [] })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'la' } })
   act(() => { jest.advanceTimersByTime(299) })
@@ -49,7 +49,7 @@ test('does not fetch before 300ms debounce', () => {
 })
 
 test('fetches after 300ms debounce', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => [] })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => [] })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'la' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -57,7 +57,7 @@ test('fetches after 300ms debounce', async () => {
 })
 
 test('shows results after fetch', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => mockResults })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => mockResults })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -67,6 +67,7 @@ test('shows results after fetch', async () => {
 test('shows excerpt truncated to 60 chars', async () => {
   const longExcerpt = 'A'.repeat(70)
   ;(global.fetch as jest.Mock).mockResolvedValue({
+    ok: true,
     json: async () => [{ ...mockResults[0], excerpt: longExcerpt }],
   })
   render(<SearchDropdown />)
@@ -78,7 +79,7 @@ test('shows excerpt truncated to 60 chars', async () => {
 })
 
 test('shows no-results message for empty results', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => [] })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => [] })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'zzz' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -86,7 +87,7 @@ test('shows no-results message for empty results', async () => {
 })
 
 test('closes dropdown on Escape', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => mockResults })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => mockResults })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -96,7 +97,7 @@ test('closes dropdown on Escape', async () => {
 })
 
 test('Enter key navigates to first review result', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => mockResults })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => mockResults })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -112,7 +113,7 @@ test('Enter key navigates to first comparison result', async () => {
     slug: 'laptop-comparison',
     category: 'tech',
   }
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => [compResult] })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => [compResult] })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
   act(() => { jest.advanceTimersByTime(300) })
@@ -121,8 +122,23 @@ test('Enter key navigates to first comparison result', async () => {
   expect(mockPush).toHaveBeenCalledWith('/compare/laptop-comparison')
 })
 
+test('closes dropdown on click outside', async () => {
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => mockResults })
+  render(
+    <div>
+      <SearchDropdown />
+      <button>Outside</button>
+    </div>
+  )
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
+  act(() => { jest.advanceTimersByTime(300) })
+  await waitFor(() => expect(screen.getByText('Best Laptops 2024')).toBeInTheDocument())
+  fireEvent.mouseDown(screen.getByRole('button', { name: 'Outside' }))
+  expect(screen.queryByText('Best Laptops 2024')).not.toBeInTheDocument()
+})
+
 test('result link has correct href for review', async () => {
-  ;(global.fetch as jest.Mock).mockResolvedValue({ json: async () => mockResults })
+  ;(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => mockResults })
   render(<SearchDropdown />)
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'laptop' } })
   act(() => { jest.advanceTimersByTime(300) })

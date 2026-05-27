@@ -31,7 +31,7 @@ interface SearchDropdownProps {
 
 export function SearchDropdown({
   placeholder = 'Search...',
-  inputClassName = '',
+  inputClassName = 'w-full',
   dropdownClassName = '',
 }: SearchDropdownProps) {
   const [query, setQuery] = useState('')
@@ -48,10 +48,16 @@ export function SearchDropdown({
     }
 
     const timer = setTimeout(async () => {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
-      const data: SearchResult[] = await res.json()
-      setResults(data)
-      setOpen(true)
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        if (!res.ok) throw new Error(`Search failed: ${res.status}`)
+        const data: SearchResult[] = await res.json()
+        setResults(data)
+        setOpen(true)
+      } catch {
+        setResults([])
+        setOpen(false)
+      }
     }, 300)
 
     return () => clearTimeout(timer)
@@ -92,11 +98,15 @@ export function SearchDropdown({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         aria-label="Search reviews"
+        aria-expanded={open}
+        aria-controls="search-results"
+        aria-autocomplete="list"
         className={inputClassName}
       />
 
       {open && (
         <div
+          id="search-results"
           role="listbox"
           aria-label="Search results"
           className={`absolute top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50 ${dropdownClassName}`}
