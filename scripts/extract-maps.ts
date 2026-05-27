@@ -1,27 +1,43 @@
 #!/usr/bin/env npx tsx
 /**
- * extract-maps.ts — Extract top Google Maps results for a search query
+ * extract-maps.ts — Extract top Google Maps results using the Places API (New)
+ *
+ * API: https://places.googleapis.com/v1/places:searchText
+ * Enable in GCP Console: "Places API (New)" (not legacy "Places API")
  *
  * Usage:
- *   GOOGLE_MAPS_KEY=xxx npx tsx scripts/extract-maps.ts "best florists london" --count 10
- *   npx tsx scripts/extract-maps.ts "best coffee shops NYC" --count 5 --details --output results.json
+ *   GOOGLE_MAPS_KEY=xxx npx tsx scripts/extract-maps.ts "best seo agency singapore" --count 10
+ *   npx tsx scripts/extract-maps.ts "florists london" --count 10 --output results.json
  *
- * Output: JSON array of places with rank, name, rating, reviewCount, address, phone, website
+ * Output: JSON array — rank, name, address, phone, website, rating, reviewCount, types, placeId
  *
  * Options:
  *   --count, -n    Number of results (default: 10, max: 60)
  *   --key, -k      Google Maps API key (or set GOOGLE_MAPS_KEY env var)
- *   --details, -d  Fetch phone + website via Place Details API (uses extra quota)
  *   --output, -o   Save to file instead of stdout
- *   --location     Bias results toward lat,lng (e.g. "51.5074,-0.1278" for London)
- *   --radius       Radius in metres for location bias (default: 50000)
+ *   --location     Bias results toward lat,lng e.g. "1.3521,103.8198" for Singapore
+ *   --radius       Location bias radius in metres (default: 50000)
  */
 
 import { parseArgs } from 'node:util'
 import { writeFileSync } from 'node:fs'
 
-const TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json'
-const PLACE_DETAILS_URL = 'https://maps.googleapis.com/maps/api/place/details/json'
+const PLACES_NEW_URL = 'https://places.googleapis.com/v1/places:searchText'
+
+// Fields to request — covers all data we need in one call (no separate details request)
+const FIELD_MASK = [
+  'places.id',
+  'places.displayName',
+  'places.formattedAddress',
+  'places.rating',
+  'places.userRatingCount',
+  'places.nationalPhoneNumber',
+  'places.internationalPhoneNumber',
+  'places.websiteUri',
+  'places.types',
+  'places.businessStatus',
+  'nextPageToken',
+].join(',')
 
 export interface PlaceResult {
   rank: number
@@ -36,72 +52,87 @@ export interface PlaceResult {
   googleMapsUrl: string
 }
 
-async function fetchTextSearch(
-  query: string,
-  key: string,
-  location?: string,
-  radius?: number,
-  pageToken?: string,
-): Promise<{ results: any[]; nextPageToken?: string }> {
-  const params = new URLSearchParams({ query, key })
-  if (location) params.set('location', location)
-  if (radius) params.set('radius', String(radius))
-  if (pageToken) params.set('pagetoken', pageToken)
+interface SearchOptions {
+  query: string
+  key: string
+  count: number
+  location?: string
+  radius: number
+  pageToken?: string
+}
 
-  const res = await fetch(`${TEXT_SEARCH_URL}?${params}`)
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+async function searchPlaces(opts: SearchOptions): Promise<{ places: PlaceResult[]; nextPageToken?: string }> {
+  const body: Record<string, unknown> = {
+    textQuery: opts.query,
+    maxResultCount: Math.min(opts.count, 20), // API max per page is 20
+  }
+
+  if (opts.location) {
+    const [lat, lng] = opts.location.split(',').map(Number)
+    body.locationBias = {
+      circle: {
+        center: { latitude: lat, longitude: lng },
+        radius: opts.radius,
+      },
+    }
+  }
+
+  if (opts.pageToken) {
+    body.pageToken = opts.pageToken
+  }
+
+  const res = await fetch(PLACES_NEW_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': opts.key,
+      'X-Goog-FieldMask': FIELD_MASK,
+    },
+    body: JSON.stringify(body),
+  })
 
   const data = await res.json()
 
-  if (data.status === 'REQUEST_DENIED') {
-    throw new Error(`API key rejected: ${data.error_message}`)
-  }
-  if (data.status === 'OVER_QUERY_LIMIT') {
-    throw new Error('Google Maps quota exceeded')
-  }
-  if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-    throw new Error(`Places API: ${data.status} — ${data.error_message ?? ''}`)
-  }
-
-  return {
-    results: data.results ?? [],
-    nextPageToken: data.next_page_token,
-  }
-}
-
-async function fetchPlaceDetails(
-  placeId: string,
-  key: string,
-): Promise<{ website: string | null; phone: string | null }> {
-  const params = new URLSearchParams({
-    place_id: placeId,
-    fields: 'website,formatted_phone_number',
-    key,
-  })
-
-  try {
-    const res = await fetch(`${PLACE_DETAILS_URL}?${params}`)
-    if (!res.ok) return { website: null, phone: null }
-    const data = await res.json()
-    return {
-      website: data.result?.website ?? null,
-      phone: data.result?.formatted_phone_number ?? null,
+  if (!res.ok) {
+    const msg = data?.error?.message ?? `HTTP ${res.status}`
+    const status = data?.error?.status ?? ''
+    if (status === 'PERMISSION_DENIED' || res.status === 403) {
+      throw new Error(
+        `API key rejected (${status}): ${msg}\n` +
+        `  → In Google Cloud Console, enable "Places API (New)" (not legacy "Places API").\n` +
+        `  → Key: console.cloud.google.com → APIs & Services → Enable APIs`
+      )
     }
-  } catch {
-    return { website: null, phone: null }
+    throw new Error(`Places API (New): ${msg}`)
   }
+
+  const results: PlaceResult[] = (data.places ?? []).map((p: any, i: number) => ({
+    rank: i + 1, // will be reassigned by caller
+    name: p.displayName?.text ?? '',
+    address: p.formattedAddress ?? '',
+    rating: p.rating ?? null,
+    reviewCount: p.userRatingCount ?? null,
+    website: p.websiteUri ?? null,
+    phone: p.internationalPhoneNumber ?? p.nationalPhoneNumber ?? null,
+    types: (p.types ?? []).filter((t: string) =>
+      !['point_of_interest', 'establishment'].includes(t)
+    ),
+    placeId: p.id ?? '',
+    googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.id}`,
+  }))
+
+  return { places: results, nextPageToken: data.nextPageToken }
 }
 
 async function main() {
   const { values, positionals } = parseArgs({
     args: process.argv.slice(2),
     options: {
-      count:    { type: 'string',  short: 'n', default: '10' },
-      key:      { type: 'string',  short: 'k' },
-      details:  { type: 'boolean', short: 'd', default: false },
-      output:   { type: 'string',  short: 'o' },
+      count:    { type: 'string', short: 'n', default: '10' },
+      key:      { type: 'string', short: 'k' },
+      output:   { type: 'string', short: 'o' },
       location: { type: 'string' },
-      radius:   { type: 'string',  default: '50000' },
+      radius:   { type: 'string', default: '50000' },
     },
     allowPositionals: true,
   })
@@ -112,88 +143,69 @@ async function main() {
       'Usage: npx tsx scripts/extract-maps.ts <query> [options]',
       '',
       'Options:',
-      '  --count, -n    Number of results (default: 10)',
-      '  --key, -k      Google Maps API key (or GOOGLE_MAPS_KEY env)',
-      '  --details, -d  Fetch phone + website per place (extra quota)',
-      '  --output, -o   Save JSON to file',
-      '  --location     Bias results: "lat,lng" e.g. "51.5074,-0.1278"',
+      '  --count, -n    Number of results (default: 10, max: 60)',
+      '  --key, -k      API key (or set GOOGLE_MAPS_KEY env var)',
+      '  --output, -o   Save JSON to file instead of stdout',
+      '  --location     Bias results: "lat,lng" — e.g. "1.3521,103.8198" (Singapore)',
       '  --radius       Location bias radius in metres (default: 50000)',
       '',
       'Examples:',
-      '  npx tsx scripts/extract-maps.ts "best robot vacuums" --count 10',
-      '  npx tsx scripts/extract-maps.ts "florists london" --count 10 --details --output florists.json',
-      '  npx tsx scripts/extract-maps.ts "coffee shops" --location "51.5074,-0.1278" --count 10 --details',
+      '  npx tsx scripts/extract-maps.ts "best seo agency singapore" --count 10',
+      '  npx tsx scripts/extract-maps.ts "florists london" --count 10 --output florists.json',
+      '  npx tsx scripts/extract-maps.ts "plumbers" --location "51.5074,-0.1278" --count 10',
+      '',
+      'Requires: "Places API (New)" enabled in Google Cloud Console',
+      '  console.cloud.google.com → APIs & Services → Enable APIs',
     ].join('\n'))
     process.exit(1)
   }
 
   const key = (values.key as string | undefined) ?? process.env.GOOGLE_MAPS_KEY
   if (!key) {
-    console.error('Error: Google Maps API key required.\n  Set GOOGLE_MAPS_KEY env var or use --key')
+    console.error('Error: API key required. Set GOOGLE_MAPS_KEY env var or use --key')
     process.exit(1)
   }
 
   const count = Math.min(parseInt(values.count as string, 10) || 10, 60)
-  const fetchDetails = values.details as boolean
   const location = values.location as string | undefined
   const radius = parseInt(values.radius as string, 10)
 
-  log(`Searching: "${query}" — fetching top ${count} results...`)
+  log(`Searching: "${query}" — top ${count} results...`)
   if (location) log(`Location bias: ${location} (radius: ${radius}m)`)
-  if (fetchDetails) log('Details mode: fetching phone + website per place (slower)')
 
-  const places: PlaceResult[] = []
+  const allPlaces: PlaceResult[] = []
   let pageToken: string | undefined
 
-  while (places.length < count) {
-    if (pageToken) {
-      // Places API requires a short delay before using next_page_token
-      log(`Fetching next page...`)
-      await sleep(2000)
-    }
+  while (allPlaces.length < count) {
+    const { places, nextPageToken } = await searchPlaces({
+      query,
+      key,
+      count: count - allPlaces.length,
+      location,
+      radius,
+      pageToken,
+    })
 
-    const { results, nextPageToken } = await fetchTextSearch(query, key, location, radius, pageToken)
-
-    for (const place of results) {
-      if (places.length >= count) break
-
-      let website: string | null = null
-      let phone: string | null = null
-
-      if (fetchDetails && place.place_id) {
-        const details = await fetchPlaceDetails(place.place_id, key)
-        website = details.website
-        phone = details.phone
-        // Respect rate limits
-        await sleep(100)
-      }
-
-      places.push({
-        rank: places.length + 1,
-        name: place.name,
-        address: place.formatted_address ?? '',
-        rating: place.rating ?? null,
-        reviewCount: place.user_ratings_total ?? null,
-        website,
-        phone,
-        types: (place.types ?? []).filter((t: string) => !t.startsWith('point_of_interest')),
-        placeId: place.place_id,
-        googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
-      })
+    for (const place of places) {
+      if (allPlaces.length >= count) break
+      allPlaces.push({ ...place, rank: allPlaces.length + 1 })
     }
 
     pageToken = nextPageToken
-    if (!pageToken) break
+    if (!pageToken || places.length === 0) break
+
+    // Brief pause between paginated requests
+    await sleep(500)
   }
 
-  if (places.length === 0) {
+  if (allPlaces.length === 0) {
     log('No results found. Try a different query or remove --location bias.')
     process.exit(0)
   }
 
-  log(`Found ${places.length} places.`)
+  log(`Found ${allPlaces.length} businesses.`)
 
-  const json = JSON.stringify(places, null, 2)
+  const json = JSON.stringify(allPlaces, null, 2)
 
   const outputFile = values.output as string | undefined
   if (outputFile) {
