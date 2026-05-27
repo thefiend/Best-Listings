@@ -16,15 +16,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
-  const comp = getComparison(params.slug)
+  const { slug } = await params
+  const comp = getComparison(slug)
   if (!comp) return {}
   return { title: comp.title }
 }
 
-export default function ComparisonPage({ params }: { params: { slug: string } }) {
-  const comp = getComparison(params.slug)
+export default async function ComparisonPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const comp = getComparison(slug)
   if (!comp) notFound()
 
   const { title, products, content, publishedAt } = comp

@@ -19,9 +19,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string; slug: string }
+  params: Promise<{ category: string; slug: string }>
 }): Promise<Metadata> {
-  const review = getReview(params.category as Category, params.slug)
+  const { category, slug } = await params
+  const review = getReview(category as Category, slug)
   if (!review) return {}
   return {
     title: review.title,
@@ -29,11 +30,13 @@ export async function generateMetadata({
   }
 }
 
-export default function ReviewPage({ params }: { params: { category: string; slug: string } }) {
-  const review = getReview(params.category as Category, params.slug)
+export default async function ReviewPage({ params }: { params: Promise<{ category: string; slug: string }> }) {
+  const { category: rawCategory, slug } = await params
+  const category = rawCategory as Category
+  const review = getReview(category, slug)
   if (!review) notFound()
 
-  const { title, category, excerpt, rating, publishedAt, updatedAt, content } = review
+  const { title, excerpt, rating, publishedAt, updatedAt, content } = review
 
   const publishDate = new Date(publishedAt).toLocaleDateString('en-US', {
     month: 'long',

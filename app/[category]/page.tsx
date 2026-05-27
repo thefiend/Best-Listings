@@ -23,9 +23,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string }
+  params: Promise<{ category: string }>
 }): Promise<Metadata> {
-  const meta = CATEGORY_META[params.category as Category]
+  const { category } = await params
+  const meta = CATEGORY_META[category as Category]
   if (!meta) return {}
   return {
     title: meta.label,
@@ -33,8 +34,9 @@ export async function generateMetadata({
   }
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
-  const category = params.category as Category
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const { category: rawCategory } = await params
+  const category = rawCategory as Category
   if (!VALID_CATEGORIES.includes(category)) notFound()
 
   const allReviews = getReviewsByCategory(category)
