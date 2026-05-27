@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Category } from '@/lib/types'
+import { MobileNavDrawer } from './mobile-nav'
 
 const CATEGORIES: Category[] = ['tech', 'home', 'business', 'lifestyle', 'travel']
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -36,6 +37,9 @@ export function Nav() {
               {CATEGORY_LABELS[cat]}
             </Link>
           ))}
+          <Link href="/contact" className="text-sm text-white/80 hover:text-white transition-colors">
+            Contact
+          </Link>
         </div>
 
         <input
@@ -45,6 +49,8 @@ export function Nav() {
           disabled
           className="hidden lg:block w-44 px-3 py-1.5 text-sm rounded bg-white/10 text-white placeholder-white/50 border border-white/20 cursor-not-allowed"
         />
+
+        <MobileNavDrawer />
       </div>
     </nav>
   )

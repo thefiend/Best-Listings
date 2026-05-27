@@ -244,15 +244,15 @@ Omit phone line entirely if `phone` is null. Omit website line if `website` is n
 The CTA image is pre-generated at `public/images/cta/{category}-cta.png`. The alt text and button text come from `CTA_DESCRIPTION` and `CTA_BUTTON_TEXT` in `.env.local`. Use raw HTML so attributes render correctly in MDX.
 
 ```mdx
-<a href="/{category}" style="display:block;margin:24px 0;">
-  <img src="/images/cta/{category}-cta.png" alt="{CTA_DESCRIPTION}" style="width:100%;height:auto;display:block;" />
+<a href="/contact" style={{display:"block",margin:"24px 0"}}>
+  <img src="/images/cta/{category}-cta.png" alt="{CTA_DESCRIPTION}" style={{width:"100%",height:"auto",display:"block"}} />
 </a>
 ```
 
 Example for `category: business` with `CTA_DESCRIPTION=Find the Best Businesses in Singapore`:
 ```mdx
-<a href="/business" style="display:block;margin:24px 0;">
-  <img src="/images/cta/business-cta.png" alt="Find the Best Businesses in Singapore" style="width:100%;height:auto;display:block;" />
+<a href="/contact" style={{display:"block",margin:"24px 0"}}>
+  <img src="/images/cta/business-cta.png" alt="Find the Best Businesses in Singapore" style={{width:"100%",height:"auto",display:"block"}} />
 </a>
 ```
 
@@ -765,3 +765,4 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 - **GEO rules apply throughout.** Lead every section with a direct answer. Use exact review counts and ratings. Keep business names consistent across PicksList, H3 headings, ComparisonTable, and schema.
 - **Word count target: 2,500–4,000 words.** Longer articles rank better for competitive Singapore queries. Add depth in What to Look For and FAQ sections.
 - **First 100 words must contain primary keyword and location.** Google weights opening paragraph heavily for ranking signal.
+- **`llms.txt` is auto-generated.** The route handler at `app/llms.txt/route.ts` reads all articles via `getAllReviews()` and builds `/llms.txt` dynamically. No manual update needed after saving the MDX file.

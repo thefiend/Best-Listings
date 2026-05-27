@@ -26,6 +26,7 @@ Using @docs/article-generation-spec.md:
 4. Generate the full MDX article following the spec exactly (include CTA block after every customer quote)
 5. Run scripts/generate-og-image.ts --article content/reviews/CATEGORY/best-BUSINESS_TYPE-singapore-2026.mdx to create the cover image
 6. Save article to content/reviews/CATEGORY/best-BUSINESS_TYPE-singapore-2026.mdx with coverImage frontmatter set
+7. /llms.txt updates automatically via app/llms.txt/route.ts — no manual step needed
 
 Keyword:  best BUSINESS_TYPE in singapore 2026
 Category: CATEGORY

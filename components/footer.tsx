@@ -32,6 +32,16 @@ export function Footer() {
               ))}
             </ul>
           </div>
+          <div>
+            <p className="text-white font-semibold text-sm mb-3">Company</p>
+            <ul className="flex flex-wrap gap-x-4 gap-y-2">
+              <li>
+                <Link href="/contact" className="text-sm hover:text-white transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
         <p className="text-xs mt-8 text-white/40">
           © {new Date().getFullYear()} BestThingReview.com · All rights reserved
