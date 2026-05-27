@@ -37,7 +37,18 @@ export default function CategoryPage({ params }: { params: { category: string } 
   const category = params.category as Category
   if (!VALID_CATEGORIES.includes(category)) notFound()
 
-  const reviews = getReviewsByCategory(category)
+  const allReviews = getReviewsByCategory(category)
+  const reviews = allReviews.map(({ title, category: cat, slug, excerpt, rating, featured, publishedAt, updatedAt }) => ({
+    title,
+    category: cat,
+    slug,
+    excerpt,
+    rating,
+    featured,
+    publishedAt,
+    updatedAt,
+    content: '',  // ReviewList doesn't render content; omit the full MDX body
+  }))
   const { label, description } = CATEGORY_META[category]
 
   return (

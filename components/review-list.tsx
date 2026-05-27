@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Review } from '@/lib/types'
 
 type SortKey = 'newest' | 'top-rated' | 'alpha'
@@ -69,12 +70,12 @@ export function ReviewList({ reviews }: ReviewListProps) {
                 </div>
                 <h3 className="font-bold text-gray-900 text-sm mb-1">{review.title}</h3>
                 <p className="text-gray-500 text-xs line-clamp-2">{review.excerpt}</p>
-                <a
+                <Link
                   href={`/${review.category}/${review.slug}`}
                   className="inline-block mt-2 text-xs font-medium text-brand-blue hover:underline"
                 >
                   Read review →
-                </a>
+                </Link>
               </div>
             </div>
           ))}
