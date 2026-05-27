@@ -7,7 +7,7 @@ import Link from 'next/link'
 const CATEGORIES: { slug: Category; label: string; emoji: string }[] = [
   { slug: 'tech',      label: 'Tech & Gadgets', emoji: '⚡' },
   { slug: 'home',      label: 'Home & Living',  emoji: '🏠' },
-  { slug: 'software',  label: 'Business Software', emoji: '💼' },
+  { slug: 'business',  label: 'Business', emoji: '💼' },
   { slug: 'lifestyle', label: 'Lifestyle',      emoji: '✨' },
   { slug: 'travel',    label: 'Travel',         emoji: '✈️' },
 ]

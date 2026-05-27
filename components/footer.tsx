@@ -4,7 +4,7 @@ import Link from 'next/link'
 const CATEGORIES = [
   { slug: 'tech', label: 'Tech' },
   { slug: 'home', label: 'Home' },
-  { slug: 'software', label: 'Software' },
+  { slug: 'business', label: 'Business' },
   { slug: 'lifestyle', label: 'Lifestyle' },
   { slug: 'travel', label: 'Travel' },
 ]

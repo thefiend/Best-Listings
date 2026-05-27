@@ -159,9 +159,9 @@ One section per business, in the same order as PicksList. Each section has four 
 
 Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon. The business sources flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. They responded to our test enquiry within 18 minutes — fastest of all businesses we contacted.
 
-📍 **Address:** 47 Redchurch Street, London E2 7DJ
-📞 **Phone:** +44 20 7946 0847
-🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)
+📍 **Address:** 47 Redchurch Street, London E2 7DJ\
+📞 **Phone:** +44 20 7946 0847\
+🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
 > "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
@@ -175,14 +175,17 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 - End with one sentence making a clear case for why this business made the list
 
 **Contact block format:**
+
+Each item must be followed by a trailing `\` to force a line break in MDX. Without it, all items render on the same line.
+
 ```
-📍 **Address:** {address from places_data}
-📞 **Phone:** {phone from places_data or omit if null}
-🌐 **Website:** [{domain}]({full url from places_data or omit if null})
+📍 **Address:** {address from places_data}\\
+📞 **Phone:** {phone from places_data or omit line if null}\\
+🌐 **Website:** [{domain}]({full url from places_data or omit line if null})\\
 ⭐ **Rating:** {rating} ({reviewCount} Google reviews)
 ```
 
-Omit phone line entirely if `phone` is null. Omit website line if `website` is null.
+Omit phone line entirely if `phone` is null. Omit website line if `website` is null. Last line (Rating) has no trailing `\`.
 
 **Customer quote rules:**
 - One blockquote (`>`) per business
@@ -435,9 +438,9 @@ We ranked each florist on: Google Maps rating (minimum 4.0 to qualify), review c
 
 Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon, with coverage across all London postcodes — rarer than most florists advertise. They source flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. Responded to our test enquiry in 18 minutes — fastest of all businesses we contacted.
 
-📍 **Address:** 47 Redchurch Street, London E2 7DJ
-📞 **Phone:** +44 20 7946 0847
-🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)
+📍 **Address:** 47 Redchurch Street, London E2 7DJ\
+📞 **Phone:** +44 20 7946 0847\
+🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
 > "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
@@ -446,9 +449,9 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 
 Petal & Co. focuses almost entirely on weddings and has built a strong reputation across London for understanding what couples actually want rather than what's trending on Instagram. Their initial consultation is complimentary and lasts up to 90 minutes. Portfolio spans traditional English garden styles to contemporary sculptural arrangements. They work with a small number of clients per weekend — typically three to five — which means your wedding receives dedicated attention. Pricing is higher than average but consistently transparent: itemised quotes are provided within 48 hours of consultation.
 
-📍 **Address:** 12 Kensington Church Street, London W8 4EP
-📞 **Phone:** +44 20 7946 1293
-🌐 **Website:** [petalandco.london](https://petalandco.london)
+📍 **Address:** 12 Kensington Church Street, London W8 4EP\
+📞 **Phone:** +44 20 7946 1293\
+🌐 **Website:** [petalandco.london](https://petalandco.london)\
 ⭐ **Rating:** 4.7 (212 Google reviews)
 
 > "Sarah at Petal & Co. understood exactly what I wanted from a single mood board. The bouquet, buttonholes, and table centrepieces were everything I'd imagined. I had three florists quote us — Petal & Co. was clearest on pricing and most confident in the brief." — *Emma R. ★★★★★*
@@ -457,8 +460,8 @@ Petal & Co. focuses almost entirely on weddings and has built a strong reputatio
 
 Urban Blooms is the most accessible florist on this list. Operating out of two market stalls in Borough Market and Brixton Market, they sell finished arrangements rather than bespoke designs — which is why their pricing starts at £20. Quality is consistent for the price: seasonal flowers, simple packaging, reliable freshness. Same-day collection is available from both market locations seven days a week. No delivery option exists, and bespoke or event work is outside their scope, but for everyday gifting and home flowers, they're hard to beat at the price.
 
-📍 **Address:** Borough Market, 8 Southwark Street, London SE1 1TL
-📞 **Phone:** +44 20 7946 0345
+📍 **Address:** Borough Market, 8 Southwark Street, London SE1 1TL\
+📞 **Phone:** +44 20 7946 0345\
 ⭐ **Rating:** 4.3 (89 Google reviews)
 
 > "Bought flowers for my mum's birthday from the Borough Market stall. Beautiful mixed bouquet for £28 — the same quality I'd seen in florist shops for £55. They wrapped it properly too, not just a rubber band." — *Olivia M. ★★★★★*
@@ -467,9 +470,9 @@ Urban Blooms is the most accessible florist on this list. Operating out of two m
 
 The Flower Factory specialises in volume corporate work: weekly office arrangements, product launches, hotel lobbies, and branded event floristry. Their studio in Bermondsey runs a subscription service starting at £120 per month for weekly office deliveries. Account management is assigned per client, meaning you deal with the same person consistently — a real advantage for events where brief continuity matters. Not the right choice for weddings or one-off retail orders, but for corporate accounts they are the most reliable on this list.
 
-📍 **Address:** 34 Bermondsey Street, London SE1 3UD
-📞 **Phone:** +44 20 7946 0512
-🌐 **Website:** [theflowerfactory.co.uk](https://theflowerfactory.co.uk)
+📍 **Address:** 34 Bermondsey Street, London SE1 3UD\
+📞 **Phone:** +44 20 7946 0512\
+🌐 **Website:** [theflowerfactory.co.uk](https://theflowerfactory.co.uk)\
 ⭐ **Rating:** 4.2 (154 Google reviews)
 
 > "We've used The Flower Factory for our weekly office arrangement for two years. The quality is consistent, the account manager knows our preferences without being told, and they've never missed a delivery. Exactly what you want from a business supplier." — *David L. ★★★★★*
@@ -478,8 +481,8 @@ The Flower Factory specialises in volume corporate work: weekly office arrangeme
 
 Stems & Stories operates as a same-day focused florist with an online-first model. Orders placed before 1pm are delivered the same day across Central and inner East London; orders before 3pm reach most South and West London postcodes. Their website is the most clearly designed of the group: filter by occasion, budget, and delivery time, and checkout in under two minutes. Arrangements are pre-designed rather than bespoke, which trades flexibility for speed and price consistency. Average delivery window quoted and hit: 2–4 hours.
 
-📍 **Address:** 8 Broadway Market, London E8 4QJ
-🌐 **Website:** [stemsandstories.com](https://stemsandstories.com)
+📍 **Address:** 8 Broadway Market, London E8 4QJ\
+🌐 **Website:** [stemsandstories.com](https://stemsandstories.com)\
 ⭐ **Rating:** 4.1 (67 Google reviews)
 
 > "Forgot my partner's birthday. Ordered at 11am, flowers arrived at 1:30pm. Genuinely saved me. The arrangement looked exactly like the photo on the site and the delivery driver called ahead with an ETA." — *Marcus K. ★★★★★*

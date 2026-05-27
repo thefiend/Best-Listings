@@ -1,6 +1,6 @@
 // lib/types.ts
 
-export type Category = 'tech' | 'home' | 'software' | 'lifestyle' | 'travel'
+export type Category = 'tech' | 'home' | 'business' | 'lifestyle' | 'travel'
 
 export interface ReviewFrontmatter {
   title: string

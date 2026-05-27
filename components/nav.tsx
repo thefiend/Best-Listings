@@ -3,11 +3,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Category } from '@/lib/types'
 
-const CATEGORIES: Category[] = ['tech', 'home', 'software', 'lifestyle', 'travel']
+const CATEGORIES: Category[] = ['tech', 'home', 'business', 'lifestyle', 'travel']
 const CATEGORY_LABELS: Record<Category, string> = {
   tech: 'Tech',
   home: 'Home',
-  software: 'Software',
+  business: 'Business',
   lifestyle: 'Lifestyle',
   travel: 'Travel',
 }

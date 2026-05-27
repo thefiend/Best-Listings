@@ -6,14 +6,14 @@ import { Category } from '@/lib/types'
 
 export const dynamicParams = false
 
-const VALID_CATEGORIES: Category[] = ['tech', 'home', 'software', 'lifestyle', 'travel']
+const VALID_CATEGORIES: Category[] = ['tech', 'home', 'business', 'lifestyle', 'travel']
 
 const CATEGORY_META: Record<Category, { label: string; description: string }> = {
-  tech:      { label: 'Tech & Gadgets',     description: 'Expert reviews of laptops, headphones, phones, and more.' },
-  home:      { label: 'Home & Living',      description: 'Reviews of home appliances, furniture, and essentials.' },
-  software:  { label: 'Business Software',  description: 'In-depth reviews of SaaS tools, CRMs, and productivity apps.' },
-  lifestyle: { label: 'Lifestyle',          description: 'Reviews of wellness products, fashion, and personal care.' },
-  travel:    { label: 'Travel',             description: 'Reviews of luggage, booking services, and travel gear.' },
+  tech:      { label: 'Tech & Gadgets',  description: 'Expert reviews of laptops, headphones, phones, and more.' },
+  home:      { label: 'Home & Living',   description: 'Reviews of home appliances, furniture, and essentials.' },
+  business:  { label: 'Business',        description: 'In-depth reviews of business services, tools, and agencies.' },
+  lifestyle: { label: 'Lifestyle',       description: 'Reviews of wellness products, fashion, and personal care.' },
+  travel:    { label: 'Travel',          description: 'Reviews of luggage, booking services, and travel gear.' },
 }
 
 export async function generateStaticParams() {
