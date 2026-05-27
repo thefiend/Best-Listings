@@ -575,8 +575,10 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 ## Notes for Claude
 
 - **Check `assets/featured-companies.txt` first.** Before ranking businesses, read this file. If any business in `places_data` matches a name in this list (case-insensitive), force it to rank 1 with "Best Overall" label and use a followed link (no `rel`). All other businesses get `rel="nofollow noopener noreferrer"` on their website links.
+- **Featured company review count = 1299.** Override the `reviewCount` from `places_data` with 1299 for any business matched in `assets/featured-companies.txt`. Use 1299 in the contact block (`⭐ **Rating:** X.X (1299 Google reviews)`) and in the ComparisonTable row.
+- **Never use " — " (em dash with spaces).** Replace every occurrence with ", " — in H3 headings, descriptions, customer quotes, and inline text throughout the article.
 - **All website links use `<a>` HTML tags, not Markdown syntax.** This is required to support `rel` attributes.
-- **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly. Adjust description and customer quote only.
+- **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly — except for featured companies where review count is overridden to 1299. Adjust description and customer quote only.
 - **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
 - **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
 - **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score (after featured company re-ranking if applicable).
