@@ -47,3 +47,12 @@ export interface ScoreDimension {
   label: string
   score: number
 }
+
+export interface SearchResult {
+  type: 'review' | 'comparison'
+  title: string
+  slug: string
+  category: Category
+  excerpt?: string   // reviews only
+  rating?: number    // reviews only
+}
