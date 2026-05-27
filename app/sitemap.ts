@@ -39,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const comparisonRoutes: MetadataRoute.Sitemap = comparisons.map(c => ({
     url: `${BASE_URL}/compare/${c.slug}`,
-    lastModified: new Date(c.updatedAt),
+    lastModified: new Date(c.publishedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
