@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Category } from '@/lib/types'
 import { MobileNavDrawer } from './mobile-nav'
+import { SearchDropdown } from './search-dropdown'
 
 const CATEGORIES: Category[] = ['tech', 'home', 'business', 'lifestyle', 'travel']
 const CATEGORY_LABELS: Record<Category, string> = {
@@ -42,13 +43,13 @@ export function Nav() {
           </Link>
         </div>
 
-        <input
-          type="search"
-          placeholder="Search..."
-          aria-label="Search reviews (coming soon)"
-          disabled
-          className="hidden lg:block w-44 px-3 py-1.5 text-sm rounded bg-white/10 text-white placeholder-white/50 border border-white/20 cursor-not-allowed"
-        />
+        <div className="hidden lg:block">
+          <SearchDropdown
+            placeholder="Search..."
+            inputClassName="w-44 px-3 py-1.5 text-sm rounded bg-white/10 text-white placeholder-white/50 border border-white/20 focus:outline-none focus:ring-1 focus:ring-white/40"
+            dropdownClassName="w-72"
+          />
+        </div>
 
         <MobileNavDrawer />
       </div>
