@@ -11,9 +11,9 @@ test('renders Home label for home category', () => {
   expect(screen.getByText('Home')).toBeInTheDocument()
 })
 
-test('renders Software label for software category', () => {
-  render(<CategoryBadge category="software" />)
-  expect(screen.getByText('Software')).toBeInTheDocument()
+test('renders Business label for business category', () => {
+  render(<CategoryBadge category="business" />)
+  expect(screen.getByText('Business')).toBeInTheDocument()
 })
 
 test('renders Lifestyle label for lifestyle category', () => {

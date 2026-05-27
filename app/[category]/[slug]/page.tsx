@@ -3,6 +3,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { compile, run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { getAllReviews, getReview } from '@/lib/content'
@@ -38,6 +39,8 @@ export async function generateMetadata({
   return {
     title: review.title,
     description: review.excerpt,
+    openGraph: review.coverImage ? { images: [review.coverImage] } : undefined,
+    twitter: review.coverImage ? { card: 'summary_large_image', images: [review.coverImage] } : undefined,
   }
 }
 
@@ -47,7 +50,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
   const review = getReview(category, slug)
   if (!review) notFound()
 
-  const { title, excerpt, rating, publishedAt, updatedAt, content } = review
+  const { title, excerpt, rating, publishedAt, updatedAt, content, coverImage } = review
 
   const publishDate = new Date(publishedAt).toLocaleDateString('en-US', {
     month: 'long',
@@ -83,6 +86,20 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
           Published {publishDate} · Updated {updateDate}
         </p>
       </div>
+
+      {/* Cover image */}
+      {coverImage && (
+        <div className="mb-8 rounded-xl overflow-hidden">
+          <Image
+            src={coverImage}
+            alt={title}
+            width={1200}
+            height={628}
+            className="w-full h-auto"
+            priority
+          />
+        </div>
+      )}
 
       {/* Excerpt */}
       <p className="text-gray-600 text-base leading-relaxed mb-8 border-b border-gray-100 pb-8">
