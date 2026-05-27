@@ -39,7 +39,7 @@ Response shape:
 
 Result URLs:
 - Review → `/{category}/{slug}`
-- Comparison → `/comparisons/{slug}`
+- Comparison → `/compare/{slug}`
 
 ## Component Behavior
 
