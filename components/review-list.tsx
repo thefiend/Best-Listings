@@ -57,14 +57,15 @@ export function ReviewList({ reviews }: ReviewListProps) {
         <div className="flex flex-col gap-4">
           {sorted.map(review => (
             <div key={review.slug} className="flex gap-4 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow">
-              <div className="w-28 h-24 flex-shrink-0 bg-gray-100 relative overflow-hidden">
+              <div className="w-36 flex-shrink-0 bg-gray-100 self-stretch">
                 {review.coverImage && (
                   <Image
                     src={review.coverImage}
                     alt={review.title}
-                    fill
-                    className="object-cover"
-                    sizes="112px"
+                    width={1200}
+                    height={628}
+                    className="w-full h-full object-contain"
+                    sizes="144px"
                   />
                 )}
               </div>

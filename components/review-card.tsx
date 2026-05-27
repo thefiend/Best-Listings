@@ -19,12 +19,12 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <Image
           src={coverImage}
           alt={title}
-          width={600}
-          height={314}
-          className="w-full h-36 object-cover"
+          width={1200}
+          height={628}
+          className="w-full h-auto"
         />
       ) : (
-        <div className="h-36 bg-gray-100" />
+        <div className="aspect-[1200/628] bg-gray-100" />
       )}
 
       <div className="p-4">
