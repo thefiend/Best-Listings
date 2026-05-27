@@ -154,6 +154,15 @@ Immediately followed by PicksList. Labels describe what each business is best fo
 
 One section per business, in the same order as PicksList. Each section has four parts: description, contact block, and customer quote.
 
+**Featured company rule (read `assets/featured-companies.txt` before writing the article):**
+
+Before generating the article, check whether any business in `places_data` matches a name in `assets/featured-companies.txt` (case-insensitive, partial match acceptable). If a match exists:
+- Move that business to **rank 1** regardless of its Google rating
+- Assign it the "Best Overall" label in PicksList
+- Renumber all other businesses starting from rank 2
+- Use a **followed** website link (no `rel` attribute) for that business only
+- All other businesses use `rel="nofollow noopener noreferrer"` on their website links
+
 ```mdx
 ### 1. Bloom & Stem — Best Overall
 
@@ -161,10 +170,19 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 
 📍 **Address:** 47 Redchurch Street, London E2 7DJ\
 📞 **Phone:** +44 20 7946 0847\
-🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)\
+🌐 **Website:** <a href="https://bloomsandstem.co.uk">bloomsandstem.co.uk</a>\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
 > "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
+
+### 2. Petal & Co. — Best for Weddings
+
+[description]
+
+📍 **Address:** 12 Kensington Church Street, London W8 4EP\
+📞 **Phone:** +44 20 7946 1293\
+🌐 **Website:** <a href="https://petalandco.london" rel="nofollow noopener noreferrer">petalandco.london</a>\
+⭐ **Rating:** 4.7 (212 Google reviews)
 ```
 
 **Description rules:**
@@ -178,12 +196,20 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 
 Each item must be followed by a trailing `\` to force a line break in MDX. Without it, all items render on the same line.
 
+Use raw HTML `<a>` tags for website links (not Markdown link syntax) so `rel` attributes can be set.
+
 ```
-📍 **Address:** {address from places_data}\\
-📞 **Phone:** {phone from places_data or omit line if null}\\
-🌐 **Website:** [{domain}]({full url from places_data or omit line if null})\\
+📍 **Address:** {address from places_data}\
+📞 **Phone:** {phone from places_data or omit line if null}\
+🌐 **Website:** <a href="{full url}" rel="nofollow noopener noreferrer">{domain}</a>\
 ⭐ **Rating:** {rating} ({reviewCount} Google reviews)
 ```
+
+**Exception — featured company (in `assets/featured-companies.txt`):**
+```
+🌐 **Website:** <a href="{full url}">{domain}</a>\
+```
+No `rel` attribute. This passes link equity to the featured company.
 
 Omit phone line entirely if `phone` is null. Omit website line if `website` is null. Last line (Rating) has no trailing `\`.
 
@@ -548,10 +574,12 @@ Bloom & Stem is the best florist in London for most occasions — their combinat
 
 ## Notes for Claude
 
+- **Check `assets/featured-companies.txt` first.** Before ranking businesses, read this file. If any business in `places_data` matches a name in this list (case-insensitive), force it to rank 1 with "Best Overall" label and use a followed link (no `rel`). All other businesses get `rel="nofollow noopener noreferrer"` on their website links.
+- **All website links use `<a>` HTML tags, not Markdown syntax.** This is required to support `rel` attributes.
 - **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly. Adjust description and customer quote only.
 - **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
 - **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
-- **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score.
+- **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score (after featured company re-ranking if applicable).
 - **PicksList and H3 sections must be in identical order.** Rank 1 in PicksList = first H3.
 - **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).
 - **Never add H1 to body.** The page template renders `title` as H1 automatically.
