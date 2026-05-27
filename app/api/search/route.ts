@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const reviews: SearchResult[] = getAllReviews()
     .filter(r =>
       r.title.toLowerCase().includes(lower) ||
-      r.excerpt.toLowerCase().includes(lower) ||
+      r.excerpt?.toLowerCase().includes(lower) ||
       r.category.toLowerCase().includes(lower)
     )
     .map(r => ({
