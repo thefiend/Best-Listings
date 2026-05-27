@@ -5,7 +5,7 @@ import type { SearchResult } from '@/lib/types'
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const q = req.nextUrl.searchParams.get('q') ?? ''
 
-  if (q.length < 2) {
+  if (q.trim().length < 2) {
     return NextResponse.json([])
   }
 

@@ -114,3 +114,8 @@ test('limits results to 8', async () => {
   const data = await res.json()
   expect(data.length).toBeLessThanOrEqual(8)
 })
+
+test('returns [] for whitespace-only query', async () => {
+  const res = await GET(req('  '))
+  expect(await res.json()).toEqual([])
+})

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useId } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { SearchResult } from '@/lib/types'
@@ -39,9 +39,10 @@ export function SearchDropdown({
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const listboxId = useId()
 
   useEffect(() => {
-    if (query.length < 2) {
+    if (query.trim().length < 2) {
       setResults([])
       setOpen(false)
       return
@@ -92,6 +93,7 @@ export function SearchDropdown({
   return (
     <div ref={containerRef} className="relative">
       <input
+        role="combobox"
         type="search"
         value={query}
         onChange={e => setQuery(e.target.value)}
@@ -99,14 +101,14 @@ export function SearchDropdown({
         placeholder={placeholder}
         aria-label="Search reviews"
         aria-expanded={open}
-        aria-controls="search-results"
+        aria-controls={listboxId}
         aria-autocomplete="list"
         className={inputClassName}
       />
 
       {open && (
         <div
-          id="search-results"
+          id={listboxId}
           role="listbox"
           aria-label="Search results"
           className={`absolute top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50 ${dropdownClassName}`}
@@ -118,6 +120,8 @@ export function SearchDropdown({
               <Link
                 key={`${result.type}-${result.slug}`}
                 href={resultHref(result)}
+                role="option"
+                aria-selected={false}
                 onClick={handleResultClick}
                 className="flex flex-col px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-0"
               >
