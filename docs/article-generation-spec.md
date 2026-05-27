@@ -224,6 +224,25 @@ Omit phone line entirely if `phone` is null. Omit website line if `website` is n
 - Rating always 4 or 5 stars
 - Never generic ("great service, highly recommend"), always specific to an occasion or detail
 
+**CTA block — insert after every customer quote, before the next business section:**
+
+The CTA image is pre-generated at `public/images/cta/{category}-cta.png`. The alt text and button text come from `CTA_DESCRIPTION` and `CTA_BUTTON_TEXT` in `.env.local`. Use raw HTML so attributes render correctly in MDX.
+
+```mdx
+<a href="/{category}" style="display:block;margin:24px 0;">
+  <img src="/images/cta/{category}-cta.png" alt="{CTA_DESCRIPTION}" style="width:100%;height:auto;display:block;" />
+</a>
+```
+
+Example for `category: business` with `CTA_DESCRIPTION=Find the Best Businesses in Singapore`:
+```mdx
+<a href="/business" style="display:block;margin:24px 0;">
+  <img src="/images/cta/business-cta.png" alt="Find the Best Businesses in Singapore" style="width:100%;height:auto;display:block;" />
+</a>
+```
+
+Each business section structure: description → contact block → customer quote → **CTA block**.
+
 ### 7. Comparison table (H2)
 
 ```mdx
@@ -586,6 +605,8 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 - **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
 - **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
 - **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score (after featured company re-ranking if applicable).
+- **Generate CTA image before writing article.** Run `npx tsx scripts/generate-og-image.ts --type cta --output public/images/cta/{category}-cta.png` first. The script reads `CTA_DESCRIPTION` and `CTA_BUTTON_TEXT` from `.env.local` automatically.
+- **CTA block after every customer quote.** Every business section ends with the CTA HTML block. Use the category value from frontmatter for the href and image path.
 - **Add `<a id="business-{N}"></a>` on the line immediately before every H3 section.** N = the rank number. This creates anchor targets for PicksList company name links.
 - **PicksList and H3 sections must be in identical order.** Rank 1 in PicksList = first H3.
 - **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).

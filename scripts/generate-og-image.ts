@@ -22,9 +22,25 @@
  */
 
 import { parseArgs } from 'node:util'
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname, basename } from 'node:path'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
 import matter from 'gray-matter'
+
+// Load .env.local automatically
+function loadEnvLocal() {
+  const envPath = join(process.cwd(), '.env.local')
+  if (!existsSync(envPath)) return
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const eq = trimmed.indexOf('=')
+    if (eq === -1) continue
+    const key = trimmed.slice(0, eq).trim()
+    const val = trimmed.slice(eq + 1).trim()
+    if (!process.env[key]) process.env[key] = val
+  }
+}
+loadEnvLocal()
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 
@@ -236,8 +252,8 @@ async function main() {
       category: { type: 'string',  short: 'c' },
       location: { type: 'string',  short: 'l' },
       type:     { type: 'string',  default: 'og' },     // 'og' | 'cta'
-      'cta-text': { type: 'string', default: 'Find the best businesses near you' },
-      button:   { type: 'string',  default: 'Explore Now' },
+      'cta-text': { type: 'string', default: process.env.CTA_DESCRIPTION ?? 'Find the best businesses near you' },
+      button:   { type: 'string',  default: process.env.CTA_BUTTON_TEXT ?? 'Explore Now' },
       output:   { type: 'string',  short: 'o' },
     },
     allowPositionals: true,
