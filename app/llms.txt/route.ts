@@ -53,7 +53,7 @@ export async function GET() {
     lines.push('## Comparisons')
     lines.push('')
     for (const c of comparisons) {
-      lines.push(`- [${c.title}](${BASE_URL}/compare/${c.slug}): ${c.excerpt}`)
+      lines.push(`- [${c.title}](${BASE_URL}/compare/${c.slug})`)
     }
     lines.push('')
   }
