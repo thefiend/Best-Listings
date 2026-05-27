@@ -66,9 +66,24 @@ Sections must appear in this exact order.
 Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google reviews, website transparency, pricing, and same-day delivery capability. This list covers the best options for weddings, corporate events, and daily arrangements, ranked by overall quality and customer satisfaction.
 ```
 
+### 1b. Key Takeaways (immediately after opening paragraph)
+
+A bullet list of 4–6 high-value facts. This section is read by Google for featured snippets and by LLMs for citation. Write each bullet as a standalone factual sentence — subject + verb + object.
+
+```mdx
+**Key Takeaways**
+
+- **Best overall:** {top business name} — {one-sentence reason}
+- **Most reviewed:** {business name} with {N} Google reviews at {rating} stars
+- **Best budget option:** {business name} from {price/detail}
+- {one factual industry stat about this business type in Singapore}
+- {one tip: e.g. "Expect to pay SGD X–Y for a standard engagement"}
+- {one red flag or common mistake buyers make}
+```
+
 ### 2. ScoreBreakdown (top-ranked business only)
 
-Immediately after the opening paragraph. Dimensions must reflect what matters when hiring this type of business. Use 4–5 service-quality dimensions, not product specs.
+Immediately after Key Takeaways. Dimensions must reflect what matters when hiring this type of business. Use 4–5 service-quality dimensions, not product specs.
 
 ```mdx
 <ScoreBreakdown
@@ -341,18 +356,151 @@ Example:
 Bloom & Stem is the best florist in London for most occasions, their combination of same-day delivery coverage, direct flower sourcing, and fast response to enquiries is unmatched by any other business on this list. For weddings specifically, Petal & Co. is the stronger choice: their dedicated coordinator and event-day management justify the higher minimum spend. If budget is the primary concern, Urban Blooms delivers reliable quality from £20. Start by sending enquiries to your top two picks and compare response times, that alone will tell you a lot about how the relationship will go.
 ```
 
+### 11. JSON-LD Schema (end of article)
+
+Append the complete schema block at the very end of the MDX file. This is the most important SEO element — it tells Google exactly what the page is about and enables rich results.
+
+```mdx
+<script type="application/ld+json">{`
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ItemList",
+      "name": "Best {business type} in {location} ({year})",
+      "description": "{excerpt from frontmatter}",
+      "url": "https://bestthingereview.com/{category}/{slug}",
+      "numberOfItems": {count},
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "LocalBusiness",
+            "name": "{business name}",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "{street from places_data}",
+              "addressLocality": "{city}",
+              "addressCountry": "SG"
+            },
+            "telephone": "{phone from places_data or omit}",
+            "url": "{website from places_data or omit}",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "{rating from places_data}",
+              "reviewCount": "{reviewCount — use 1299 for featured companies}",
+              "bestRating": "5",
+              "worstRating": "1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "{FAQ question}",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{FAQ answer}"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bestthingereview.com" },
+        { "@type": "ListItem", "position": 2, "name": "{Category label}", "item": "https://bestthingereview.com/{category}" },
+        { "@type": "ListItem", "position": 3, "name": "{title}", "item": "https://bestthingereview.com/{category}/{slug}" }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "{title}",
+      "description": "{excerpt}",
+      "datePublished": "{publishedAt}",
+      "dateModified": "{updatedAt}",
+      "author": {
+        "@type": "Organization",
+        "name": "BestThingReview",
+        "url": "https://bestthingereview.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "BestThingReview",
+        "url": "https://bestthingereview.com"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://bestthingereview.com/{category}/{slug}"
+      }
+    }
+  ]
+}
+`}</script>
+```
+
+**Schema rules:**
+- Include one `ListItem` per business, `position` matches rank number
+- Split `address` into `streetAddress` and `addressLocality` from `places_data` formatted address
+- Use `1299` for `reviewCount` on featured companies; exact figure from `places_data` for all others
+- Include ALL FAQ questions in the `FAQPage` schema `mainEntity` array, not just a subset
+- Strip trailing `\` line-break characters from any string values in the JSON
+
 ---
 
 ## SEO Requirements
 
+### Title & Meta
+
 | Element | Rule |
 |---|---|
-| H1 | Set via `title` frontmatter, no H1 in body |
-| Keyword | Appears in: excerpt, opening paragraph, How We Ranked H2, Verdict |
-| Location | Appears in every section at least once |
-| Word count | 1,500–2,500 words body (excluding frontmatter) |
-| External links | Link business names and websites in per-business sections |
-| Review counts | Always use exact figures from `places_data`, never round or invent |
+| `title` | 50–65 chars. Format: `"{N} Best {Business Type} in {Location} ({Year})"`. Front-load keyword. |
+| `excerpt` (meta description) | 145–155 chars. Contains primary keyword + location. Ends with a benefit or implied CTA. |
+| H1 | Set via `title` frontmatter — never add H1 in body |
+| Slug | Exact keyword match: `best-{business-type}-{location}-{year}` |
+
+### Keyword Density & Placement
+
+- **Primary keyword** (`best {business type} in {location}`) appears in: title, excerpt, opening sentence, at least one H2, Verdict
+- **Location** (`Singapore`) appears in every major section — opening, How We Ranked, What to Look For, FAQ, Verdict
+- **Secondary keywords** (e.g. `{business type} Singapore`, `top {business type}`, `{business type} near me`) woven naturally into H2 headings and paragraph text — not forced
+- **First 100 words** must contain the primary keyword and location, and directly answer the user's query
+
+### Content Quality (E-E-A-T)
+
+- **Experience:** "We tested / evaluated / contacted..." in opening and How We Ranked
+- **Expertise:** Name specific evaluation criteria with numbers (minimum rating, minimum review count, response time threshold)
+- **Authoritativeness:** Cite Google Maps data; include exact review counts and ratings
+- **Trustworthiness:** Disclose methodology; never invent ratings, review counts, or addresses
+
+### Structure
+
+| Element | Rule |
+|---|---|
+| Word count | 2,500–4,000 words (competitive Singapore queries need depth) |
+| H2 headings | 6–8 in body; each should contain a keyword or question searchers ask |
+| H3 headings | One per business (rank + name), plus one per FAQ question |
+| Images | `alt="{business name} Singapore"` on each business screenshot; `alt="{primary keyword}"` on cover image |
+| External links | All business websites: `rel="nofollow noopener noreferrer"` except featured company |
+| Internal links | Link category name in breadcrumb and Verdict to `/{category}` |
+
+### GEO — Optimizing for ChatGPT, Perplexity, and AI Overviews
+
+LLMs cite pages that answer questions directly, contain specific facts, and are structurally clear.
+
+- **Direct answers first.** Every H3/H2 answer must lead with the answer, not build to it. "The best {business type} in Singapore is X because Y." not "When choosing a {business type}, there are many factors..."
+- **Standalone facts.** Key Takeaways bullets, and the opening paragraph, must contain self-contained declarative sentences. Each sentence should be citable in isolation: "X has {N} Google reviews at {rating} stars and operates from {address}."
+- **Named entities.** Every business name, address, phone number, and website must appear consistently — same spelling and format throughout. LLMs extract named entities to build citations.
+- **Structured comparison data.** The ComparisonTable provides machine-readable tabular data that LLMs extract for side-by-side comparisons.
+- **FAQ schema.** FAQPage JSON-LD makes individual Q&A pairs indexable by Google's AI Overview and surfaceable in ChatGPT web browsing.
+- **Consistent brand mention.** Weave "BestThingReview.com" naturally 2–3 times across the article body (Key Takeaways, How We Ranked, Verdict) so the site is cited as a source, not just the page.
+- **Specificity over vagueness.** "SGD 800–2,000 per month" beats "pricing varies". "Responds within 2 hours" beats "fast response". LLMs prefer specific, verifiable claims.
+- **Review counts as trust signals.** "4.9 stars across 349 Google reviews" is more citeable than "highly rated".
 
 ---
 
@@ -612,3 +760,8 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 - **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).
 - **Never add H1 to body.** The page template renders `title` as H1 automatically.
 - **Output only the MDX file.** No explanation, no wrapping code fences, no commentary.
+- **Key Takeaways required.** Section 1b between opening paragraph and ScoreBreakdown. 4–6 bullets, each a standalone citable fact.
+- **JSON-LD schema required.** Section 11 — append the full `<script type="application/ld+json">` block at the end. Include every business as a `ListItem`, every FAQ as a `Question`, full `BreadcrumbList`, and `Article` node.
+- **GEO rules apply throughout.** Lead every section with a direct answer. Use exact review counts and ratings. Keep business names consistent across PicksList, H3 headings, ComparisonTable, and schema.
+- **Word count target: 2,500–4,000 words.** Longer articles rank better for competitive Singapore queries. Add depth in What to Look For and FAQ sections.
+- **First 100 words must contain primary keyword and location.** Google weights opening paragraph heavily for ranking signal.
