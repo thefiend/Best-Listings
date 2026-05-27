@@ -1,19 +1,20 @@
-# BestThingReview — Article Generation Spec
+# BestThingReview — Business Listing Article Generation Spec
 
-Claude follows this document to generate a complete "best-of" review article as an MDX file ready to drop into `content/reviews/{category}/`.
+Claude follows this document to generate a complete "best-of businesses" article as an MDX file ready to drop into `content/reviews/{category}/`.
+
+This spec is for **business/service listings** — florists, web designers, plumbers, restaurants, lawyers, contractors, etc. Data comes from `scripts/extract-maps.ts` (Google Maps).
 
 ---
 
 ## Input
 
-Claude needs at minimum:
-
 | Input | Required | Notes |
 |---|---|---|
-| `keyword` | Yes | e.g. `"best robot vacuums 2024"` |
+| `keyword` | Yes | e.g. `"best florists london 2024"` |
 | `category` | Yes | One of: `tech` · `home` · `software` · `lifestyle` · `travel` |
-| `count` | No | How many picks to include. Default 10 |
-| `places_data` | No | JSON from `scripts/extract-maps.ts` — inject real business data when available |
+| `location` | Yes | City or region covered — appears throughout article |
+| `count` | No | How many businesses to list. Default 10 |
+| `places_data` | Yes | JSON from `scripts/extract-maps.ts`. Do not invent business details. |
 
 ---
 
@@ -29,15 +30,13 @@ content/reviews/{category}/{slug}.mdx
 
 ## Frontmatter Schema
 
-Every article must include this exact frontmatter block:
-
 ```yaml
 ---
-title: "Best Robot Vacuums of 2024: Our Top 10 Tested Picks"
-category: home
-slug: best-robot-vacuums-2024
-excerpt: "We tested 18 robot vacuums over six weeks to find the best models for every home and budget — from budget picks to premium self-emptying units."
-rating: 9.2
+title: "10 Best Florists in London (2024) — Tested & Reviewed"
+category: lifestyle
+slug: best-florists-london-2024
+excerpt: "We researched 30+ florists across London to find the best for weddings, corporate events, and everyday arrangements — ranked by reviews, quality, and service."
+rating: 9.6
 featured: false
 publishedAt: "YYYY-MM-DD"
 updatedAt: "YYYY-MM-DD"
@@ -45,13 +44,13 @@ updatedAt: "YYYY-MM-DD"
 ```
 
 **Field rules:**
-- `title` — 50–65 chars. Front-load the keyword. Year optional but recommended.
-- `category` — must be one of the 5 valid values exactly.
-- `slug` — lowercase, hyphens, no special chars. Match URL you want to rank for.
-- `excerpt` — 145–160 chars. Answer who this is for and what they'll find. Contains the target keyword.
-- `rating` — overall score 0–10 for the top pick in the article.
-- `featured` — set `true` only if this should appear on the homepage grid (use sparingly).
-- `publishedAt` / `updatedAt` — today's date in `YYYY-MM-DD` format.
+- `title` — 50–65 chars. Format: `"{N} Best {business type} in {location} ({year})"`. Power word optional.
+- `category` — must be one of the 5 valid values.
+- `slug` — lowercase, hyphens. Match the keyword URL exactly.
+- `excerpt` — 145–160 chars. Explain how many you researched, what criteria you used, what readers get.
+- `rating` — top business's Google rating × 2 (e.g. 4.8 stars → 9.6). If no rating in places_data, use 9.0 as default.
+- `featured` — `true` only for homepage feature. Use sparingly.
+- `publishedAt` / `updatedAt` — today's date in `YYYY-MM-DD`.
 
 ---
 
@@ -61,59 +60,75 @@ Sections must appear in this exact order.
 
 ### 1. Opening paragraph
 
-One paragraph, 3–4 sentences. Establish the problem ("choosing the right X is hard"), explain how this article solves it ("we tested N models"), and give readers a reason to keep reading. Contains the target keyword naturally.
+3–4 sentences. State why finding a good `{business type}` in `{location}` matters, how many you evaluated, and what criteria determined the rankings. Contains the target keyword. No preamble — lead with value.
 
 ```mdx
-After testing 18 robot vacuums over six weeks, we found that most people overpay for features they don't need. The Roborock S8 Pro Ultra delivered the best balance of suction, mapping accuracy, and autonomous emptying. We also found strong budget options for smaller homes. Here's everything you need to know.
+Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google reviews, website transparency, pricing, and same-day delivery capability. This list covers the best options for weddings, corporate events, and daily arrangements — ranked by overall quality and customer satisfaction.
 ```
 
-### 2. ScoreBreakdown (top pick)
+### 2. ScoreBreakdown (top-ranked business only)
 
-Immediately after the opening paragraph, show the top pick's sub-scores:
+Immediately after the opening paragraph. Dimensions must reflect what matters when hiring this type of business. Use 4–5 service-quality dimensions — not product specs.
 
 ```mdx
 <ScoreBreakdown
-  topPick="Roborock S8 Pro Ultra"
+  topPick="Bloom & Stem"
   dimensions={[
-    { label: "Suction Power", score: 9.0 },
-    { label: "Mapping Accuracy", score: 9.2 },
-    { label: "Value for Money", score: 8.0 },
-    { label: "Ease of Use", score: 8.5 }
+    { label: "Service Quality", score: 9.8 },
+    { label: "Value for Money", score: 9.2 },
+    { label: "Response Time", score: 9.5 },
+    { label: "Professionalism", score: 9.6 },
+    { label: "Customer Satisfaction", score: 9.7 }
   ]}
 />
 ```
 
-Sub-scores must be consistent with the overall `rating` in frontmatter (within ±0.5).
+Scores must average within ±0.3 of the `rating` in frontmatter.
 
-### 3. ProsCons (top pick only)
+**Good dimensions by business type:**
+
+| Business type | Good dimensions |
+|---|---|
+| Florists, caterers, event planners | Service Quality, Value, Response Time, Creativity, Reliability |
+| Contractors, plumbers, electricians | Workmanship, Pricing Transparency, Punctuality, Communication, Guarantees |
+| Lawyers, accountants, consultants | Expertise, Responsiveness, Value, Communication, Track Record |
+| Restaurants, cafés | Food Quality, Service, Ambiance, Value, Consistency |
+| Web agencies, designers | Quality of Work, Communication, Delivery Speed, Value, Support |
+
+### 3. ProsCons (top-ranked business only)
 
 ```mdx
 <ProsCons
   pros={[
-    "Best mapping accuracy we tested",
-    "Auto-empty dock works reliably",
-    "Mop and vacuum in one pass",
-    "Quiet at 58dB — usable in small apartments"
+    "Same-day delivery available across all London postcodes",
+    "Dedicated wedding coordinator included free with bookings over £300",
+    "Sustainably sourced flowers — certified by the Florist Association",
+    "Fastest response time we tested — replied within 20 minutes"
   ]}
   cons={[
-    "Dock footprint is large (35cm × 35cm)",
-    "App setup takes 20–30 minutes",
-    "Expensive — premium over mid-range picks is real"
+    "Premium pricing — 20–30% above mid-market average",
+    "Walk-in only by appointment — no drop-in browsing",
+    "Minimum order £45 for delivery"
   ]}
 />
 ```
 
-3–5 pros, 2–4 cons. Concrete and specific — never vague ("good performance", "pricey").
+3–5 pros, 2–3 cons. Specific and factual. No vague praise ("great service") or vague criticism ("a bit expensive").
 
-### 4. How we tested (H2)
+### 4. How We Ranked These Businesses (H2)
 
 ```mdx
-## How We Tested
+## How We Ranked These {Business Type}
 
-[2–3 sentences explaining the testing methodology. What did you measure? How long? What environments?]
+[2–3 sentences. State your ranking criteria explicitly: Google review score, review count, website clarity, pricing transparency, service range, response time tested, any in-person or direct contact. Be specific — name the metrics.]
 ```
 
-This section builds credibility. Keep it concise and factual.
+Example:
+```mdx
+## How We Ranked These Florists
+
+We ranked each florist using: Google Maps rating (minimum 4.0 required), review count (minimum 20), website quality and pricing transparency, delivery coverage, and response time to a test enquiry sent via their contact form. Businesses with fake review patterns or no verifiable address were excluded.
+```
 
 ### 5. Our Top Picks (H2)
 
@@ -121,104 +136,157 @@ This section builds credibility. Keep it concise and factual.
 ## Our Top Picks
 ```
 
-Immediately followed by the PicksList component:
+Immediately followed by PicksList. Labels describe what each business is best for — never "Runner-Up" or "Second Best".
 
 ```mdx
 <PicksList picks={[
-  { rank: 1, name: "Roborock S8 Pro Ultra", score: 9.2, label: "Best Overall" },
-  { rank: 2, name: "iRobot Roomba j7+", score: 8.3, label: "Best for Pet Hair" },
-  { rank: 3, name: "Eufy RoboVac 11S", score: 7.8, label: "Best Budget" },
-  { rank: 4, name: "Shark IQ Robot", score: 7.5, label: "Best Under $300" }
+  { rank: 1, name: "Bloom & Stem",        score: 9.6, label: "Best Overall" },
+  { rank: 2, name: "Petal & Co.",         score: 9.0, label: "Best for Weddings" },
+  { rank: 3, name: "Urban Blooms",        score: 8.6, label: "Best Budget Option" },
+  { rank: 4, name: "The Flower Factory",  score: 8.4, label: "Best for Corporate Events" },
+  { rank: 5, name: "Stems & Stories",     score: 8.2, label: "Best for Same-Day Delivery" }
 ]} />
 ```
 
-Labels must be distinct and descriptive. Never "Second Best" or "Runner-Up".
+`score` for each business: Google rating × 2, rounded to 1 decimal. Use real values from `places_data`.
 
-### 6. Per-pick sections (H3, repeated)
+### 6. Per-business sections (H3, repeated)
 
-One H3 section per pick. Order must match PicksList ranking exactly.
-
-```mdx
-### 1. Roborock S8 Pro Ultra — Best Overall
-
-[2–3 paragraphs. Cover: what makes it the best overall, key features, real-world performance, who it's best suited for. 150–250 words total.]
-
-[If `places_data` provided: include address, phone, website, and rating from the real data.]
-```
-
-For business/service articles (restaurants, contractors, etc.) using `places_data`:
+One section per business, in the same order as PicksList. Each section has four parts: description, contact block, and customer quote.
 
 ```mdx
 ### 1. Bloom & Stem — Best Overall
 
-[Description paragraph 150–200 words.]
+Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon. The business sources flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. They responded to our test enquiry within 18 minutes — fastest of all businesses we contacted.
 
-📍 **Address:** 123 Example St, London EC1A 1BB
-📞 **Phone:** +44 20 7946 0958
-🌐 **Website:** [bloomandstem.co.uk](https://bloomandstem.co.uk)
+📍 **Address:** 47 Redchurch Street, London E2 7DJ
+📞 **Phone:** +44 20 7946 0847
+🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
-> "Incredible service — ordered a custom bouquet for my wife's birthday and it arrived two hours early, perfectly packaged." — *Sarah M. ★★★★★*
+> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
 ```
 
-Customer quote format: pull-quote (`>`), 1–2 sentences, specific praise, first name + last initial, star rating.
+**Description rules:**
+- 100–150 words
+- Use real data from `places_data` verbatim: name, address, phone, website, rating, reviewCount
+- Include: what they specialise in, years in operation (if known or estimable from reviews), service area, one specific differentiator (pricing, speed, specialty, award, certification)
+- No invented review counts or ratings — use exact figures from `places_data`
+- End with one sentence making a clear case for why this business made the list
+
+**Contact block format:**
+```
+📍 **Address:** {address from places_data}
+📞 **Phone:** {phone from places_data or omit if null}
+🌐 **Website:** [{domain}]({full url from places_data or omit if null})
+⭐ **Rating:** {rating} ({reviewCount} Google reviews)
+```
+
+Omit phone line entirely if `phone` is null. Omit website line if `website` is null.
+
+**Customer quote rules:**
+- One blockquote (`>`) per business
+- 1–2 sentences. Specific praise — what service, what occasion, what impressed them
+- Format: `"Quote text." — *First Name L. ★★★★★*`
+- Rating always 4 or 5 stars
+- Never generic ("great service, highly recommend") — always specific to an occasion or detail
 
 ### 7. Comparison table (H2)
 
 ```mdx
-## Full Comparison
+## How They Compare
 
 <ComparisonTable
-  headers={["Model", "Score", "Price", "Best For"]}
+  headers={["Business", "Rating", "Reviews", "Specialism", "Min. Order"]}
   rows={[
-    ["Roborock S8 Pro Ultra", "9.2", "$1,399", "Best overall"],
-    ["iRobot Roomba j7+", "8.3", "$599", "Pet hair"],
-    ["Eufy RoboVac 11S", "7.8", "$149", "Budget"],
-    ["Shark IQ Robot", "7.5", "$299", "Mid-range"]
+    ["Bloom & Stem",       "4.8 ★", "347", "Events & weddings", "£45"],
+    ["Petal & Co.",        "4.7 ★", "212", "Weddings",          "£60"],
+    ["Urban Blooms",       "4.3 ★", "89",  "Everyday & gifts",  "£20"],
+    ["The Flower Factory", "4.2 ★", "154", "Corporate",         "£80"],
+    ["Stems & Stories",    "4.1 ★", "67",  "Same-day delivery", "£30"]
   ]}
   winnerColumn={0}
 />
 ```
 
-`winnerColumn` is 0-indexed. Set to the column that contains the top pick's distinguishing metric (usually column 0 = name, or the score column).
+**Column selection rules:**
+- Column 0: always business name
+- Column 1: always rating (from `places_data`, format `"4.8 ★"`)
+- Column 2: always review count (from `places_data`)
+- Columns 3–5: pick 1–3 columns most relevant to this business type
 
-### 8. What to look for (H2)
+| Business type | Good additional columns |
+|---|---|
+| Florists, caterers | Specialism, Min. Order, Delivery |
+| Contractors, tradespeople | Services, Avg. Response, Guarantee |
+| Lawyers, accountants | Practice Area, Initial Consult, Pricing |
+| Restaurants | Cuisine, Avg. Price, Reservations |
+| Agencies, consultants | Specialism, Project Size, Pricing Model |
+
+`winnerColumn` always `0` for business listings (winner is the name column).
+
+### 8. What to Look for When Hiring a {Business Type} (H2)
 
 ```mdx
-## What to Look For
+## What to Look for When Hiring a Florist
 
-[3–5 paragraphs covering the key buying criteria. Each paragraph focuses on one decision factor: e.g., suction power, battery life, mapping tech, price range. 200–350 words total.]
+[3–5 short paragraphs. Each covers one decision criterion. Write for someone making their first hire in this category. 200–300 words total.]
 ```
 
-This section is SEO-valuable and answers long-tail queries. Write it for someone who doesn't know where to start.
+Each paragraph: name the criterion in bold, explain why it matters, give a concrete benchmark.
+
+Example:
+```mdx
+## What to Look for When Hiring a Florist
+
+**Google reviews and recency.** A 4.5+ rating with 50+ reviews is the baseline. More important than the average is the recency — check that there are reviews from the past 3 months. A business with 200 five-star reviews but nothing recent may have changed hands or declined in quality.
+
+**Specialism match.** Florists who do wedding floristry are not necessarily the best choice for a same-day birthday bouquet, and vice versa. Match the florist's portfolio to your specific need before enquiring.
+
+**Pricing transparency.** Reputable florists display price ranges on their website or respond promptly with a quote when asked. Vague pricing ("call for details") often leads to significantly higher final bills.
+
+**Response time.** Test it. Send an enquiry via their website and note how long it takes. For time-sensitive occasions — weddings, corporate events — a florist who takes 48 hours to reply will take 48 hours to resolve problems on the day.
+
+**Delivery coverage and cut-off times.** Confirm whether your postcode is covered, whether same-day delivery is available, and what the order cut-off time is. Many florists quote "London-wide delivery" but charge extra or decline orders in outer boroughs.
+```
 
 ### 9. FAQ (H2)
 
 ```mdx
 ## Frequently Asked Questions
 
-### How often should you run a robot vacuum?
-[Direct answer, 2–3 sentences.]
+### How much does a florist cost in London?
+[Direct answer. Lead with a price range. 2–3 sentences.]
 
-### Are robot vacuums worth it for pet hair?
-[Direct answer, 2–3 sentences.]
+### What should I ask a florist before booking?
+[Direct answer. Bulleted list or 2–3 sentences.]
 ```
 
-8–12 questions. Use H3 for each question. Answers must be direct — lead with the answer, not "it depends".
+8–12 questions. Use H3 per question. Answers lead with the answer — never "it depends" or "that's a great question".
 
-Question formats that work:
-- "Is X worth it for Y?"
-- "What is the best X under $N?"
-- "How long does X last?"
-- "Can X do Y?"
-- "What's the difference between X and Y?"
+**Question formats that work for business listings:**
+- "How much does a {business type} cost in {location}?"
+- "How do I choose a good {business type}?"
+- "What questions should I ask before hiring a {business type}?"
+- "How far in advance should I book a {business type}?"
+- "What's the difference between [type A] and [type B]?"
+- "Are [business type] regulated / licensed in {location}?"
+- "What are red flags when hiring a {business type}?"
+- "Can I get a {business type} last-minute?"
 
 ### 10. Verdict (H2)
 
 ```mdx
 ## Verdict
 
-[3–4 sentences. Restate the top pick and why it won. Acknowledge the runner-up for a specific use case. Tell readers what to do next.]
+[3–4 sentences. Name the top pick and give the one-sentence reason it leads. Acknowledge the runner-up and who it's best for. End with a clear next step for the reader.]
+```
+
+Example:
+```mdx
+## Verdict
+
+Bloom & Stem is the best florist in London for most occasions — their combination of same-day delivery coverage, direct flower sourcing, and fast response to enquiries is unmatched by any other business on this list. For weddings specifically, Petal & Co. is the stronger choice: their dedicated coordinator and event-day management justify the higher minimum spend. If budget is the primary concern, Urban Blooms delivers reliable quality from £20. Start by sending enquiries to your top two picks and compare response times — that alone will tell you a lot about how the relationship will go.
 ```
 
 ---
@@ -227,27 +295,25 @@ Question formats that work:
 
 | Element | Rule |
 |---|---|
-| H1 | Set via `title` frontmatter — do not add a separate H1 in body |
-| Keyword density | Target keyword appears in: excerpt, first paragraph, How We Tested H2, Verdict |
-| Word count | 1,200–2,500 words for the body (excluding frontmatter) |
-| Internal links | Not applicable — Next.js routing handles this |
-| External links | Link out to manufacturer/official sites in per-pick sections using `[anchor](url)` |
-| Alt text | Not needed — images are handled by the `coverImage` frontmatter field |
+| H1 | Set via `title` frontmatter — no H1 in body |
+| Keyword | Appears in: excerpt, opening paragraph, How We Ranked H2, Verdict |
+| Location | Appears in every section at least once |
+| Word count | 1,500–2,500 words body (excluding frontmatter) |
+| External links | Link business names and websites in per-business sections |
+| Review counts | Always use exact figures from `places_data` — never round or invent |
 
 ---
 
 ## Featured Image HTML Template
 
-Used to generate the Open Graph image (`coverImage`) for the article. Dimensions: 1200×628px. Brand colors match BestThingReview palette.
-
-Render with `@vercel/og` or `satori`. Substitute `{{title}}` and `{{category}}` before rendering.
+1200×628px OG image. Substitute `{{title}}`, `{{category}}`, and `{{location}}` before rendering. Render with `@vercel/og` or `satori`.
 
 ```html
 <div style="width:1200px;height:628px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#02274A 0%,#0a3d6b 50%,#02274A 100%);padding:80px;box-sizing:border-box;">
   <div style="display:flex;flex-direction:column;align-items:center;gap:24px;max-width:960px;text-align:center;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
       <div style="width:48px;height:3px;background:#3AA83C;border-radius:2px;"></div>
-      <span style="color:#FDB926;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">{{category}}</span>
+      <span style="color:#FDB926;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">{{category}} · {{location}}</span>
       <div style="width:48px;height:3px;background:#3AA83C;border-radius:2px;"></div>
     </div>
     <h1 style="color:#FBFCF9;font-size:52px;font-weight:800;line-height:1.15;margin:0;letter-spacing:-1px;">{{title}}</h1>
@@ -260,9 +326,7 @@ Render with `@vercel/og` or `satori`. Substitute `{{title}}` and `{{category}}` 
 
 ## CTA Banner HTML Template
 
-In-article CTA inserted after the comparison table. Dimensions: 1200×200px.
-
-Substitute `{{cta_text}}` and `{{button_text}}` before rendering.
+1200×200px in-article banner. Insert in MDX after the comparison table as a linked image. Substitute `{{cta_text}}` and `{{button_text}}` before rendering.
 
 ```html
 <div style="width:1200px;height:200px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#02274A 0%,#1477D1 100%);padding:0 72px;box-sizing:border-box;">
@@ -274,45 +338,40 @@ Substitute `{{cta_text}}` and `{{button_text}}` before rendering.
 </div>
 ```
 
-In the MDX article body, include the CTA as a linked image after the comparison table:
+Insert in MDX after the comparison table:
 
 ```mdx
-[![BestThingReview — Expert Reviews You Can Trust](/images/cta/home-cta.png)](/home)
+[![Find the best businesses near you](/images/cta/lifestyle-cta.png)](/lifestyle)
 ```
 
 ---
 
 ## Claude Prompt Template
 
-Copy this prompt and fill in `{KEYWORD}`, `{CATEGORY}`, `{COUNT}`, and optionally paste in Places data.
-
 ```
-You are an expert product reviewer writing for BestThingReview.com.
+You are an expert local business reviewer writing for BestThingReview.com.
 
-Follow the article generation spec at docs/article-generation-spec.md EXACTLY —
-structure, section order, MDX components, frontmatter schema, and SEO requirements.
+Follow docs/article-generation-spec.md EXACTLY — section order, MDX components,
+frontmatter schema, contact block format, and SEO requirements.
 
 Generate a complete MDX article for:
 
 Keyword:   {KEYWORD}
 Category:  {CATEGORY}
-Count:     {COUNT} picks
+Location:  {LOCATION}
+Count:     {COUNT} businesses
 Date:      {TODAY}
 
-{PLACES_DATA_BLOCK}
+Real business data from Google Maps — use name, address, phone, website, rating,
+and reviewCount verbatim. Do not invent or change any of these values:
 
-Output ONLY the complete .mdx file — no explanation, no markdown fences, no commentary.
-The file must be saved to: content/reviews/{CATEGORY}/{SLUG}.mdx
-```
+{PASTE JSON FROM extract-maps.ts HERE}
 
-When `places_data` is available (from `scripts/extract-maps.ts`), include:
+Your job: write the description paragraph and customer quote for each business.
+Do not invent ratings, review counts, addresses, phone numbers, or websites.
 
-```
-Real business data from Google Maps (use this — do not invent business details):
-{paste JSON output from extract-maps.ts here}
-
-Use the name, rating, reviewCount, address, phone, and website from this data verbatim.
-Generate the description paragraphs yourself. Write a realistic customer quote per business.
+Output ONLY the complete .mdx file. No explanation, no fences, no commentary.
+Save to: content/reviews/{CATEGORY}/{SLUG}.mdx
 ```
 
 ---
@@ -321,150 +380,176 @@ Generate the description paragraphs yourself. Write a realistic customer quote p
 
 ```mdx
 ---
-title: "Best Robot Vacuums of 2024: Our Top 10 Tested Picks"
-category: home
-slug: best-robot-vacuums-2024
-excerpt: "We tested 18 robot vacuums over six weeks to find the best models for every home and budget — from budget picks under $150 to premium self-emptying units."
-rating: 9.2
-featured: true
-publishedAt: "2024-05-01"
-updatedAt: "2024-05-15"
+title: "10 Best Florists in London (2024) — Ranked by Reviews"
+category: lifestyle
+slug: best-florists-london-2024
+excerpt: "We researched 34 florists across London to find the best for weddings, events, and everyday arrangements — ranked by Google reviews, response time, and service quality."
+rating: 9.6
+featured: false
+publishedAt: "2024-05-27"
+updatedAt: "2024-05-27"
 ---
 
-After testing 18 robot vacuums over six weeks, we found that most people overpay for features they don't need. The Roborock S8 Pro Ultra delivered the best balance of suction, mapping accuracy, and autonomous emptying — but strong budget options exist for smaller homes. We ran each vacuum through a standardised obstacle course, carpet and hardwood tests, and a 30-day live-in trial. Here's everything you need to know.
+Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google review score, review count, website transparency, delivery coverage, and response time to a test enquiry. This list covers the best options for weddings, corporate events, and everyday arrangements — ranked by overall quality and consistency.
 
 <ScoreBreakdown
-  topPick="Roborock S8 Pro Ultra"
+  topPick="Bloom & Stem"
   dimensions={[
-    { label: "Suction Power", score: 9.0 },
-    { label: "Mapping Accuracy", score: 9.2 },
-    { label: "Value for Money", score: 8.0 },
-    { label: "Ease of Use", score: 8.5 }
+    { label: "Service Quality", score: 9.8 },
+    { label: "Value for Money", score: 9.2 },
+    { label: "Response Time", score: 9.5 },
+    { label: "Professionalism", score: 9.6 },
+    { label: "Customer Satisfaction", score: 9.7 }
   ]}
 />
 
 <ProsCons
   pros={[
-    "Best mapping accuracy we tested",
-    "Auto-empty dock works reliably for 30+ days",
-    "Mop and vacuum in a single pass",
-    "Quiet enough for daytime use at 58dB"
+    "Same-day delivery available across all London postcodes before noon",
+    "Dedicated wedding coordinator included on bookings over £300",
+    "Direct-sourced flowers from Dutch auction — noticeably fresher than competitors",
+    "Fastest response time we tested — 18 minutes average on enquiry form"
   ]}
   cons={[
-    "Large dock footprint (35cm × 35cm) — needs clear floor space",
-    "App setup takes 20–30 minutes first time",
-    "Premium price is real — significant jump over mid-range"
+    "Premium pricing — 20–30% above mid-market",
+    "Walk-in by appointment only — no drop-in browsing",
+    "Minimum delivery order £45"
   ]}
 />
 
-## How We Tested
+## How We Ranked These Florists
 
-We ran each vacuum across three home types (studio, 2-bed apartment, 3-bed house) for six weeks. Metrics captured: suction Pa at max setting, mapping time for first full run, obstacle avoidance accuracy (20-item course), dock reliability over 30 days, and noise level at 1 metre. All models tested on both carpet and hardwood.
+We ranked each florist on: Google Maps rating (minimum 4.0 to qualify), review count (minimum 20), website pricing transparency, delivery coverage and cut-off time, and response time to a test enquiry sent via contact form. Businesses with suspicious review patterns or no verifiable physical address were excluded regardless of rating.
 
 ## Our Top Picks
 
 <PicksList picks={[
-  { rank: 1, name: "Roborock S8 Pro Ultra", score: 9.2, label: "Best Overall" },
-  { rank: 2, name: "iRobot Roomba j7+", score: 8.3, label: "Best for Pet Hair" },
-  { rank: 3, name: "Eufy RoboVac 11S", score: 7.8, label: "Best Budget" },
-  { rank: 4, name: "Shark IQ Robot XL", score: 7.5, label: "Best Under $300" }
+  { rank: 1, name: "Bloom & Stem",        score: 9.6, label: "Best Overall" },
+  { rank: 2, name: "Petal & Co.",         score: 9.0, label: "Best for Weddings" },
+  { rank: 3, name: "Urban Blooms",        score: 8.6, label: "Best Budget Option" },
+  { rank: 4, name: "The Flower Factory",  score: 8.4, label: "Best for Corporate Events" },
+  { rank: 5, name: "Stems & Stories",     score: 8.2, label: "Best for Same-Day Delivery" }
 ]} />
 
-### 1. Roborock S8 Pro Ultra — Best Overall
+### 1. Bloom & Stem — Best Overall
 
-The S8 Pro Ultra topped every test category we ran. Its 6,000Pa suction cleared even embedded pet hair from thick carpet in a single pass, while the reactive obstacle avoidance correctly identified and navigated around cables, socks, and shoes in our 20-item course. The self-emptying and self-cleaning dock works reliably — we ran it for 30 days without manually emptying or cleaning.
+Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon, with coverage across all London postcodes — rarer than most florists advertise. They source flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. Responded to our test enquiry in 18 minutes — fastest of all businesses we contacted.
 
-Battery life averages 180 minutes on auto mode, enough to cover a 2,000 sq ft home with room to spare. The app is the most polished we tested: room labelling, no-go zones, and scheduled mopping all work first time. Our main complaint is the dock size — it needs 35cm of clear floor space and can't tuck under furniture.
+📍 **Address:** 47 Redchurch Street, London E2 7DJ
+📞 **Phone:** +44 20 7946 0847
+🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)
+⭐ **Rating:** 4.8 (347 Google reviews)
 
-**Best for:** Larger homes (1,500+ sq ft), pet owners, anyone who wants to set it and forget it.
+> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
 
-### 2. iRobot Roomba j7+ — Best for Pet Hair
+### 2. Petal & Co. — Best for Weddings
 
-No robot vacuum handles pet hair better than the j7+. The dual rubber brushes don't tangle, and PrecisionVision Navigation correctly identified and avoided our test dog's food bowl and toys 19/20 times in obstacle testing — a result no other model matched. The Clean Base dock empties reliably and uses sealed bags, which matters if anyone in your household has allergies.
+Petal & Co. focuses almost entirely on weddings and has built a strong reputation across London for understanding what couples actually want rather than what's trending on Instagram. Their initial consultation is complimentary and lasts up to 90 minutes. Portfolio spans traditional English garden styles to contemporary sculptural arrangements. They work with a small number of clients per weekend — typically three to five — which means your wedding receives dedicated attention. Pricing is higher than average but consistently transparent: itemised quotes are provided within 48 hours of consultation.
 
-Mapping accuracy is excellent (second only to the Roborock), and the app learns your schedule after 3–4 runs. At $599 it's significantly cheaper than the S8 Pro Ultra, and for pet hair specifically it closes the gap. The trade-off is no mopping capability.
+📍 **Address:** 12 Kensington Church Street, London W8 4EP
+📞 **Phone:** +44 20 7946 1293
+🌐 **Website:** [petalandco.london](https://petalandco.london)
+⭐ **Rating:** 4.7 (212 Google reviews)
 
-**Best for:** Pet owners, allergy households, anyone prioritising obstacle avoidance.
+> "Sarah at Petal & Co. understood exactly what I wanted from a single mood board. The bouquet, buttonholes, and table centrepieces were everything I'd imagined. I had three florists quote us — Petal & Co. was clearest on pricing and most confident in the brief." — *Emma R. ★★★★★*
 
-### 3. Eufy RoboVac 11S — Best Budget
+### 3. Urban Blooms — Best Budget Option
 
-At $149 the 11S doesn't have smart mapping, room labelling, or a self-emptying dock. What it has is reliable, consistent vacuuming on a budget. 1,300Pa suction handles hardwood and low-pile carpet competently. The slim 2.85" profile fits under most sofas. Battery gives 100 minutes of runtime — sufficient for a 1-bed apartment.
+Urban Blooms is the most accessible florist on this list. Operating out of two market stalls in Borough Market and Brixton Market, they sell finished arrangements rather than bespoke designs — which is why their pricing starts at £20. Quality is consistent for the price: seasonal flowers, simple packaging, reliable freshness. Same-day collection is available from both market locations seven days a week. No delivery option exists, and bespoke or event work is outside their scope, but for everyday gifting and home flowers, they're hard to beat at the price.
 
-You manage scheduling via the app or remote, not by room. The dustbin needs emptying every 2–3 runs. These are real compromises, but for the price there is no better-built option.
+📍 **Address:** Borough Market, 8 Southwark Street, London SE1 1TL
+📞 **Phone:** +44 20 7946 0345
+⭐ **Rating:** 4.3 (89 Google reviews)
 
-**Best for:** Small apartments, low-pile carpet or hardwood only, buyers on a strict budget.
+> "Bought flowers for my mum's birthday from the Borough Market stall. Beautiful mixed bouquet for £28 — the same quality I'd seen in florist shops for £55. They wrapped it properly too, not just a rubber band." — *Olivia M. ★★★★★*
 
-### 4. Shark IQ Robot XL — Best Under $300
+### 4. The Flower Factory — Best for Corporate Events
 
-The IQ Robot XL threads the needle between budget and premium. At $279 you get smart mapping, room labelling, no-go zones, and a self-emptying dock — features that typically start at $400+. Suction is competitive at 2,200Pa, and mapping accuracy is good enough for most homes.
+The Flower Factory specialises in volume corporate work: weekly office arrangements, product launches, hotel lobbies, and branded event floristry. Their studio in Bermondsey runs a subscription service starting at £120 per month for weekly office deliveries. Account management is assigned per client, meaning you deal with the same person consistently — a real advantage for events where brief continuity matters. Not the right choice for weddings or one-off retail orders, but for corporate accounts they are the most reliable on this list.
 
-Obstacle avoidance is the weakest of our top-4. It struggled with dark-coloured objects and occasionally pushed lightweight items rather than navigating around them. For homes without many small floor obstacles, this is a non-issue.
+📍 **Address:** 34 Bermondsey Street, London SE1 3UD
+📞 **Phone:** +44 20 7946 0512
+🌐 **Website:** [theflowerfactory.co.uk](https://theflowerfactory.co.uk)
+⭐ **Rating:** 4.2 (154 Google reviews)
 
-**Best for:** Medium-sized homes wanting smart features without the premium price.
+> "We've used The Flower Factory for our weekly office arrangement for two years. The quality is consistent, the account manager knows our preferences without being told, and they've never missed a delivery. Exactly what you want from a business supplier." — *David L. ★★★★★*
 
-## Full Comparison
+### 5. Stems & Stories — Best for Same-Day Delivery
+
+Stems & Stories operates as a same-day focused florist with an online-first model. Orders placed before 1pm are delivered the same day across Central and inner East London; orders before 3pm reach most South and West London postcodes. Their website is the most clearly designed of the group: filter by occasion, budget, and delivery time, and checkout in under two minutes. Arrangements are pre-designed rather than bespoke, which trades flexibility for speed and price consistency. Average delivery window quoted and hit: 2–4 hours.
+
+📍 **Address:** 8 Broadway Market, London E8 4QJ
+🌐 **Website:** [stemsandstories.com](https://stemsandstories.com)
+⭐ **Rating:** 4.1 (67 Google reviews)
+
+> "Forgot my partner's birthday. Ordered at 11am, flowers arrived at 1:30pm. Genuinely saved me. The arrangement looked exactly like the photo on the site and the delivery driver called ahead with an ETA." — *Marcus K. ★★★★★*
+
+## How They Compare
 
 <ComparisonTable
-  headers={["Model", "Score", "Price", "Suction (Pa)", "Self-Empty"]}
+  headers={["Business", "Rating", "Reviews", "Specialism", "Min. Order"]}
   rows={[
-    ["Roborock S8 Pro Ultra", "9.2", "$1,399", "6,000", "Yes"],
-    ["iRobot Roomba j7+", "8.3", "$599", "N/A*", "Yes"],
-    ["Eufy RoboVac 11S", "7.8", "$149", "1,300", "No"],
-    ["Shark IQ Robot XL", "7.5", "$279", "2,200", "Yes"]
+    ["Bloom & Stem",       "4.8 ★", "347", "Events & weddings",  "£45"],
+    ["Petal & Co.",        "4.7 ★", "212", "Weddings",           "£60"],
+    ["Urban Blooms",       "4.3 ★", "89",  "Everyday & gifts",   "£20"],
+    ["The Flower Factory", "4.2 ★", "154", "Corporate accounts", "£80"],
+    ["Stems & Stories",    "4.1 ★", "67",  "Same-day delivery",  "£35"]
   ]}
-  winnerColumn={1}
+  winnerColumn={0}
 />
 
-## What to Look For
+## What to Look for When Hiring a Florist
 
-**Suction power (Pa):** More isn't always better. 1,300Pa is sufficient for hardwood and low-pile carpet. For thick carpet or heavy pet hair, look for 3,000Pa+. Above 5,000Pa adds cost without meaningful gains for most homes.
+**Google reviews and recency.** A 4.5+ rating with 50+ reviews is a reliable baseline — but recency matters more than the average. A florist with 200 reviews and nothing posted in the last 6 months may have changed hands or declined in quality. Prioritise businesses with consistent recent reviews.
 
-**Smart mapping vs. random navigation:** Random-navigation models (like the 11S) cover the floor but can't learn room layouts, can't set no-go zones, and can't do targeted room cleaning. Smart mapping is worth paying for if you have 2+ rooms or want to clean specific areas on demand.
+**Specialism match.** Wedding floristry and corporate event floristry are not the same as a walk-in bouquet. Match the florist's portfolio to your specific need. If their website shows ten years of wedding work and you need a corporate installation, ask whether they've done it before — don't assume.
 
-**Self-emptying dock:** Reduces your active maintenance from daily (emptying the bin after each run) to monthly (replacing the dock bag). Worth it for busy households. Adds $100–200 to the price.
+**Pricing transparency.** Legitimate florists display price ranges or respond promptly with itemised quotes. "Call for a quote" with no further information is a yellow flag. Vague pricing conversations often result in significantly higher final invoices.
 
-**Combo mop-vacuum:** Useful if you have mostly hard floors. Current implementations work well for light maintenance mopping but won't replace a proper wet mop for sticky spills or deep cleaning.
+**Response time.** Send a test enquiry and measure it. For any time-sensitive occasion, how quickly a florist responds to an initial enquiry tells you exactly how they'll communicate under pressure. Under 4 hours is acceptable; under 1 hour is excellent; over 24 hours is a pass.
 
-**Obstacle avoidance tier:** Basic (bumps and reverses), mid (detects and navigates around objects > 5cm), premium (identifies object type, avoids cables and small items reliably). Pet owners should prioritise premium avoidance.
+**Delivery coverage and cut-off.** "London-wide delivery" often means Zone 1–2, with surcharges or refusals for outer postcodes. Confirm your specific postcode is covered, what the cut-off time is for same-day orders, and what happens if no one is home.
 
 ## Frequently Asked Questions
 
-### Are robot vacuums worth it for pet hair?
-Yes — particularly models with dual rubber brushes (not bristle brushes), which don't tangle. The iRobot Roomba j7+ is the strongest performer for pet hair in our testing.
+### How much do florists charge in London?
+Everyday bouquets range from £20–£60. Bespoke arrangements start around £60–£100. Wedding floristry (bouquet, buttonholes, centrepieces) typically runs £500–£2,000+ depending on scale. Corporate weekly arrangements start around £80–£120 per delivery.
 
-### How long does a robot vacuum last?
-Most quality robot vacuums last 4–6 years with regular maintenance (cleaning brushes, replacing filters, clearing sensors). Batteries typically need replacing after 2–3 years.
+### How far in advance should I book a florist for a wedding?
+6–12 months is standard for reputable London florists with limited weekend capacity. Booking under 3 months before the date significantly narrows your options and may eliminate the top-tier businesses.
 
-### Do robot vacuums work on thick carpet?
-Mid-range and premium models do. Look for 3,000Pa+ suction and a high-speed brush roll. The Roborock S8 Pro Ultra performed best on thick carpet in our tests.
+### What questions should I ask before hiring a florist?
+Ask: Do you have my date available? Can I see work from similar occasions? How are pricing and changes handled after booking? What happens if a flower type isn't available on the day? Do you handle setup and collection, or just delivery?
 
-### Can a robot vacuum replace a regular vacuum?
-For maintenance cleaning (2–3 times per week), yes. For deep cleaning (pulling furniture, stairs, upholstery), no. Most households use both.
+### Are florists in London regulated?
+No formal licensing exists for florists in the UK. The Florist Association (TFA) operates a voluntary membership scheme with a code of conduct — membership indicates commitment to professional standards but is not required to operate.
 
-### What's the difference between Roomba and Roborock?
-iRobot Roomba strengths: best obstacle avoidance, strong pet hair performance, US-based support. Roborock strengths: higher suction, better combo mopping, more competitive pricing at the premium tier.
+### What's the difference between a florist and a flower market stall?
+Florists provide design services — they take a brief, source specific flowers, and create bespoke arrangements. Market stalls sell pre-arranged or loose flowers at lower prices with no customisation. For everyday gifts, stalls are excellent value. For events and weddings, use a florist.
 
-### How loud are robot vacuums?
-Most run at 60–70dB on max — similar to a normal conversation or a clothes dryer. The Roborock S8 Pro Ultra is quieter at 58dB. Noise level drops significantly on auto/quiet mode.
+### Can I get same-day flowers delivered in London?
+Yes — Bloom & Stem and Stems & Stories both offer same-day delivery on orders placed before noon to 1pm. Coverage varies by postcode. Always confirm your specific address is included before ordering.
 
-### Should I run a robot vacuum every day?
-For pet owners or dusty environments: yes, daily runs on auto mode. For regular households: 3–4 times per week is sufficient. Self-emptying models make daily running practical.
+### What are red flags when hiring a florist?
+No physical address listed. No portfolio or only stock photography on their website. Prices significantly below market average with no explanation. Slow or non-responsive to initial enquiries. Reluctance to provide itemised quotes for event work.
 
-### What area can a robot vacuum cover on one charge?
-Most mid-range models cover 1,500–2,000 sq ft per charge. Premium models (Roborock S8) cover 3,000+ sq ft. For large homes, prioritise battery life (150+ minutes) and recharge-and-resume capability.
+### Do London florists deliver on weekends?
+Most do, but often with a surcharge (£5–£15) and earlier cut-off times. Confirm weekend availability, cut-off time, and any surcharge before booking.
 
 ## Verdict
 
-The Roborock S8 Pro Ultra is the best robot vacuum we've tested for most people — the mapping, suction, and self-cleaning dock are genuinely ahead of the competition. If pet hair is your primary concern and you want to save $800, the iRobot Roomba j7+ closes the gap significantly. On a budget, the Eufy RoboVac 11S is the most honest $149 robot vacuum we've found: it doesn't pretend to do more than it does.
+Bloom & Stem is the best florist in London for most occasions — their combination of full same-day coverage, direct flower sourcing, and under-20-minute response time to enquiries puts them ahead of every other business on this list. For weddings specifically, Petal & Co. is the stronger choice: the dedicated coordinator and disciplined client cap justify the higher spend. If budget is your constraint, Urban Blooms delivers honest quality from £20 without pretending to be something it isn't. Send enquiries to your top two candidates and compare response time — that single test will reveal more about each business than any review.
 ```
 
 ---
 
 ## Notes for Claude
 
-- **Do not hallucinate ratings or review counts.** If no `places_data` is provided, describe products/services accurately and use plausible specifications — but do not invent specific star ratings or Google review counts.
-- **Scores must be internally consistent.** If the overall `rating` is 9.2, the sub-scores in ScoreBreakdown should average approximately 9.2 (±0.5).
-- **PicksList and per-pick H3 sections must be in the same order.** If rank 1 in PicksList is "Product A", the first H3 must be "1. Product A — Label".
-- **ComparisonTable `winnerColumn` is 0-indexed.** Column 0 = first column header.
-- **Never add a H1 to the body.** The page template renders `title` as H1 automatically.
-- **Output only the MDX file.** No explanation, no wrapping code fences, no "here is the article".
+- **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly. Adjust description and customer quote only.
+- **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
+- **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
+- **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score.
+- **PicksList and H3 sections must be in identical order.** Rank 1 in PicksList = first H3.
+- **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).
+- **Never add H1 to body.** The page template renders `title` as H1 automatically.
+- **Output only the MDX file.** No explanation, no wrapping code fences, no commentary.
