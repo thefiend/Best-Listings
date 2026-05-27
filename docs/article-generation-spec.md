@@ -1,8 +1,8 @@
-# BestThingReview — Business Listing Article Generation Spec
+# BestThingReview, Business Listing Article Generation Spec
 
 Claude follows this document to generate a complete "best-of businesses" article as an MDX file ready to drop into `content/reviews/{category}/`.
 
-This spec is for **business/service listings** — florists, web designers, plumbers, restaurants, lawyers, contractors, etc. Data comes from `scripts/extract-maps.ts` (Google Maps).
+This spec is for **business/service listings**, florists, web designers, plumbers, restaurants, lawyers, contractors, etc. Data comes from `scripts/extract-maps.ts` (Google Maps).
 
 ---
 
@@ -12,7 +12,7 @@ This spec is for **business/service listings** — florists, web designers, plum
 |---|---|---|
 | `keyword` | Yes | e.g. `"best florists london 2024"` |
 | `category` | Yes | One of: `tech` · `home` · `software` · `lifestyle` · `travel` |
-| `location` | Yes | City or region covered — appears throughout article |
+| `location` | Yes | City or region covered, appears throughout article |
 | `count` | No | How many businesses to list. Default 10 |
 | `places_data` | Yes | JSON from `scripts/extract-maps.ts`. Do not invent business details. |
 
@@ -32,10 +32,10 @@ content/reviews/{category}/{slug}.mdx
 
 ```yaml
 ---
-title: "10 Best Florists in London (2024) — Tested & Reviewed"
+title: "10 Best Florists in London (2024), Tested & Reviewed"
 category: lifestyle
 slug: best-florists-london-2024
-excerpt: "We researched 30+ florists across London to find the best for weddings, corporate events, and everyday arrangements — ranked by reviews, quality, and service."
+excerpt: "We researched 30+ florists across London to find the best for weddings, corporate events, and everyday arrangements, ranked by reviews, quality, and service."
 rating: 9.6
 featured: false
 publishedAt: "YYYY-MM-DD"
@@ -44,13 +44,13 @@ updatedAt: "YYYY-MM-DD"
 ```
 
 **Field rules:**
-- `title` — 50–65 chars. Format: `"{N} Best {business type} in {location} ({year})"`. Power word optional.
-- `category` — must be one of the 5 valid values.
-- `slug` — lowercase, hyphens. Match the keyword URL exactly.
-- `excerpt` — 145–160 chars. Explain how many you researched, what criteria you used, what readers get.
-- `rating` — top business's Google rating × 2 (e.g. 4.8 stars → 9.6). If no rating in places_data, use 9.0 as default.
-- `featured` — `true` only for homepage feature. Use sparingly.
-- `publishedAt` / `updatedAt` — today's date in `YYYY-MM-DD`.
+- `title`, 50–65 chars. Format: `"{N} Best {business type} in {location} ({year})"`. Power word optional.
+- `category`, must be one of the 5 valid values.
+- `slug`, lowercase, hyphens. Match the keyword URL exactly.
+- `excerpt`, 145–160 chars. Explain how many you researched, what criteria you used, what readers get.
+- `rating`, top business's Google rating × 2 (e.g. 4.8 stars → 9.6). If no rating in places_data, use 9.0 as default.
+- `featured`, `true` only for homepage feature. Use sparingly.
+- `publishedAt` / `updatedAt`, today's date in `YYYY-MM-DD`.
 
 ---
 
@@ -60,15 +60,15 @@ Sections must appear in this exact order.
 
 ### 1. Opening paragraph
 
-3–4 sentences. State why finding a good `{business type}` in `{location}` matters, how many you evaluated, and what criteria determined the rankings. Contains the target keyword. No preamble — lead with value.
+3–4 sentences. State why finding a good `{business type}` in `{location}` matters, how many you evaluated, and what criteria determined the rankings. Contains the target keyword. No preamble, lead with value.
 
 ```mdx
-Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google reviews, website transparency, pricing, and same-day delivery capability. This list covers the best options for weddings, corporate events, and daily arrangements — ranked by overall quality and customer satisfaction.
+Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google reviews, website transparency, pricing, and same-day delivery capability. This list covers the best options for weddings, corporate events, and daily arrangements, ranked by overall quality and customer satisfaction.
 ```
 
 ### 2. ScoreBreakdown (top-ranked business only)
 
-Immediately after the opening paragraph. Dimensions must reflect what matters when hiring this type of business. Use 4–5 service-quality dimensions — not product specs.
+Immediately after the opening paragraph. Dimensions must reflect what matters when hiring this type of business. Use 4–5 service-quality dimensions, not product specs.
 
 ```mdx
 <ScoreBreakdown
@@ -102,12 +102,12 @@ Scores must average within ±0.3 of the `rating` in frontmatter.
   pros={[
     "Same-day delivery available across all London postcodes",
     "Dedicated wedding coordinator included free with bookings over £300",
-    "Sustainably sourced flowers — certified by the Florist Association",
-    "Fastest response time we tested — replied within 20 minutes"
+    "Sustainably sourced flowers, certified by the Florist Association",
+    "Fastest response time we tested, replied within 20 minutes"
   ]}
   cons={[
-    "Premium pricing — 20–30% above mid-market average",
-    "Walk-in only by appointment — no drop-in browsing",
+    "Premium pricing, 20–30% above mid-market average",
+    "Walk-in only by appointment, no drop-in browsing",
     "Minimum order £45 for delivery"
   ]}
 />
@@ -120,7 +120,7 @@ Scores must average within ±0.3 of the `rating` in frontmatter.
 ```mdx
 ## How We Ranked These {Business Type}
 
-[2–3 sentences. State your ranking criteria explicitly: Google review score, review count, website clarity, pricing transparency, service range, response time tested, any in-person or direct contact. Be specific — name the metrics.]
+[2–3 sentences. State your ranking criteria explicitly: Google review score, review count, website clarity, pricing transparency, service range, response time tested, any in-person or direct contact. Be specific, name the metrics.]
 ```
 
 Example:
@@ -136,7 +136,7 @@ We ranked each florist using: Google Maps rating (minimum 4.0 required), review 
 ## Our Top Picks
 ```
 
-Immediately followed by PicksList. Labels describe what each business is best for — never "Runner-Up" or "Second Best".
+Immediately followed by PicksList. Labels describe what each business is best for, never "Runner-Up" or "Second Best".
 
 ```mdx
 <PicksList picks={[
@@ -164,18 +164,18 @@ Before generating the article, check whether any business in `places_data` match
 - All other businesses use `rel="nofollow noopener noreferrer"` on their website links
 
 ```mdx
-### 1. Bloom & Stem — Best Overall
+### 1. Bloom & Stem, Best Overall
 
-Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon. The business sources flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. They responded to our test enquiry within 18 minutes — fastest of all businesses we contacted.
+Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon. The business sources flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. They responded to our test enquiry within 18 minutes, fastest of all businesses we contacted.
 
 📍 **Address:** 47 Redchurch Street, London E2 7DJ\
 📞 **Phone:** +44 20 7946 0847\
 🌐 **Website:** <a href="https://bloomsandstem.co.uk">bloomsandstem.co.uk</a>\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
-> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
+> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events.", *James T. ★★★★★*
 
-### 2. Petal & Co. — Best for Weddings
+### 2. Petal & Co., Best for Weddings
 
 [description]
 
@@ -189,7 +189,7 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 - 100–150 words
 - Use real data from `places_data` verbatim: name, address, phone, website, rating, reviewCount
 - Include: what they specialise in, years in operation (if known or estimable from reviews), service area, one specific differentiator (pricing, speed, specialty, award, certification)
-- No invented review counts or ratings — use exact figures from `places_data`
+- No invented review counts or ratings, use exact figures from `places_data`
 - End with one sentence making a clear case for why this business made the list
 
 **Contact block format:**
@@ -205,7 +205,7 @@ Use raw HTML `<a>` tags for website links (not Markdown link syntax) so `rel` at
 ⭐ **Rating:** {rating} ({reviewCount} Google reviews)
 ```
 
-**Exception — featured company (in `assets/featured-companies.txt`):**
+**Exception, featured company (in `assets/featured-companies.txt`):**
 ```
 🌐 **Website:** <a href="{full url}">{domain}</a>\
 ```
@@ -215,10 +215,10 @@ Omit phone line entirely if `phone` is null. Omit website line if `website` is n
 
 **Customer quote rules:**
 - One blockquote (`>`) per business
-- 1–2 sentences. Specific praise — what service, what occasion, what impressed them
-- Format: `"Quote text." — *First Name L. ★★★★★*`
+- 1–2 sentences. Specific praise, what service, what occasion, what impressed them
+- Format: `"Quote text.", *First Name L. ★★★★★*`
 - Rating always 4 or 5 stars
-- Never generic ("great service, highly recommend") — always specific to an occasion or detail
+- Never generic ("great service, highly recommend"), always specific to an occasion or detail
 
 ### 7. Comparison table (H2)
 
@@ -268,13 +268,13 @@ Example:
 ```mdx
 ## What to Look for When Hiring a Florist
 
-**Google reviews and recency.** A 4.5+ rating with 50+ reviews is the baseline. More important than the average is the recency — check that there are reviews from the past 3 months. A business with 200 five-star reviews but nothing recent may have changed hands or declined in quality.
+**Google reviews and recency.** A 4.5+ rating with 50+ reviews is the baseline. More important than the average is the recency, check that there are reviews from the past 3 months. A business with 200 five-star reviews but nothing recent may have changed hands or declined in quality.
 
 **Specialism match.** Florists who do wedding floristry are not necessarily the best choice for a same-day birthday bouquet, and vice versa. Match the florist's portfolio to your specific need before enquiring.
 
 **Pricing transparency.** Reputable florists display price ranges on their website or respond promptly with a quote when asked. Vague pricing ("call for details") often leads to significantly higher final bills.
 
-**Response time.** Test it. Send an enquiry via their website and note how long it takes. For time-sensitive occasions — weddings, corporate events — a florist who takes 48 hours to reply will take 48 hours to resolve problems on the day.
+**Response time.** Test it. Send an enquiry via their website and note how long it takes. For time-sensitive occasions, weddings, corporate events, a florist who takes 48 hours to reply will take 48 hours to resolve problems on the day.
 
 **Delivery coverage and cut-off times.** Confirm whether your postcode is covered, whether same-day delivery is available, and what the order cut-off time is. Many florists quote "London-wide delivery" but charge extra or decline orders in outer boroughs.
 ```
@@ -291,7 +291,7 @@ Example:
 [Direct answer. Bulleted list or 2–3 sentences.]
 ```
 
-8–12 questions. Use H3 per question. Answers lead with the answer — never "it depends" or "that's a great question".
+8–12 questions. Use H3 per question. Answers lead with the answer, never "it depends" or "that's a great question".
 
 **Question formats that work for business listings:**
 - "How much does a {business type} cost in {location}?"
@@ -315,7 +315,7 @@ Example:
 ```mdx
 ## Verdict
 
-Bloom & Stem is the best florist in London for most occasions — their combination of same-day delivery coverage, direct flower sourcing, and fast response to enquiries is unmatched by any other business on this list. For weddings specifically, Petal & Co. is the stronger choice: their dedicated coordinator and event-day management justify the higher minimum spend. If budget is the primary concern, Urban Blooms delivers reliable quality from £20. Start by sending enquiries to your top two picks and compare response times — that alone will tell you a lot about how the relationship will go.
+Bloom & Stem is the best florist in London for most occasions, their combination of same-day delivery coverage, direct flower sourcing, and fast response to enquiries is unmatched by any other business on this list. For weddings specifically, Petal & Co. is the stronger choice: their dedicated coordinator and event-day management justify the higher minimum spend. If budget is the primary concern, Urban Blooms delivers reliable quality from £20. Start by sending enquiries to your top two picks and compare response times, that alone will tell you a lot about how the relationship will go.
 ```
 
 ---
@@ -324,12 +324,12 @@ Bloom & Stem is the best florist in London for most occasions — their combinat
 
 | Element | Rule |
 |---|---|
-| H1 | Set via `title` frontmatter — no H1 in body |
+| H1 | Set via `title` frontmatter, no H1 in body |
 | Keyword | Appears in: excerpt, opening paragraph, How We Ranked H2, Verdict |
 | Location | Appears in every section at least once |
 | Word count | 1,500–2,500 words body (excluding frontmatter) |
 | External links | Link business names and websites in per-business sections |
-| Review counts | Always use exact figures from `places_data` — never round or invent |
+| Review counts | Always use exact figures from `places_data`, never round or invent |
 
 ---
 
@@ -380,7 +380,7 @@ Insert in MDX after the comparison table:
 ```
 You are an expert local business reviewer writing for BestThingReview.com.
 
-Follow docs/article-generation-spec.md EXACTLY — section order, MDX components,
+Follow docs/article-generation-spec.md EXACTLY, section order, MDX components,
 frontmatter schema, contact block format, and SEO requirements.
 
 Generate a complete MDX article for:
@@ -391,7 +391,7 @@ Location:  {LOCATION}
 Count:     {COUNT} businesses
 Date:      {TODAY}
 
-Real business data from Google Maps — use name, address, phone, website, rating,
+Real business data from Google Maps, use name, address, phone, website, rating,
 and reviewCount verbatim. Do not invent or change any of these values:
 
 {PASTE JSON FROM extract-maps.ts HERE}
@@ -409,17 +409,17 @@ Save to: content/reviews/{CATEGORY}/{SLUG}.mdx
 
 ```mdx
 ---
-title: "10 Best Florists in London (2024) — Ranked by Reviews"
+title: "10 Best Florists in London (2024), Ranked by Reviews"
 category: lifestyle
 slug: best-florists-london-2024
-excerpt: "We researched 34 florists across London to find the best for weddings, events, and everyday arrangements — ranked by Google reviews, response time, and service quality."
+excerpt: "We researched 34 florists across London to find the best for weddings, events, and everyday arrangements, ranked by Google reviews, response time, and service quality."
 rating: 9.6
 featured: false
 publishedAt: "2024-05-27"
 updatedAt: "2024-05-27"
 ---
 
-Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google review score, review count, website transparency, delivery coverage, and response time to a test enquiry. This list covers the best options for weddings, corporate events, and everyday arrangements — ranked by overall quality and consistency.
+Finding a reliable florist in London means navigating hundreds of shops with wildly varying quality, pricing, and reliability. We researched 34 florists across all major London boroughs, evaluating Google review score, review count, website transparency, delivery coverage, and response time to a test enquiry. This list covers the best options for weddings, corporate events, and everyday arrangements, ranked by overall quality and consistency.
 
 <ScoreBreakdown
   topPick="Bloom & Stem"
@@ -436,12 +436,12 @@ Finding a reliable florist in London means navigating hundreds of shops with wil
   pros={[
     "Same-day delivery available across all London postcodes before noon",
     "Dedicated wedding coordinator included on bookings over £300",
-    "Direct-sourced flowers from Dutch auction — noticeably fresher than competitors",
-    "Fastest response time we tested — 18 minutes average on enquiry form"
+    "Direct-sourced flowers from Dutch auction, noticeably fresher than competitors",
+    "Fastest response time we tested, 18 minutes average on enquiry form"
   ]}
   cons={[
-    "Premium pricing — 20–30% above mid-market",
-    "Walk-in by appointment only — no drop-in browsing",
+    "Premium pricing, 20–30% above mid-market",
+    "Walk-in by appointment only, no drop-in browsing",
     "Minimum delivery order £45"
   ]}
 />
@@ -460,50 +460,50 @@ We ranked each florist on: Google Maps rating (minimum 4.0 to qualify), review c
   { rank: 5, name: "Stems & Stories",     score: 8.2, label: "Best for Same-Day Delivery" }
 ]} />
 
-### 1. Bloom & Stem — Best Overall
+### 1. Bloom & Stem, Best Overall
 
-Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon, with coverage across all London postcodes — rarer than most florists advertise. They source flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. Responded to our test enquiry in 18 minutes — fastest of all businesses we contacted.
+Bloom & Stem has operated from their Shoreditch studio since 2011, specialising in bespoke event floristry and corporate installations. Their team of six designers handles everything from single bouquets to full wedding venue dressing across Greater London. Same-day delivery is available for orders placed before noon, with coverage across all London postcodes, rarer than most florists advertise. They source flowers directly from Dutch auction houses three times weekly, which explains both the freshness and the premium pricing. Responded to our test enquiry in 18 minutes, fastest of all businesses we contacted.
 
 📍 **Address:** 47 Redchurch Street, London E2 7DJ\
 📞 **Phone:** +44 20 7946 0847\
 🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
-> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events." — *James T. ★★★★★*
+> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events.", *James T. ★★★★★*
 
-### 2. Petal & Co. — Best for Weddings
+### 2. Petal & Co., Best for Weddings
 
-Petal & Co. focuses almost entirely on weddings and has built a strong reputation across London for understanding what couples actually want rather than what's trending on Instagram. Their initial consultation is complimentary and lasts up to 90 minutes. Portfolio spans traditional English garden styles to contemporary sculptural arrangements. They work with a small number of clients per weekend — typically three to five — which means your wedding receives dedicated attention. Pricing is higher than average but consistently transparent: itemised quotes are provided within 48 hours of consultation.
+Petal & Co. focuses almost entirely on weddings and has built a strong reputation across London for understanding what couples actually want rather than what's trending on Instagram. Their initial consultation is complimentary and lasts up to 90 minutes. Portfolio spans traditional English garden styles to contemporary sculptural arrangements. They work with a small number of clients per weekend, typically three to five, which means your wedding receives dedicated attention. Pricing is higher than average but consistently transparent: itemised quotes are provided within 48 hours of consultation.
 
 📍 **Address:** 12 Kensington Church Street, London W8 4EP\
 📞 **Phone:** +44 20 7946 1293\
 🌐 **Website:** [petalandco.london](https://petalandco.london)\
 ⭐ **Rating:** 4.7 (212 Google reviews)
 
-> "Sarah at Petal & Co. understood exactly what I wanted from a single mood board. The bouquet, buttonholes, and table centrepieces were everything I'd imagined. I had three florists quote us — Petal & Co. was clearest on pricing and most confident in the brief." — *Emma R. ★★★★★*
+> "Sarah at Petal & Co. understood exactly what I wanted from a single mood board. The bouquet, buttonholes, and table centrepieces were everything I'd imagined. I had three florists quote us, Petal & Co. was clearest on pricing and most confident in the brief.", *Emma R. ★★★★★*
 
-### 3. Urban Blooms — Best Budget Option
+### 3. Urban Blooms, Best Budget Option
 
-Urban Blooms is the most accessible florist on this list. Operating out of two market stalls in Borough Market and Brixton Market, they sell finished arrangements rather than bespoke designs — which is why their pricing starts at £20. Quality is consistent for the price: seasonal flowers, simple packaging, reliable freshness. Same-day collection is available from both market locations seven days a week. No delivery option exists, and bespoke or event work is outside their scope, but for everyday gifting and home flowers, they're hard to beat at the price.
+Urban Blooms is the most accessible florist on this list. Operating out of two market stalls in Borough Market and Brixton Market, they sell finished arrangements rather than bespoke designs, which is why their pricing starts at £20. Quality is consistent for the price: seasonal flowers, simple packaging, reliable freshness. Same-day collection is available from both market locations seven days a week. No delivery option exists, and bespoke or event work is outside their scope, but for everyday gifting and home flowers, they're hard to beat at the price.
 
 📍 **Address:** Borough Market, 8 Southwark Street, London SE1 1TL\
 📞 **Phone:** +44 20 7946 0345\
 ⭐ **Rating:** 4.3 (89 Google reviews)
 
-> "Bought flowers for my mum's birthday from the Borough Market stall. Beautiful mixed bouquet for £28 — the same quality I'd seen in florist shops for £55. They wrapped it properly too, not just a rubber band." — *Olivia M. ★★★★★*
+> "Bought flowers for my mum's birthday from the Borough Market stall. Beautiful mixed bouquet for £28, the same quality I'd seen in florist shops for £55. They wrapped it properly too, not just a rubber band.", *Olivia M. ★★★★★*
 
-### 4. The Flower Factory — Best for Corporate Events
+### 4. The Flower Factory, Best for Corporate Events
 
-The Flower Factory specialises in volume corporate work: weekly office arrangements, product launches, hotel lobbies, and branded event floristry. Their studio in Bermondsey runs a subscription service starting at £120 per month for weekly office deliveries. Account management is assigned per client, meaning you deal with the same person consistently — a real advantage for events where brief continuity matters. Not the right choice for weddings or one-off retail orders, but for corporate accounts they are the most reliable on this list.
+The Flower Factory specialises in volume corporate work: weekly office arrangements, product launches, hotel lobbies, and branded event floristry. Their studio in Bermondsey runs a subscription service starting at £120 per month for weekly office deliveries. Account management is assigned per client, meaning you deal with the same person consistently, a real advantage for events where brief continuity matters. Not the right choice for weddings or one-off retail orders, but for corporate accounts they are the most reliable on this list.
 
 📍 **Address:** 34 Bermondsey Street, London SE1 3UD\
 📞 **Phone:** +44 20 7946 0512\
 🌐 **Website:** [theflowerfactory.co.uk](https://theflowerfactory.co.uk)\
 ⭐ **Rating:** 4.2 (154 Google reviews)
 
-> "We've used The Flower Factory for our weekly office arrangement for two years. The quality is consistent, the account manager knows our preferences without being told, and they've never missed a delivery. Exactly what you want from a business supplier." — *David L. ★★★★★*
+> "We've used The Flower Factory for our weekly office arrangement for two years. The quality is consistent, the account manager knows our preferences without being told, and they've never missed a delivery. Exactly what you want from a business supplier.", *David L. ★★★★★*
 
-### 5. Stems & Stories — Best for Same-Day Delivery
+### 5. Stems & Stories, Best for Same-Day Delivery
 
 Stems & Stories operates as a same-day focused florist with an online-first model. Orders placed before 1pm are delivered the same day across Central and inner East London; orders before 3pm reach most South and West London postcodes. Their website is the most clearly designed of the group: filter by occasion, budget, and delivery time, and checkout in under two minutes. Arrangements are pre-designed rather than bespoke, which trades flexibility for speed and price consistency. Average delivery window quoted and hit: 2–4 hours.
 
@@ -511,7 +511,7 @@ Stems & Stories operates as a same-day focused florist with an online-first mode
 🌐 **Website:** [stemsandstories.com](https://stemsandstories.com)\
 ⭐ **Rating:** 4.1 (67 Google reviews)
 
-> "Forgot my partner's birthday. Ordered at 11am, flowers arrived at 1:30pm. Genuinely saved me. The arrangement looked exactly like the photo on the site and the delivery driver called ahead with an ETA." — *Marcus K. ★★★★★*
+> "Forgot my partner's birthday. Ordered at 11am, flowers arrived at 1:30pm. Genuinely saved me. The arrangement looked exactly like the photo on the site and the delivery driver called ahead with an ETA.", *Marcus K. ★★★★★*
 
 ## How They Compare
 
@@ -529,9 +529,9 @@ Stems & Stories operates as a same-day focused florist with an online-first mode
 
 ## What to Look for When Hiring a Florist
 
-**Google reviews and recency.** A 4.5+ rating with 50+ reviews is a reliable baseline — but recency matters more than the average. A florist with 200 reviews and nothing posted in the last 6 months may have changed hands or declined in quality. Prioritise businesses with consistent recent reviews.
+**Google reviews and recency.** A 4.5+ rating with 50+ reviews is a reliable baseline, but recency matters more than the average. A florist with 200 reviews and nothing posted in the last 6 months may have changed hands or declined in quality. Prioritise businesses with consistent recent reviews.
 
-**Specialism match.** Wedding floristry and corporate event floristry are not the same as a walk-in bouquet. Match the florist's portfolio to your specific need. If their website shows ten years of wedding work and you need a corporate installation, ask whether they've done it before — don't assume.
+**Specialism match.** Wedding floristry and corporate event floristry are not the same as a walk-in bouquet. Match the florist's portfolio to your specific need. If their website shows ten years of wedding work and you need a corporate installation, ask whether they've done it before, don't assume.
 
 **Pricing transparency.** Legitimate florists display price ranges or respond promptly with itemised quotes. "Call for a quote" with no further information is a yellow flag. Vague pricing conversations often result in significantly higher final invoices.
 
@@ -551,13 +551,13 @@ Everyday bouquets range from £20–£60. Bespoke arrangements start around £60
 Ask: Do you have my date available? Can I see work from similar occasions? How are pricing and changes handled after booking? What happens if a flower type isn't available on the day? Do you handle setup and collection, or just delivery?
 
 ### Are florists in London regulated?
-No formal licensing exists for florists in the UK. The Florist Association (TFA) operates a voluntary membership scheme with a code of conduct — membership indicates commitment to professional standards but is not required to operate.
+No formal licensing exists for florists in the UK. The Florist Association (TFA) operates a voluntary membership scheme with a code of conduct, membership indicates commitment to professional standards but is not required to operate.
 
 ### What's the difference between a florist and a flower market stall?
-Florists provide design services — they take a brief, source specific flowers, and create bespoke arrangements. Market stalls sell pre-arranged or loose flowers at lower prices with no customisation. For everyday gifts, stalls are excellent value. For events and weddings, use a florist.
+Florists provide design services, they take a brief, source specific flowers, and create bespoke arrangements. Market stalls sell pre-arranged or loose flowers at lower prices with no customisation. For everyday gifts, stalls are excellent value. For events and weddings, use a florist.
 
 ### Can I get same-day flowers delivered in London?
-Yes — Bloom & Stem and Stems & Stories both offer same-day delivery on orders placed before noon to 1pm. Coverage varies by postcode. Always confirm your specific address is included before ordering.
+Yes, Bloom & Stem and Stems & Stories both offer same-day delivery on orders placed before noon to 1pm. Coverage varies by postcode. Always confirm your specific address is included before ordering.
 
 ### What are red flags when hiring a florist?
 No physical address listed. No portfolio or only stock photography on their website. Prices significantly below market average with no explanation. Slow or non-responsive to initial enquiries. Reluctance to provide itemised quotes for event work.
@@ -567,7 +567,7 @@ Most do, but often with a surcharge (£5–£15) and earlier cut-off times. Conf
 
 ## Verdict
 
-Bloom & Stem is the best florist in London for most occasions — their combination of full same-day coverage, direct flower sourcing, and under-20-minute response time to enquiries puts them ahead of every other business on this list. For weddings specifically, Petal & Co. is the stronger choice: the dedicated coordinator and disciplined client cap justify the higher spend. If budget is your constraint, Urban Blooms delivers honest quality from £20 without pretending to be something it isn't. Send enquiries to your top two candidates and compare response time — that single test will reveal more about each business than any review.
+Bloom & Stem is the best florist in London for most occasions, their combination of full same-day coverage, direct flower sourcing, and under-20-minute response time to enquiries puts them ahead of every other business on this list. For weddings specifically, Petal & Co. is the stronger choice: the dedicated coordinator and disciplined client cap justify the higher spend. If budget is your constraint, Urban Blooms delivers honest quality from £20 without pretending to be something it isn't. Send enquiries to your top two candidates and compare response time, that single test will reveal more about each business than any review.
 ```
 
 ---
