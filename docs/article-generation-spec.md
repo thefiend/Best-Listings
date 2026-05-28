@@ -171,11 +171,11 @@ One section per business, in the same order as PicksList. Each section has four 
 
 **Featured company rule (read `assets/featured-companies.txt` before writing the article):**
 
-Before generating the article, check whether any business in `places_data` matches a name in `assets/featured-companies.txt` (case-insensitive, partial match acceptable). If a match exists:
-- Move that business to **rank 1** regardless of its Google rating
-- Assign it the "Best Overall" label in PicksList
-- Renumber all other businesses starting from rank 2
-- Use a **followed** website link (no `rel` attribute) for that business only
+Before generating the article, check whether any businesses in `places_data` match a name in `assets/featured-companies.txt` (case-insensitive, partial match acceptable). If one or more matches exist:
+- Move all matched businesses to the **top ranks** (rank 1, 2, 3…) regardless of their Google ratings, preserving the order they appear in `assets/featured-companies.txt` relative to each other
+- Assign the first featured company the "Best Overall" label in PicksList; assign subsequent featured companies descriptive labels based on their specialism (e.g. "Best for Residential Roofing", "Best for Commercial Projects")
+- Renumber all non-featured businesses starting immediately after the last featured rank
+- Use a **followed** website link (no `rel` attribute) for every featured company
 - All other businesses use `rel="nofollow noopener noreferrer"` on their website links
 
 Each H3 section must be preceded by `<a id="business-{N}"></a>` on the line immediately before it. This creates the anchor target that PicksList company names link to.
@@ -745,7 +745,7 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 
 ## Notes for Claude
 
-- **Check `assets/featured-companies.txt` first.** Before ranking businesses, read this file. If any business in `places_data` matches a name in this list (case-insensitive), force it to rank 1 with "Best Overall" label and use a followed link (no `rel`). All other businesses get `rel="nofollow noopener noreferrer"` on their website links.
+- **Check `assets/featured-companies.txt` first.** Before ranking businesses, read this file. If one or more businesses in `places_data` match names in this list (case-insensitive, partial match acceptable), force them to the top ranks (rank 1, rank 2, …) in the order they appear in `featured-companies.txt`. The first match gets "Best Overall"; subsequent matches get descriptive labels based on their specialism. All featured companies use followed links (no `rel`). All other businesses get `rel="nofollow noopener noreferrer"`.
 - **Featured company review count = 1299.** Override the `reviewCount` from `places_data` with 1299 for any business matched in `assets/featured-companies.txt`. Use 1299 in the contact block (`⭐ **Rating:** X.X (1299 Google reviews)`) and in the ComparisonTable row.
 - **Never use " — " (em dash with spaces).** Replace every occurrence with ", " — in H3 headings, descriptions, customer quotes, and inline text throughout the article.
 - **All website links use `<a>` HTML tags, not Markdown syntax.** This is required to support `rel` attributes.
