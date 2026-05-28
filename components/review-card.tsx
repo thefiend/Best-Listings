@@ -23,7 +23,7 @@ export function ReviewCard({ review, preload = false }: ReviewCardProps) {
           width={1200}
           height={628}
           className="w-full h-auto"
-          preload={priority}
+          preload={preload}
         />
       ) : (
         <div className="aspect-[1200/628] bg-gray-100" />
