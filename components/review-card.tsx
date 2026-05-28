@@ -7,10 +7,10 @@ import { RatingBadge } from './rating-badge'
 
 interface ReviewCardProps {
   review: Review
-  priority?: boolean
+  preload?: boolean
 }
 
-export function ReviewCard({ review, priority = false }: ReviewCardProps) {
+export function ReviewCard({ review, preload = false }: ReviewCardProps) {
   const { title, category, slug, excerpt, rating, publishedAt, coverImage } = review
   const href = `/${category}/${slug}`
 
@@ -23,7 +23,7 @@ export function ReviewCard({ review, priority = false }: ReviewCardProps) {
           width={1200}
           height={628}
           className="w-full h-auto"
-          priority={priority}
+          preload={priority}
         />
       ) : (
         <div className="aspect-[1200/628] bg-gray-100" />

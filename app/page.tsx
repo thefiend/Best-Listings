@@ -62,7 +62,7 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {featured.map((review, i) => (
-              <ReviewCard key={review.slug} review={review} priority={i === 0} />
+              <ReviewCard key={review.slug} review={review} preload={i === 0} />
             ))}
           </div>
         )}
