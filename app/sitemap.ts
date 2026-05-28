@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
 
-const BASE_URL = 'https://www.bestthingreview.com'
+const BASE_URL = 'https://bestthingreview.com'
 
 const CATEGORIES = ['tech', 'home', 'business', 'lifestyle', 'travel'] as const
 

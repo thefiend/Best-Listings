@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
 
-const BASE_URL = 'https://www.bestthingreview.com'
+const BASE_URL = 'https://bestthingreview.com'
 
 const CATEGORY_LABELS: Record<string, string> = {
   tech:      'Tech & Gadgets',
