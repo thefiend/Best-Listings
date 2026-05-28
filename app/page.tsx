@@ -61,8 +61,8 @@ export default function HomePage() {
           <p className="text-gray-500 text-sm">No featured reviews yet.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {featured.map(review => (
-              <ReviewCard key={review.slug} review={review} />
+            {featured.map((review, i) => (
+              <ReviewCard key={review.slug} review={review} priority={i === 0} />
             ))}
           </div>
         )}
