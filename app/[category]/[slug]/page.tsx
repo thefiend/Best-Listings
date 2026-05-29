@@ -11,6 +11,8 @@ import { Category } from '@/lib/types'
 import { RatingBadge } from '@/components/rating-badge'
 import { CategoryBadge } from '@/components/category-badge'
 import { mdxComponents } from '@/lib/mdx-components'
+import { extractHeadings } from '@/lib/toc'
+import { TableOfContents } from '@/components/table-of-contents'
 
 async function MDXContent({ source }: { source: string }) {
   const code = await compile(source, { outputFormat: 'function-body' })
@@ -64,8 +66,28 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     year: 'numeric',
   })
 
+  const headings = extractHeadings(content)
+
+  const tocSchema = headings.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Table of Contents',
+    itemListElement: headings.map((h, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: h.text,
+      url: `#${h.id}`,
+    })),
+  } : null
+
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      {tocSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(tocSchema) }}
+        />
+      )}
       {/* Breadcrumb */}
       <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5">
         <Link href="/" className="hover:text-brand-blue">Home</Link>
@@ -106,10 +128,16 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         {excerpt}
       </p>
 
-      {/* MDX body */}
-      <article className="prose prose-gray prose-headings:text-brand-navy prose-a:text-brand-blue max-w-none">
-        <MDXContent source={content} />
-      </article>
+      {/* MDX body + TOC sidebar */}
+      <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
+        <article className="prose prose-gray prose-headings:text-brand-navy prose-a:text-brand-blue max-w-none min-w-0">
+          <MDXContent source={content} />
+        </article>
+
+        <aside className="hidden lg:block">
+          <TableOfContents headings={headings} />
+        </aside>
+      </div>
     </div>
   )
 }
