@@ -2,6 +2,12 @@
 
 export type Category = 'tech' | 'home' | 'business' | 'lifestyle' | 'travel'
 
+export interface ReviewAuthor {
+  name: string
+  title: string
+  bio: string
+}
+
 export interface ReviewFrontmatter {
   title: string
   category: Category
@@ -12,6 +18,7 @@ export interface ReviewFrontmatter {
   publishedAt: string   // ISO date string e.g. "2024-05-01"
   updatedAt: string
   coverImage?: string
+  author?: ReviewAuthor
 }
 
 export interface Review extends ReviewFrontmatter {

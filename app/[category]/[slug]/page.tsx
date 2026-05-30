@@ -52,7 +52,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
   const review = getReview(category, slug)
   if (!review) notFound()
 
-  const { title, excerpt, rating, publishedAt, updatedAt, content, coverImage } = review
+  const { title, excerpt, rating, publishedAt, updatedAt, content, coverImage, author } = review
 
   const publishDate = new Date(publishedAt).toLocaleDateString('en-US', {
     month: 'long',
@@ -68,6 +68,29 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
 
   const headings = extractHeadings(content)
 
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: excerpt,
+    datePublished: publishedAt,
+    dateModified: updatedAt,
+    ...(coverImage ? { image: coverImage } : {}),
+    publisher: {
+      '@type': 'Organization',
+      name: 'BestThingReview',
+      url: 'https://www.bestthingreview.com',
+    },
+    ...(author ? {
+      author: {
+        '@type': 'Person',
+        name: author.name,
+        jobTitle: author.title,
+        description: author.bio,
+      },
+    } : {}),
+  }
+
   const tocSchema = headings.length > 0 ? {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -82,6 +105,10 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {tocSchema && (
         <script
           type="application/ld+json"
@@ -107,6 +134,12 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         <p className="text-gray-500 text-sm mt-2">
           Published {publishDate} · Updated {updateDate}
         </p>
+        {author && (
+          <p className="text-gray-500 text-sm mt-1">
+            By <span className="font-medium text-gray-700">{author.name}</span>
+            {' · '}{author.title}
+          </p>
+        )}
       </div>
 
       {/* Cover image */}
