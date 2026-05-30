@@ -14,6 +14,8 @@ import { mdxComponents } from '@/lib/mdx-components'
 import { extractHeadings } from '@/lib/toc'
 import { TableOfContents } from '@/components/table-of-contents'
 
+const BASE_URL = 'https://www.bestthingreview.com'
+
 async function MDXContent({ source }: { source: string }) {
   const code = await compile(source, { outputFormat: 'function-body' })
   const { default: Content } = await run(String(code), {
@@ -38,11 +40,29 @@ export async function generateMetadata({
   const { category, slug } = await params
   const review = getReview(category as Category, slug)
   if (!review) return {}
+
+  const canonicalUrl = `${BASE_URL}/${review.category}/${review.slug}`
+
   return {
     title: review.title,
     description: review.excerpt,
-    openGraph: review.coverImage ? { images: [review.coverImage] } : undefined,
-    twitter: review.coverImage ? { card: 'summary_large_image', images: [review.coverImage] } : undefined,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: 'article',
+      url: canonicalUrl,
+      title: review.title,
+      description: review.excerpt,
+      publishedTime: review.publishedAt,
+      modifiedTime: review.updatedAt,
+      section: review.category,
+      authors: review.author ? [review.author.name] : ['BestThingReview'],
+      ...(review.coverImage ? { images: [review.coverImage] } : {}),
+    },
+    twitter: review.coverImage
+      ? { card: 'summary_large_image', images: [review.coverImage] }
+      : undefined,
   }
 }
 
@@ -66,7 +86,14 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     year: 'numeric',
   })
 
+  const wordCount = content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length
+  const readingTime = Math.ceil(wordCount / 200)
+
   const headings = extractHeadings(content)
+
+  const related = getAllReviews()
+    .filter(r => r.category === category && r.slug !== slug)
+    .slice(0, 3)
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -75,20 +102,30 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     description: excerpt,
     datePublished: publishedAt,
     dateModified: updatedAt,
-    ...(coverImage ? { image: coverImage } : {}),
+    url: `${BASE_URL}/${category}/${slug}`,
+    ...(coverImage ? { image: `${BASE_URL}${coverImage}` } : {}),
     publisher: {
       '@type': 'Organization',
+      '@id': `${BASE_URL}/#organization`,
       name: 'BestThingReview',
-      url: 'https://www.bestthingreview.com',
+      url: BASE_URL,
     },
     ...(author ? {
       author: {
         '@type': 'Person',
+        '@id': `${BASE_URL}/#author-${author.name.toLowerCase().replace(/\s+/g, '-')}`,
         name: author.name,
         jobTitle: author.title,
         description: author.bio,
+        worksFor: { '@id': `${BASE_URL}/#organization` },
       },
-    } : {}),
+    } : {
+      author: { '@id': `${BASE_URL}/#organization` },
+    }),
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${BASE_URL}/${category}/${slug}`,
+    },
   }
 
   const tocSchema = headings.length > 0 ? {
@@ -115,6 +152,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
           dangerouslySetInnerHTML={{ __html: JSON.stringify(tocSchema) }}
         />
       )}
+
       {/* Breadcrumb */}
       <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5">
         <Link href="/" className="hover:text-brand-blue">Home</Link>
@@ -132,7 +170,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-brand-navy leading-tight">{title}</h1>
         <p className="text-gray-500 text-sm mt-2">
-          Published {publishDate} · Updated {updateDate}
+          Published {publishDate} · Updated {updateDate} · {readingTime} min read
         </p>
         {author && (
           <p className="text-gray-500 text-sm mt-1">
@@ -171,6 +209,52 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
           <TableOfContents headings={headings} />
         </aside>
       </div>
+
+      {/* Author bio */}
+      {author && (
+        <div className="mt-12 pt-8 border-t border-gray-100">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-brand-navy flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              {author.name.split(' ').map(n => n[0]).join('')}
+            </div>
+            <div>
+              <p className="font-semibold text-brand-navy text-sm">{author.name}</p>
+              <p className="text-xs text-brand-blue mb-2">{author.title}</p>
+              <p className="text-gray-500 text-sm leading-relaxed">{author.bio}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Related articles */}
+      {related.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-gray-100">
+          <h2 className="text-lg font-bold text-brand-navy mb-4">More in {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {related.map(r => (
+              <Link
+                key={r.slug}
+                href={`/${r.category}/${r.slug}`}
+                className="group block rounded-lg border border-gray-100 p-4 hover:border-brand-blue transition-colors"
+              >
+                {r.coverImage && (
+                  <Image
+                    src={r.coverImage}
+                    alt={r.title}
+                    width={400}
+                    height={210}
+                    className="w-full h-auto rounded mb-3"
+                  />
+                )}
+                <p className="text-sm font-semibold text-brand-navy group-hover:text-brand-blue leading-snug line-clamp-2">
+                  {r.title}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">Rating: {r.rating}/10</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

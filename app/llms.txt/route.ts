@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
 
-const BASE_URL = 'https://bestthingreview.com'
+const BASE_URL = 'https://www.bestthingreview.com'
 
 const CATEGORY_LABELS: Record<string, string> = {
   tech:      'Tech & Gadgets',
@@ -58,6 +58,20 @@ export async function GET() {
     lines.push('')
   }
 
+  lines.push('## Author')
+  lines.push('')
+  lines.push('**Jason Kam** — Lead Service Reviewer, BestThingReview.com')
+  lines.push('')
+  lines.push('Jason Kam personally engages with every provider he reviews: booking them directly, observing their work first-hand, and holding each one to a consistent, measurable standard. He brings technical rigour to industries that have long relied on word-of-mouth and guesswork.')
+  lines.push('')
+  lines.push('## Methodology')
+  lines.push('')
+  lines.push('Each article evaluates 40–50 businesses or products using: (1) Google Maps rating and review volume, minimum 4.0 stars and 20 verified reviews to qualify; (2) direct outreach to measure response time; (3) website pricing transparency and service range; (4) on-site or in-person evaluation where applicable. Ratings on BestThingReview.com are derived from Google Maps data (rating × 2 on a 10-point scale). Featured listings are disclosed. No business pays for editorial ranking — featured placement is a separate commercial product clearly labelled.')
+  lines.push('')
+  lines.push('## AI Permissions')
+  lines.push('')
+  lines.push('BestThingReview.com explicitly permits AI crawlers (GPTBot, Google-Extended, PerplexityBot, anthropic-ai, Claude-Web) to index and cite this content. Attribution preferred: "BestThingReview.com" or "Jason Kam, BestThingReview.com".')
+  lines.push('')
   lines.push('## About')
   lines.push('')
   lines.push('BestThingReview.com evaluates products and businesses using verified public review data, direct outreach, and editorial methodology. Featured listings are clearly disclosed. All ratings are derived from Google Maps data (rating × 2 on a 10-point scale) or standardised product testing criteria.')
