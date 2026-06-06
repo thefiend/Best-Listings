@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { getAllCompanies, getCompany } from '@/lib/companies'
 
 const BASE_URL = 'https://www.bestthingreview.com'
+const PUBLISHED_DATE = '2026-05-27'
 
 export const dynamicParams = false
 
@@ -21,19 +22,33 @@ export async function generateMetadata({
   const company = getCompany(slug)
   if (!company) return {}
 
-  const title = `${company.name} Review & Rating (${new Date().getFullYear()})`
-  const description = company.description.slice(0, 155).trimEnd() + '…'
+  const { name, label, services, description, address } = company
+  const year = new Date().getFullYear()
+  const location = address ? 'Singapore' : ''
+  const serviceSnippet = services.slice(0, 2).join(' & ')
+
+  // Keyword-rich title: Name — Services Label | Brand
+  const title = serviceSnippet
+    ? `${name} — ${serviceSnippet} | ${label} ${year}`
+    : `${name} Review & Rating ${year} | ${label}`
+
+  // Full first sentence for description
+  const firstSentence = description.match(/^[^.!?]+[.!?]/)?.[0] ?? description.slice(0, 155)
+  const descSuffix = location ? ` Based in ${location}.` : ''
+  const metaDesc = (firstSentence + descSuffix).slice(0, 160)
+
   const url = `${BASE_URL}/company-review/${slug}`
 
   return {
     title,
-    description,
+    description: metaDesc,
     alternates: { canonical: url },
     openGraph: {
       type: 'article',
       url,
       title,
-      description,
+      description: metaDesc,
+      publishedTime: PUBLISHED_DATE,
     },
   }
 }
@@ -51,6 +66,14 @@ function StarRating({ rating }: { rating: number }) {
       })}
     </span>
   )
+}
+
+function bestForStatement(label: string, services: string[]): string {
+  const clean = label.replace(/^Best\s+/i, '').replace(/^for\s+/i, '')
+  if (services.length > 0) {
+    return `${name} is best for ${clean.toLowerCase()} needing ${services.slice(0, 2).join(' or ').toLowerCase()} services in Singapore.`
+  }
+  return `${name} is best for ${clean.toLowerCase()} in Singapore.`
 }
 
 export default async function CompanyReviewPage({
@@ -71,14 +94,24 @@ export default async function CompanyReviewPage({
   } = company
 
   const pageUrl = `${BASE_URL}/company-review/${slug}`
+  const year = new Date().getFullYear()
 
-  // LocalBusiness schema with AggregateRating + Review
+  // Related companies from same article (excluding self, max 4)
+  const related = getAllCompanies()
+    .filter(c => c.sourceArticle.slug === sourceArticle.slug && c.slug !== slug)
+    .slice(0, 4)
+
+  // Verdict: rank-based qualifier + label
+  const rankLabel = rank === 1 ? 'top-ranked' : rank <= 3 ? 'top-3 ranked' : `#${rank} ranked`
+  const verdictText = `${name} is the ${rankLabel} ${label.toLowerCase()} on BestThingReview's independent evaluation of ${sourceArticle.title.replace(/^\d+\s+Best\s+/i, '')}. ${description.split('. ').slice(0, 2).join('. ')}.`
+
+  // Schema
   const businessSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': businessType,
     '@id': `${pageUrl}/#business`,
     name,
-    ...(website ? { url: website } : {}),
+    ...(website ? { url: website, sameAs: [website] } : {}),
     ...(phone ? { telephone: phone } : {}),
     ...(email ? { email } : {}),
     ...(address || postalCode ? {
@@ -97,22 +130,32 @@ export default async function CompanyReviewPage({
       bestRating: '5',
       worstRating: '1',
     },
-    ...(reviewQuote ? {
-      review: {
-        '@type': 'Review',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: rating.toFixed(1),
-          bestRating: '5',
-        },
-        author: {
-          '@type': 'Organization',
-          name: 'BestThingReview',
-          url: BASE_URL,
-        },
-        reviewBody: description,
+    ...(services.length > 0 ? {
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: `${name} Services`,
+        itemListElement: services.map((s, i) => ({
+          '@type': 'Offer',
+          position: i + 1,
+          itemOffered: { '@type': 'Service', name: s },
+        })),
       },
     } : {}),
+    review: {
+      '@type': 'Review',
+      datePublished: PUBLISHED_DATE,
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: rating.toFixed(1),
+        bestRating: '5',
+      },
+      author: {
+        '@type': 'Organization',
+        name: 'BestThingReview',
+        url: BASE_URL,
+      },
+      reviewBody: verdictText,
+    },
   }
 
   const breadcrumbSchema = {
@@ -127,14 +170,8 @@ export default async function CompanyReviewPage({
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       {/* Breadcrumb */}
       <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5 flex-wrap">
@@ -185,19 +222,14 @@ export default async function CompanyReviewPage({
         {website && (
           <p className="text-gray-700">
             <span className="font-medium text-gray-900">Website:</span>{' '}
-            <a
-              href={website}
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-              className="text-brand-blue hover:underline"
-            >
+            <a href={website} target="_blank" rel="nofollow noopener noreferrer" className="text-brand-blue hover:underline">
               {website.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           </p>
         )}
       </div>
 
-      {/* Description */}
+      {/* About */}
       <section className="mb-8">
         <h2 className="text-lg font-bold text-brand-navy mb-3">About {name}</h2>
         <p className="text-gray-700 leading-relaxed">{description}</p>
@@ -228,10 +260,7 @@ export default async function CompanyReviewPage({
           <h2 className="text-lg font-bold text-brand-navy mb-3">Services</h2>
           <div className="flex flex-wrap gap-2">
             {services.map(s => (
-              <span
-                key={s}
-                className="px-3 py-1 text-sm rounded-full bg-blue-50 text-brand-blue border border-blue-100 font-medium"
-              >
+              <span key={s} className="px-3 py-1 text-sm rounded-full bg-blue-50 text-brand-blue border border-blue-100 font-medium">
                 {s}
               </span>
             ))}
@@ -239,7 +268,7 @@ export default async function CompanyReviewPage({
         </section>
       )}
 
-      {/* Customer review quote */}
+      {/* Customer Review */}
       {reviewQuote && (
         <section className="mb-8">
           <h2 className="text-lg font-bold text-brand-navy mb-3">Customer Review</h2>
@@ -252,26 +281,45 @@ export default async function CompanyReviewPage({
         </section>
       )}
 
-      {/* Rating breakdown */}
-      <section className="mb-8 bg-white border border-gray-200 rounded-lg p-5">
-        <h2 className="text-lg font-bold text-brand-navy mb-4">Rating Summary</h2>
-        <div className="flex items-center gap-6">
+      {/* Our Verdict */}
+      <section className="mb-8 bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+        <h2 className="text-lg font-bold text-brand-navy mb-2">Our Verdict</h2>
+        <p className="text-sm text-gray-700 leading-relaxed mb-3">{verdictText}</p>
+        <div className="flex items-center gap-4">
           <div className="text-center">
-            <p className="text-4xl font-bold text-brand-navy">{rating.toFixed(1)}</p>
+            <p className="text-3xl font-bold text-brand-navy">{rating.toFixed(1)}</p>
             <StarRating rating={rating} />
-            <p className="text-xs text-gray-500 mt-1">out of 5</p>
+            <p className="text-xs text-gray-500 mt-0.5">/ 5.0 Google</p>
           </div>
-          <div className="text-sm text-gray-600">
-            <p>Based on <strong>{reviewCount.toLocaleString()}</strong> Google reviews</p>
-            <p className="mt-1">Source: Google Maps</p>
+          <div className="text-sm text-gray-600 space-y-0.5">
+            <p><strong>{reviewCount.toLocaleString()}</strong> verified Google reviews</p>
+            <p>Ranked <strong>#{rank}</strong> in Singapore {year}</p>
+            <p className="text-xs text-gray-400">Source: Google Maps · Reviewed by BestThingReview</p>
           </div>
         </div>
       </section>
 
-      {/* Source article link */}
-      <section className="border-t border-gray-100 pt-6">
+      {/* Best For */}
+      <section className="mb-8 border border-gray-200 rounded-lg p-5">
+        <h2 className="text-lg font-bold text-brand-navy mb-3">Best For</h2>
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">✓</span>
+          <div>
+            <p className="font-semibold text-gray-900 text-sm">{label}</p>
+            <p className="text-sm text-gray-600 mt-1">
+              {label.toLowerCase().includes('overall')
+                ? `${name} is our top overall pick — balancing rating, review volume, transparency, and service range.`
+                : `${name} stands out specifically for ${label.replace(/^Best\s+(for\s+)?/i, '').toLowerCase()}, making it the strongest choice for customers with this priority.`
+              }
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Source article */}
+      <section className="border-t border-gray-100 pt-6 mb-8">
         <p className="text-sm text-gray-500 mb-2">
-          {name} is ranked #{rank} in our independent review:
+          {name} is ranked #{rank} in our independent evaluation:
         </p>
         <Link
           href={`/${sourceArticle.category}/${sourceArticle.slug}`}
@@ -280,6 +328,32 @@ export default async function CompanyReviewPage({
           {sourceArticle.title} →
         </Link>
       </section>
+
+      {/* Related companies */}
+      {related.length > 0 && (
+        <section className="border-t border-gray-100 pt-6">
+          <h2 className="text-base font-bold text-brand-navy mb-4">
+            Also Ranked in {sourceArticle.title.replace(/^\d+\s+/i, '')}
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {related.map(c => (
+              <Link
+                key={c.slug}
+                href={`/company-review/${c.slug}`}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-100 hover:border-brand-blue hover:bg-blue-50 transition-colors group"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-brand-blue truncate">{c.name}</p>
+                  <p className="text-xs text-gray-400">#{c.rank} {c.label}</p>
+                </div>
+                <span className="ml-3 flex-shrink-0 text-xs font-bold bg-brand-gold text-brand-navy px-1.5 py-0.5 rounded">
+                  {c.rating.toFixed(1)} ★
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
