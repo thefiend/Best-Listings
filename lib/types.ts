@@ -55,6 +55,31 @@ export interface ScoreDimension {
   score: number
 }
 
+export interface Company {
+  name: string
+  slug: string
+  rank: number
+  label: string
+  businessType: string
+  rating: number
+  reviewCount: number
+  address?: string
+  postalCode?: string
+  phone?: string
+  email?: string
+  website?: string
+  description: string
+  reviewQuote?: string
+  reviewerName?: string
+  highlights: string[]
+  services: string[]
+  sourceArticle: {
+    title: string
+    slug: string
+    category: string
+  }
+}
+
 export interface SearchResult {
   type: 'review' | 'comparison'
   title: string

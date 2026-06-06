@@ -16,6 +16,28 @@ import { TableOfContents } from '@/components/table-of-contents'
 
 const BASE_URL = 'https://www.bestthingreview.com'
 
+function extractFAQs(content: string): Array<{ question: string; answer: string }> {
+  const faqStart = content.search(/^## Frequently Asked Questions/m)
+  if (faqStart === -1) return []
+  const faqSection = content.slice(faqStart)
+  const faqs: Array<{ question: string; answer: string }> = []
+  const pattern = /^### (.+?)\n+([\s\S]+?)(?=\n+###|\n+##|$)/gm
+  let match
+  while ((match = pattern.exec(faqSection)) !== null) {
+    const question = match[1].trim()
+    const answer = match[2]
+      .trim()
+      .replace(/<[^>]+>/g, '')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\n+/g, ' ')
+      .trim()
+    if (question && answer) faqs.push({ question, answer })
+  }
+  return faqs
+}
+
 async function MDXContent({ source }: { source: string }) {
   const code = await compile(source, { outputFormat: 'function-body' })
   const { default: Content } = await run(String(code), {
@@ -140,6 +162,27 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     })),
   } : null
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: category.charAt(0).toUpperCase() + category.slice(1), item: `${BASE_URL}/${category}` },
+      { '@type': 'ListItem', position: 3, name: title },
+    ],
+  }
+
+  const faqs = extractFAQs(content)
+  const faqSchema = faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  } : null
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
       <script
@@ -150,6 +193,16 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(tocSchema) }}
+        />
+      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
 

@@ -38,6 +38,9 @@ export function Nav() {
               {CATEGORY_LABELS[cat]}
             </Link>
           ))}
+          <Link href="/company-review" className="text-sm text-white/80 hover:text-white transition-colors">
+            Companies
+          </Link>
           <Link href="/contact" className="text-sm text-white/80 hover:text-white transition-colors">
             Contact
           </Link>

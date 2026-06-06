@@ -10,6 +10,7 @@ const LINKS = [
   { href: '/business',  label: 'Business',        emoji: '💼' },
   { href: '/lifestyle', label: 'Lifestyle',       emoji: '✨' },
   { href: '/travel',    label: 'Travel',          emoji: '✈️' },
+  { href: '/company-review', label: 'Company Reviews', emoji: '🏢' },
   { href: '/contact',   label: 'Contact Us',      emoji: '✉️' },
 ]
 

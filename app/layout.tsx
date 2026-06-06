@@ -11,6 +11,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.bestthingreview.com'),
   title: {
     default: 'BestThingReview — Trusted Reviews & Buying Guides',
     template: '%s | BestThingReview',
