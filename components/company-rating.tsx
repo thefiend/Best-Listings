@@ -69,7 +69,7 @@ export function CompanyRating({
           <span itemProp="ratingValue">{rating.toFixed(1)}</span>
         </strong>
         <span className="text-sm text-gray-500">
-          (<span itemProp="ratingCount">{reviewCount.toLocaleString()}</span> Google reviews)
+          (<span itemProp="ratingCount">{reviewCount}</span> Google reviews)
         </span>
       </span>
     </div>

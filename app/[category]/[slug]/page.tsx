@@ -139,6 +139,8 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         name: author.name,
         jobTitle: author.title,
         description: author.bio,
+        url: 'https://www.linkedin.com/company/best-web-design-singapore',
+        sameAs: ['https://www.linkedin.com/company/best-web-design-singapore'],
         worksFor: { '@id': `${BASE_URL}/#organization` },
       },
     } : {
@@ -256,6 +258,20 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
       <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
         <article className="prose prose-gray prose-headings:text-brand-navy prose-a:text-brand-blue max-w-none min-w-0">
           <MDXContent source={content} />
+          {related.length > 0 && (
+            <div className="not-prose mt-10 p-5 bg-gray-50 rounded-xl border border-gray-100">
+              <p className="text-sm font-bold text-gray-700 mb-3">See Also</p>
+              <ul className="space-y-2">
+                {related.map(r => (
+                  <li key={r.slug}>
+                    <Link href={`/${r.category}/${r.slug}`} className="text-brand-blue text-sm hover:underline">
+                      {r.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </article>
 
         <aside className="hidden lg:block">
@@ -271,7 +287,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
               {author.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div>
-              <p className="font-semibold text-brand-navy text-sm">{author.name}</p>
+              <a href="https://www.linkedin.com/company/best-web-design-singapore" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-navy text-sm hover:underline">{author.name}</a>
               <p className="text-xs text-brand-blue mb-2">{author.title}</p>
               <p className="text-gray-500 text-sm leading-relaxed">{author.bio}</p>
             </div>
