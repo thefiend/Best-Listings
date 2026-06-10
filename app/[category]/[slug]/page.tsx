@@ -117,39 +117,65 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     .filter(r => r.category === category && r.slug !== slug)
     .slice(0, 3)
 
-  const articleSchema = {
+  const faqs = extractFAQs(content)
+  const canonicalUrl = `${BASE_URL}/${category}/${slug}`
+
+  const pageSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: title,
-    description: excerpt,
-    datePublished: publishedAt,
-    dateModified: updatedAt,
-    url: `${BASE_URL}/${category}/${slug}`,
-    ...(coverImage ? { image: `${BASE_URL}${coverImage}` } : {}),
-    publisher: {
-      '@type': 'Organization',
-      '@id': `${BASE_URL}/#organization`,
-      name: 'BestThingReview',
-      url: BASE_URL,
-    },
-    ...(author ? {
-      author: {
-        '@type': 'Person',
-        '@id': `${BASE_URL}/#author-${author.name.toLowerCase().replace(/\s+/g, '-')}`,
-        name: author.name,
-        jobTitle: author.title,
-        description: author.bio,
-        url: 'https://www.linkedin.com/company/best-web-design-singapore',
-        sameAs: ['https://www.linkedin.com/company/best-web-design-singapore'],
-        worksFor: { '@id': `${BASE_URL}/#organization` },
+    '@graph': [
+      {
+        '@type': 'Article',
+        '@id': `${canonicalUrl}#article`,
+        headline: title,
+        description: excerpt,
+        datePublished: publishedAt,
+        dateModified: updatedAt,
+        url: canonicalUrl,
+        ...(coverImage ? {
+          image: {
+            '@type': 'ImageObject',
+            url: `${BASE_URL}${coverImage}`,
+            width: 1200,
+            height: 628,
+          },
+        } : {}),
+        publisher: { '@id': `${BASE_URL}/#organization` },
+        ...(author ? {
+          author: {
+            '@type': 'Person',
+            '@id': `${BASE_URL}/#author-${author.name.toLowerCase().replace(/\s+/g, '-')}`,
+            name: author.name,
+            jobTitle: author.title,
+            description: author.bio,
+            url: 'https://www.linkedin.com/in/jasonkammf/',
+            sameAs: ['https://www.linkedin.com/in/jasonkammf/'],
+            worksFor: { '@id': `${BASE_URL}/#organization` },
+          },
+        } : {
+          author: { '@id': `${BASE_URL}/#organization` },
+        }),
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl,
+        },
       },
-    } : {
-      author: { '@id': `${BASE_URL}/#organization` },
-    }),
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${BASE_URL}/${category}/${slug}`,
-    },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+          { '@type': 'ListItem', position: 2, name: category.charAt(0).toUpperCase() + category.slice(1), item: `${BASE_URL}/${category}` },
+          { '@type': 'ListItem', position: 3, name: title, item: canonicalUrl },
+        ],
+      },
+      ...(faqs.length > 0 ? [{
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(({ question, answer }) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: { '@type': 'Answer', text: answer },
+        })),
+      }] : []),
+    ],
   }
 
   const tocSchema = headings.length > 0 ? {
@@ -160,28 +186,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
       '@type': 'ListItem',
       position: i + 1,
       name: h.text,
-      url: `#${h.id}`,
-    })),
-  } : null
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: category.charAt(0).toUpperCase() + category.slice(1), item: `${BASE_URL}/${category}` },
-      { '@type': 'ListItem', position: 3, name: title },
-    ],
-  }
-
-  const faqs = extractFAQs(content)
-  const faqSchema = faqs.length > 0 ? {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map(({ question, answer }) => ({
-      '@type': 'Question',
-      name: question,
-      acceptedAnswer: { '@type': 'Answer', text: answer },
+      url: `${canonicalUrl}#${h.id}`,
     })),
   } : null
 
@@ -189,22 +194,12 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     <div className="max-w-5xl mx-auto px-4 py-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
       />
       {tocSchema && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(tocSchema) }}
-        />
-      )}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      {faqSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
 
@@ -287,7 +282,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
               {author.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div>
-              <a href="https://www.linkedin.com/company/best-web-design-singapore" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-navy text-sm hover:underline">{author.name}</a>
+              <a href="https://www.linkedin.com/in/jasonkammf/" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-navy text-sm hover:underline">{author.name}</a>
               <p className="text-xs text-brand-blue mb-2">{author.title}</p>
               <p className="text-gray-500 text-sm leading-relaxed">{author.bio}</p>
             </div>

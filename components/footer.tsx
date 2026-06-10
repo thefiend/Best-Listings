@@ -36,6 +36,21 @@ export function Footer() {
             <p className="text-white font-semibold text-sm mb-3">Company</p>
             <ul className="flex flex-wrap gap-x-4 gap-y-2">
               <li>
+                <Link href="/about" className="text-sm hover:text-white transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/editorial-policy" className="text-sm hover:text-white transition-colors">
+                  Editorial Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-sm hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="text-sm hover:text-white transition-colors">
                   Contact Us
                 </Link>

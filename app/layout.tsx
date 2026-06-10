@@ -43,6 +43,8 @@ const siteSchema = {
       logo: {
         '@type': 'ImageObject',
         url: 'https://www.bestthingreview.com/favicon/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
       },
     },
     {
@@ -53,10 +55,7 @@ const siteSchema = {
       publisher: { '@id': 'https://www.bestthingreview.com/#organization' },
       potentialAction: {
         '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: 'https://www.bestthingreview.com/?q={search_term_string}',
-        },
+        target: 'https://www.bestthingreview.com/?q={search_term_string}',
         'query-input': 'required name=search_term_string',
       },
     },

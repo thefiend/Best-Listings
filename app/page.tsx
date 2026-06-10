@@ -1,9 +1,14 @@
 // app/page.tsx
+import type { Metadata } from 'next'
 import { getFeaturedReviews } from '@/lib/content'
 import { ReviewCard } from '@/components/review-card'
 import { Category } from '@/lib/types'
 import Link from 'next/link'
 import { SearchDropdown } from '@/components/search-dropdown'
+
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://www.bestthingreview.com' },
+}
 
 const CATEGORIES: { slug: Category; label: string; emoji: string }[] = [
   { slug: 'tech',      label: 'Tech & Gadgets', emoji: '⚡' },
@@ -22,10 +27,10 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-brand-navy to-brand-blue text-white py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
-            Find the Best Products for You
+            Singapore&apos;s Best-Reviewed Services &amp; Professionals
           </h1>
           <p className="text-white/75 text-lg mb-8">
-            Expert reviews trusted by thousands of readers
+            Independent rankings based on verified Google reviews, direct provider engagement, and consistent scoring
           </p>
           <div className="w-full max-w-lg mx-auto">
             <SearchDropdown

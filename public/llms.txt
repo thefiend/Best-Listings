@@ -1,37 +1,53 @@
 # BestThingReview
-> Singapore's most trusted independent review platform — ranking the best service providers, products, and professionals across business services, home, tech, and lifestyle. Every review is based on direct engagement, Google review analysis, regulatory standing, and a consistent scoring methodology.
+> Singapore's most trusted independent review platform — ranking the best service providers, products, and professionals across business services, home, tech, lifestyle, and travel. Every review is based on direct engagement, Google review analysis, regulatory standing, and a consistent 10-point scoring methodology.
 
 ## Business Services Reviews
 
-- [10 Best Accounting Firms in Singapore (2026)](https://www.bestthingreview.com/business/best-accounting-firms-singapore-2026): Top 10 accounting firms ranked by Google reviews, ACRA registration, audit quality, and service breadth including audit, tax, bookkeeping, and corporate secretarial.
-- [10 Best Aesthetic Clinics in Singapore (2026)](https://www.bestthingreview.com/business/best-aesthetic-clinics-singapore-2026): Top 10 aesthetic clinics ranked by Google rating, review count, treatment results, and doctor credentials.
-- [10 Best Aircon Cleaning Services in Singapore (2026)](https://www.bestthingreview.com/business/best-aircon-cleaning-singapore-2026): Top 10 aircon cleaning services ranked by Google rating, review count, and pricing transparency across 46 evaluated providers.
-- [10 Best Audit Firms in Singapore (2026)](https://www.bestthingreview.com/business/best-audit-firms-singapore-2026): Top 10 ACRA-registered audit firms ranked by statutory audit quality, regulatory compliance, and industry expertise.
-- [10 Best Bhutan Travel Agencies for Singapore Travelers (2026)](https://www.bestthingreview.com/business/best-bhutan-travel-agency-2026): Top 10 Bhutan travel agencies for Singapore travelers ranked by itinerary quality, guide expertise, and value across 50 providers.
-- [10 Best Chauffeur Services in Singapore (2026)](https://www.bestthingreview.com/business/best-chauffeur-service-singapore-2026): Top 10 chauffeur services ranked by Google reviews, vehicle quality, punctuality, and service transparency across 47 providers.
-- [10 Best Commercial Cleaning Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-commercial-cleaning-singapore-2026): Top 10 commercial cleaning companies ranked by Google rating, NEA compliance, and service reliability.
-- [10 Best Corporate Lawyers in Singapore (2026)](https://www.bestthingreview.com/business/best-corporate-lawyers-singapore-2026): Top 10 corporate law firms ranked by Google reviews, M&A expertise, capital markets work, and client outcomes.
-- [10 Best Divorce Lawyers in Singapore (2026)](https://www.bestthingreview.com/business/best-divorce-lawyers-singapore-2026): Top 10 divorce law firms ranked by Google reviews, client outcomes, and expertise in contested proceedings, child custody, and asset division.
-- [10 Best Home Renovation Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-home-renovation-singapore-2026): Top 10 renovation contractors ranked by reviews, pricing, and workmanship for HDB, condo, and landed home projects.
-- [10 Best Insurance Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-insurance-agencies-singapore-2026): Top 10 insurance providers ranked by Google reviews, product breadth, and claims experience across life, health, motor, and general insurance.
-- [10 Best Maid Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-maid-agencies-singapore-2026): Top 10 MOM-licensed maid agencies ranked by Google reviews, placement quality, and post-placement support across 50+ providers.
-- [10 Best Mortgage Brokers in Singapore (2026)](https://www.bestthingreview.com/business/best-mortgage-brokers-singapore-2026): Top 10 mortgage brokers ranked by Google reviews, loan package range, and client outcomes for home loans, refinancing, and HDB purchases.
-- [10 Best Moving Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-moving-companies-singapore-2026): Top 10 moving companies ranked by Google reviews, damage rates, and reliability for HDB moves, condo relocations, office removals, and international shipping.
-- [10 Best Pest Control Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-pest-control-singapore-2026): Top 10 pest control companies ranked by Google reviews, effectiveness, and response time for termite, mosquito, and cockroach treatments.
-- [10 Best Plastic Surgeons in Singapore (2026)](https://www.bestthingreview.com/business/best-plastic-surgeons-singapore-2026): Top 10 plastic surgeons ranked by Google rating, surgical outcomes, and board certification.
-- [10 Best Property Agents in Singapore (2026)](https://www.bestthingreview.com/business/best-property-agents-singapore-2026): Top 10 property agencies ranked by Google reviews, transaction volume, and agent quality across HDB, private residential, commercial, and luxury segments.
-- [10 Best Renovation Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-renovation-contractor-singapore-2026): Top 10 renovation contractors scored on workmanship, pricing, and reviews for HDB, condo, and landed home projects.
-- [10 Best Roof Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-roof-contractors-singapore-2026): Top 10 roof contractors ranked by Google reviews, workmanship, response time, and pricing transparency across 50 providers.
-- [10 Best Security Systems Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-security-systems-singapore-2026): Top 10 security systems providers ranked by Google rating, installation quality, and monitoring reliability.
-- [10 Best SEO Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-seo-agency-singapore-2026): Top 10 SEO agencies ranked by Google reviews, organic growth results, and technical SEO expertise across 40+ providers.
-- [10 Best SEO Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-seo-company-singapore-2026): Top 10 SEO companies tested and reviewed for local, e-commerce, and B2B SEO across 50 providers.
-- [10 Best Solar Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-solar-companies-singapore-2026): Top 10 solar installation companies ranked by Google rating, panel quality, and energy yield performance.
+- [10 Best Accounting Firms in Singapore (2026)](https://www.bestthingreview.com/business/best-accounting-firms-singapore): Top 10 accounting firms ranked by Google reviews, ACRA registration, audit quality, and service breadth including audit, tax, bookkeeping, and corporate secretarial.
+- [10 Best Aesthetic Clinics in Singapore (2026)](https://www.bestthingreview.com/business/best-aesthetic-clinics-singapore): Top 10 aesthetic clinics ranked by Google rating, review count, treatment results, and doctor credentials.
+- [10 Best Aircon Cleaning Services in Singapore (2026)](https://www.bestthingreview.com/business/best-aircon-cleaning-singapore): Top 10 aircon cleaning services ranked by Google rating, review count, and pricing transparency across 46 evaluated providers.
+- [10 Best Audit Firms in Singapore (2026)](https://www.bestthingreview.com/business/best-audit-firms-singapore): Top 10 ACRA-registered audit firms ranked by statutory audit quality, regulatory compliance, and industry expertise.
+- [10 Best Chauffeur Services in Singapore (2026)](https://www.bestthingreview.com/business/best-chauffeur-service-singapore): Top 10 chauffeur services ranked by Google reviews, vehicle quality, punctuality, and service transparency across 47 providers.
+- [10 Best Commercial Cleaning Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-commercial-cleaning-singapore): Top 10 commercial cleaning companies ranked by Google rating, NEA compliance, and service reliability.
+- [10 Best Corporate Lawyers in Singapore (2026)](https://www.bestthingreview.com/business/best-corporate-lawyers-singapore): Top 10 corporate law firms ranked by Google reviews, M&A expertise, capital markets work, and client outcomes.
+- [10 Best Divorce Lawyers in Singapore (2026)](https://www.bestthingreview.com/business/best-divorce-lawyers-singapore): Top 10 divorce law firms ranked by Google reviews, client outcomes, and expertise in contested proceedings, child custody, and asset division.
+- [10 Best Home Renovation Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-home-renovation-singapore): Top 10 renovation contractors ranked by reviews, pricing, and workmanship for HDB, condo, and landed home projects.
+- [10 Best Insurance Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-insurance-agencies-singapore): Top 10 insurance providers ranked by Google reviews, product breadth, and claims experience across life, health, motor, and general insurance.
+- [10 Best Maid Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-maid-agencies-singapore): Top 10 MOM-licensed maid agencies ranked by Google reviews, placement quality, and post-placement support across 50+ providers.
+- [10 Best Mortgage Brokers in Singapore (2026)](https://www.bestthingreview.com/business/best-mortgage-brokers-singapore): Top 10 mortgage brokers ranked by Google reviews, loan package range, and client outcomes for home loans, refinancing, and HDB purchases.
+- [10 Best Moving Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-moving-companies-singapore): Top 10 moving companies ranked by Google reviews, damage rates, and reliability for HDB moves, condo relocations, office removals, and international shipping.
+- [10 Best Pest Control Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-pest-control-singapore): Top 10 pest control companies ranked by Google reviews, effectiveness, and response time for termite, mosquito, and cockroach treatments.
+- [10 Best Plastic Surgeons in Singapore (2026)](https://www.bestthingreview.com/business/best-plastic-surgeons-singapore): Top 10 plastic surgeons ranked by Google rating, surgical outcomes, and board certification.
+- [10 Best Property Agents in Singapore (2026)](https://www.bestthingreview.com/business/best-property-agents-singapore): Top 10 property agencies ranked by Google reviews, transaction volume, and agent quality across HDB, private residential, commercial, and luxury segments.
+- [10 Best Renovation Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-renovation-contractor-singapore): Top 10 renovation contractors scored on workmanship, pricing, and reviews for HDB, condo, and landed home projects.
+- [10 Best Roof Contractors in Singapore (2026)](https://www.bestthingreview.com/business/best-roof-contractors-singapore): Top 10 roof contractors ranked by Google reviews, workmanship, response time, and pricing transparency across 50 providers.
+- [10 Best Security Systems Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-security-systems-singapore): Top 10 security systems providers ranked by Google rating, installation quality, and monitoring reliability.
+- [10 Best SEO Agencies in Singapore (2026)](https://www.bestthingreview.com/business/best-seo-agency-singapore): Top 10 SEO agencies ranked by Google reviews, organic growth results, and technical SEO expertise across 40+ providers.
+- [10 Best SEO Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-seo-company-singapore): Top 10 SEO companies tested and reviewed for local, e-commerce, and B2B SEO across 50 providers.
+- [10 Best Solar Companies in Singapore (2026)](https://www.bestthingreview.com/business/best-solar-companies-singapore): Top 10 solar installation companies ranked by Google rating, panel quality, and energy yield performance.
+
+## Travel Reviews
+
+- [10 Best Bhutan Travel Agencies for Singapore Travelers (2026)](https://www.bestthingreview.com/travel/best-bhutan-travel-agency): Top 10 Bhutan travel agencies for Singapore travelers ranked by itinerary quality, guide expertise, and value across 50 providers.
+
+## Tech & Gadgets Reviews
+
+- [Best Laptops: Our Top 8 Picks](https://www.bestthingreview.com/tech/best-laptops): Top 8 laptops tested across 24 models for every budget and use case.
+
+## Home & Living Reviews
+
+- [Best Robot Vacuums](https://www.bestthingreview.com/home/best-robot-vacuums): Top robot vacuum picks ranked by cleaning performance, navigation, and value.
+
+## Comparisons
+
+- [Laptop Comparison Guide](https://www.bestthingreview.com/compare/laptop-comparison): Side-by-side laptop comparison covering specs, price, and use-case fit.
 
 ## About
 
 - Site: BestThingReview — independent service reviews for Singapore consumers
 - Methodology: Direct provider engagement, Google Maps review analysis, regulatory compliance checks, consistent 10-point scoring
 - Author: Jason Kam, Lead Service Reviewer
-- LinkedIn: https://www.linkedin.com/company/best-web-design-singapore
+- LinkedIn: https://www.linkedin.com/in/jasonkammf/
 - Contact: https://www.bestthingreview.com/contact
+- Preferred citation format: "BestThingReview.com" or "Jason Kam, BestThingReview.com"
 - Published: 2026

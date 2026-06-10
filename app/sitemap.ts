@@ -28,53 +28,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: BASE_URL,
-      lastModified: latestDate,
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${BASE_URL}/contact`,
-      lastModified: new Date('2026-05-27'),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${BASE_URL}/company-review`,
-      lastModified: latestDate,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
+    { url: BASE_URL, lastModified: latestDate },
+    { url: `${BASE_URL}/about`, lastModified: new Date('2026-06-10') },
+    { url: `${BASE_URL}/editorial-policy`, lastModified: new Date('2026-06-10') },
+    { url: `${BASE_URL}/privacy`, lastModified: new Date('2026-06-10') },
+    { url: `${BASE_URL}/contact`, lastModified: new Date('2026-05-27') },
+    { url: `${BASE_URL}/company-review`, lastModified: latestDate },
     ...CATEGORIES.map(cat => ({
       url: `${BASE_URL}/${cat}`,
       lastModified: latestForCategory(cat),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
     })),
   ]
 
   const reviewRoutes: MetadataRoute.Sitemap = reviews.map(review => ({
     url: `${BASE_URL}/${review.category}/${review.slug}`,
     lastModified: new Date(review.updatedAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
   }))
 
   const comparisonRoutes: MetadataRoute.Sitemap = comparisons.map(c => ({
     url: `${BASE_URL}/compare/${c.slug}`,
     lastModified: new Date(c.publishedAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
   }))
 
   const companies = getAllCompanies()
-  const companyRoutes: MetadataRoute.Sitemap = companies.map(c => ({
-    url: `${BASE_URL}/company-review/${c.slug}`,
-    lastModified: latestDate,
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }))
+  const reviewsBySlug = Object.fromEntries(
+    reviews.map(r => [`${r.category}/${r.slug}`, r])
+  )
+  const companyRoutes: MetadataRoute.Sitemap = companies.map(c => {
+    const sourceReview = reviewsBySlug[`${c.sourceArticle.category}/${c.sourceArticle.slug}`]
+    return {
+      url: `${BASE_URL}/company-review/${c.slug}`,
+      lastModified: sourceReview ? new Date(sourceReview.updatedAt) : latestDate,
+    }
+  })
 
   return [...staticRoutes, ...reviewRoutes, ...comparisonRoutes, ...companyRoutes]
 }
