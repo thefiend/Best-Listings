@@ -6,6 +6,7 @@ import { ScoreBreakdown } from '@/components/score-breakdown'
 import { ComparisonTable } from '@/components/comparison-table'
 import { CompanyRating } from '@/components/company-rating'
 import { FeatureCta } from '@/components/feature-cta'
+import { PromoCodeTable } from '@/components/promo-code-table'
 import { slugify } from '@/lib/toc'
 
 function extractText(node: React.ReactNode): string {
@@ -31,6 +32,7 @@ export const mdxComponents: MDXComponents = {
   ComparisonTable,
   CompanyRating,
   FeatureCta,
+  PromoCodeTable,
   h2: H2,
   h3: H3,
 }
