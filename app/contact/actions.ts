@@ -23,8 +23,33 @@ export async function submitContact(
     return { status: 'error', message: 'Please enter a valid email address.' }
   }
 
-  // TODO: wire up to email provider (e.g. Resend, SendGrid)
-  console.log('Contact form submission:', { name, email, subject, message })
+  const apiKey = process.env.BREVO_API_KEY
+  if (!apiKey) {
+    console.error('BREVO_API_KEY not set')
+    return { status: 'error', message: 'Email service not configured. Please try again later.' }
+  }
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': apiKey,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name, email },
+      to: [{ email: 'hello@bestthingreview.com', name: 'Best Thing Review' }],
+      replyTo: { email, name },
+      subject: `[Contact] ${subject}`,
+      textContent: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
+      htmlContent: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Subject:</strong> ${subject}</p><hr/><p>${message.replace(/\n/g, '<br/>')}</p>`,
+    }),
+  })
+
+  if (!res.ok) {
+    console.error('Brevo error:', await res.text())
+    return { status: 'error', message: 'Failed to send message. Please try again later.' }
+  }
 
   return {
     status: 'success',
