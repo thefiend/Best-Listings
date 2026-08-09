@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
+import { getAllDeals } from '@/lib/deals'
 
 const BASE_URL = 'https://www.bestthingreview.com'
 
@@ -14,6 +15,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 export async function GET() {
   const reviews = getAllReviews()
   const comparisons = getAllComparisons()
+  const deals = getAllDeals()
 
   const reviewsByCategory = reviews.reduce<Record<string, typeof reviews>>(
     (acc, r) => {
@@ -45,6 +47,16 @@ export async function GET() {
     lines.push(`- [${label} Reviews](${BASE_URL}/${category}): All ${label.toLowerCase()} reviews and buying guides`)
     for (const r of catReviews) {
       lines.push(`- [${r.title}](${BASE_URL}/${r.category}/${r.slug}): ${r.excerpt}`)
+    }
+    lines.push('')
+  }
+
+  if (deals.length > 0) {
+    lines.push('## Deals & Promo Codes')
+    lines.push('')
+    lines.push(`- [Promo Codes & Referral Codes](${BASE_URL}/deals): Verified Singapore promo codes and referral bonuses`)
+    for (const d of deals) {
+      lines.push(`- [${d.title}](${BASE_URL}/deals/${d.slug}): ${d.excerpt}`)
     }
     lines.push('')
   }
