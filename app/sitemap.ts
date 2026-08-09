@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
 import { getAllCompanies } from '@/lib/companies'
+import { getAllDeals } from '@/lib/deals'
 
 const BASE_URL = 'https://www.bestthingreview.com'
 
@@ -9,10 +10,12 @@ const CATEGORIES = ['tech', 'home', 'business', 'lifestyle', 'travel'] as const
 export default function sitemap(): MetadataRoute.Sitemap {
   const reviews = getAllReviews()
   const comparisons = getAllComparisons()
+  const deals = getAllDeals()
 
   const allDates = [
     ...reviews.map(r => new Date(r.updatedAt)),
     ...comparisons.map(c => new Date(c.publishedAt)),
+    ...deals.map(d => new Date(d.updatedAt)),
   ]
   const latestDate = allDates.length > 0
     ? new Date(Math.max(...allDates.map(d => d.getTime())))
@@ -62,5 +65,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   })
 
-  return [...staticRoutes, ...reviewRoutes, ...comparisonRoutes, ...companyRoutes]
+  const dealRoutes: MetadataRoute.Sitemap = deals.map(d => ({
+    url: `${BASE_URL}/deals/${d.slug}`,
+    lastModified: new Date(d.updatedAt),
+  }))
+
+  const dealIndexRoute: MetadataRoute.Sitemap = deals.length > 0 ? [{
+    url: `${BASE_URL}/deals`,
+    lastModified: new Date(Math.max(...deals.map(d => new Date(d.updatedAt).getTime()))),
+  }] : []
+
+  return [...staticRoutes, ...reviewRoutes, ...comparisonRoutes, ...companyRoutes, ...dealIndexRoute, ...dealRoutes]
 }
