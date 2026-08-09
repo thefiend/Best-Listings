@@ -79,9 +79,15 @@ def extract_companies_from_mdx(mdx_path: Path) -> list[dict]:
 
     # Fallback: extract from PicksList if no CompanyRating found
     if not companies:
+        # Extract author name from frontmatter to exclude it
+        author_match = re.search(r'author:\s*\n\s*name:\s*["\']([^"\']+)["\']', content)
+        author_name = author_match.group(1) if author_match else ""
+
         pattern_picks = re.compile(r'name:\s*["\']([^"\']+)["\']')
         for m in pattern_picks.finditer(content):
-            companies.append({"name": m.group(1), "place_id": ""})
+            name = m.group(1)
+            if name != author_name:
+                companies.append({"name": name, "place_id": ""})
 
     return companies
 
