@@ -88,3 +88,29 @@ export interface SearchResult {
   excerpt?: string   // reviews only
   rating?: number    // reviews only
 }
+
+export interface PromoCode {
+  code: string
+  discount: string
+  expires: string        // ISO date string "YYYY-MM-DD"
+  affiliateUrl: string
+  verified: boolean
+}
+
+export interface DealFrontmatter {
+  title: string
+  slug: string
+  merchant: string
+  merchantUrl: string
+  category: 'deals'
+  excerpt: string
+  coverImage?: string
+  publishedAt: string    // ISO date string "YYYY-MM-DD"
+  updatedAt: string      // ISO date string "YYYY-MM-DD"
+  featured: boolean
+  codes: PromoCode[]
+}
+
+export interface Deal extends DealFrontmatter {
+  content: string        // MDX body (frontmatter stripped)
+}
