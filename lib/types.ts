@@ -82,25 +82,28 @@ export interface Company {
 
 export interface PromoCode {
   code: string
-  discount: string        // "10%", "$50", etc.
-  label?: string          // "Welcome Bonus", "Holiday Special", etc.
+  discount: string
+  expires: string        // ISO date string "YYYY-MM-DD"
+  affiliateUrl: string
+  verified: boolean
 }
 
 export interface DealFrontmatter {
   title: string
   slug: string
-  category: Category
+  merchant: string
+  merchantUrl: string
+  category: 'deals'
   excerpt: string
-  promoCode: PromoCode
-  publishedAt: string     // ISO date string
-  updatedAt: string
-  featured?: boolean
   coverImage?: string
-  link?: string           // Direct affiliate/product link
+  publishedAt: string    // ISO date string "YYYY-MM-DD"
+  updatedAt: string      // ISO date string "YYYY-MM-DD"
+  featured: boolean
+  codes: PromoCode[]
 }
 
 export interface Deal extends DealFrontmatter {
-  content: string         // MDX body (frontmatter stripped)
+  content: string        // MDX body (frontmatter stripped)
 }
 
 export interface SearchResult {
