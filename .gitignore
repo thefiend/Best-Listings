@@ -41,6 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .superpowers/
+.worktrees/
 .claude/settings.local.json
 claude-seo/
 assets/logo copy.svg
