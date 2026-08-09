@@ -80,6 +80,29 @@ export interface Company {
   }
 }
 
+export interface PromoCode {
+  code: string
+  discount: string        // "10%", "$50", etc.
+  label?: string          // "Welcome Bonus", "Holiday Special", etc.
+}
+
+export interface DealFrontmatter {
+  title: string
+  slug: string
+  category: Category
+  excerpt: string
+  promoCode: PromoCode
+  publishedAt: string     // ISO date string
+  updatedAt: string
+  featured?: boolean
+  coverImage?: string
+  link?: string           // Direct affiliate/product link
+}
+
+export interface Deal extends DealFrontmatter {
+  content: string         // MDX body (frontmatter stripped)
+}
+
 export interface SearchResult {
   type: 'review' | 'comparison'
   title: string
