@@ -47,3 +47,56 @@ Custom MDX components (registered in `lib/mdx-components.tsx`): `<ScoreBreakdown
 ## Testing
 
 Jest + React Testing Library. Tests in `__tests__/` mirror the source structure (components/, lib/, api/). Run a single file with `npx jest <path>`.
+
+## SEO Standards (apply to every article)
+
+### Frontmatter requirements
+
+- **`title`**: Follow format `"[N] Best [Topic] in Singapore (2026) — [Differentiator]"` or `"Best [Topic] Singapore (2026) — Top [N] Ranked by Reviews"`. Include year. Max 60 chars.
+- **`slug`**: Never include the year. Use `best-topic-singapore`, never `best-topic-singapore-2026`. The year lives in the title only.
+- **`excerpt`** (meta description): 150–160 chars. Include: primary keyword + best pick with star rating + use-case signal + year. Example: `"Top 10 aircon cleaning services in Singapore ranked by Google reviews and pricing. Best overall: SJR Aircon (5.0★, 300+ reviews). HDB, condo, commercial — 2026."`
+- **`updatedAt`**: Update this date whenever article content is refreshed. Freshness is a ranking signal.
+- **`publishedAt`**: Set to actual first publish date. Never fabricate.
+- **`rating`**: 0–10 numeric. Reflects overall quality of the category's top pick.
+
+### Required article sections (in order)
+
+1. **Intro paragraph** (150–200 words) — answer "who is this for and why did we write it" in first 100 words. Primary keyword in first sentence.
+2. **Key Takeaways** bold list — best overall, best for [use case], and 3–4 must-know facts with specific data (prices, review counts, credentials).
+3. **`<ScoreBreakdown />`** — top pick with 5 scored dimensions.
+4. **`<ProsCons />`** — 4 pros, 2–3 cons for top pick.
+5. **"How We Ranked"** H2 section — explicit methodology: what data sources, what minimum thresholds, what was excluded and why. Minimum 100 words.
+6. **`<PicksList />`** — all ranked picks with rank, name, score, label.
+7. **Individual company sections** — H3 per company with `<a id="business-[N]"></a>` anchor, photo, description (150–250 words), address, phone, website, `<CompanyRating />`, one verified review quote.
+8. **`<ComparisonTable />`** — side-by-side comparison of top 5–6 picks.
+9. **`## Frequently Asked Questions`** H2 — minimum 5 Q&A pairs as H3 sub-headings. These power FAQPage schema automatically. Questions must match real search queries (check GSC).
+10. **Closing recommendation paragraph** — 1 paragraph summarising the best choice for each use case.
+
+### Schema (auto-generated — no manual action needed)
+
+`app/[category]/[slug]/page.tsx` automatically generates:
+- `Article` schema (from frontmatter)
+- `BreadcrumbList` schema
+- `FAQPage` schema (from `## Frequently Asked Questions` section — requires H3 Q&A format)
+- `ItemList` "best-of" schema (from `<PicksList>` component — requires `rank`, `name`, `score`, `label` fields)
+- `ItemList` TOC schema (from H2/H3 headings)
+
+### Redirects
+
+Every new article slug MUST be added to the `businessSlugs` array in `next.config.ts`. This ensures that if a `-2026`-suffixed URL was ever indexed by Google, it redirects to the canonical slug. Do this at article creation time, not retroactively.
+
+### llms.txt
+
+Add every new article to `public/llms.txt` under the correct category section. Format: `- [Title](URL): One-sentence description of what was evaluated and how.`
+
+### CTR optimisation checklist
+
+Before publishing any article:
+- [ ] Title includes year and clear differentiator (not just "Top 10 X")
+- [ ] Excerpt 150–160 chars with primary keyword + best pick name + star rating
+- [ ] `updatedAt` is current
+- [ ] `## Frequently Asked Questions` section exists with ≥5 Q&As
+- [ ] `<PicksList>` present with correct rank/name/score/label
+- [ ] Individual company anchors use `<a id="business-[N]"></a>` format
+- [ ] Slug added to `businessSlugs` in `next.config.ts`
+- [ ] Entry added to `public/llms.txt`

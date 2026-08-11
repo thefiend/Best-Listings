@@ -16,6 +16,19 @@ import { TableOfContents } from '@/components/table-of-contents'
 
 const BASE_URL = 'https://www.bestthingreview.com'
 
+function extractPicks(content: string): Array<{ rank: number; name: string; label: string }> {
+  const picksMatch = content.match(/<PicksList\s+picks=\{(\[[\s\S]*?\])\s*\}/)
+  if (!picksMatch) return []
+  const raw = picksMatch[1]
+  const picks: Array<{ rank: number; name: string; label: string }> = []
+  const itemPattern = /rank:\s*(\d+)\s*,\s*name:\s*"([^"]+)"[\s\S]*?label:\s*"([^"]+)"/g
+  let m
+  while ((m = itemPattern.exec(raw)) !== null) {
+    picks.push({ rank: parseInt(m[1]), name: m[2], label: m[3] })
+  }
+  return picks
+}
+
 function extractFAQs(content: string): Array<{ question: string; answer: string }> {
   const faqStart = content.search(/^## Frequently Asked Questions/m)
   if (faqStart === -1) return []
@@ -118,6 +131,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
     .slice(0, 3)
 
   const faqs = extractFAQs(content)
+  const picks = extractPicks(content)
   const canonicalUrl = `${BASE_URL}/${category}/${slug}`
 
   const pageSchema = {
@@ -173,6 +187,19 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
           '@type': 'Question',
           name: question,
           acceptedAnswer: { '@type': 'Answer', text: answer },
+        })),
+      }] : []),
+      ...(picks.length > 0 ? [{
+        '@type': 'ItemList',
+        name: title,
+        description: excerpt,
+        numberOfItems: picks.length,
+        itemListElement: picks.map(({ rank, name, label }) => ({
+          '@type': 'ListItem',
+          position: rank,
+          name: name,
+          description: label,
+          url: `${canonicalUrl}#business-${rank}`,
         })),
       }] : []),
     ],
