@@ -17,11 +17,25 @@ import time
 import argparse
 import urllib.request
 import urllib.parse
+import subprocess
 from pathlib import Path
 
 API_KEY = "AIzaSyDIFFGlCCGG4QMX1LlhL8DL3f2i5RPTceU"
 OUTPUT_DIR = Path("public/images/places")
 MAX_WIDTH = 800
+
+
+def compress_jpeg(path: Path):
+    """Recompress JPEG to max 800px wide, quality 80, using sharp via node."""
+    script = (
+        f"const sharp=require('sharp');"
+        f"sharp({repr(str(path))})"
+        f".resize({{width:800,withoutEnlargement:true}})"
+        f".jpeg({{quality:80,progressive:true,mozjpeg:true}})"
+        f".toFile({repr(str(path)+'.tmp')})"
+        f".then(()=>{{require('fs').renameSync({repr(str(path)+'.tmp')},{repr(str(path))})}});"
+    )
+    subprocess.run(["node", "-e", script], check=True, capture_output=True)
 
 def slugify(name: str) -> str:
     name = name.lower()
@@ -149,6 +163,7 @@ def process_mdx(mdx_path: Path, dry_run: bool = False):
         try:
             photo_ref = photos[0]["photo_reference"]
             download_photo(photo_ref, output_path)
+            compress_jpeg(output_path)
             print(f" ✓ saved → {output_path}")
             results[name] = str(output_path)
         except Exception as e:
