@@ -125,6 +125,26 @@ const nextConfig: NextConfig = {
       "best-wedding-car-rental-singapore",
       "best-yoga-studios-singapore",
       "best-zi-char-singapore",
+      // New articles — August 2026 batch
+      "best-lasik-clinics-singapore",
+      "best-fertility-clinics-singapore",
+      "best-slimming-centres-singapore",
+      "best-eyebrow-embroidery-singapore",
+      "best-wedding-photographers-singapore",
+      "best-travel-agency-singapore",
+      "best-event-venues-singapore",
+      "best-yacht-charters-singapore",
+      "best-painting-contractors-singapore",
+      "best-flooring-contractors-singapore",
+      "best-window-grille-contractors-singapore",
+      "best-confinement-nanny-agency-singapore",
+      "best-car-rental-singapore",
+      "best-financial-advisors-singapore",
+      "best-coworking-spaces-singapore",
+      "best-company-secretary-singapore",
+      "best-music-schools-singapore",
+      "best-immigration-consultants-singapore",
+      "best-business-coaches-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
