@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Before committing or pushing, always run `git diff --staged` and review all staged changes carefully. Verify every file is correct and intentional before proceeding.
 
+## Scripts — Always Reuse Existing
+
+Never write one-off scripts for tasks already covered by existing scripts. Always use the canonical script:
+
+- **Featured images (OG):** `npx tsx scripts/generate-og-image.ts --article <mdx-path> --output <output-path>`
+- **Business photos:** `python3 scripts/fetch-place-photos.py --inject <mdx-files...>`
+- **Company data:** `python3 scripts/generate-company-data.py`
+
 ## Writing Style
 
 Never use " — " (em dash with spaces) anywhere in content, titles, or code comments. Use a colon, comma, or rewrite the sentence instead.
