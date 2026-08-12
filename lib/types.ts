@@ -77,6 +77,7 @@ export interface Company {
     title: string
     slug: string
     category: string
+    coverImage?: string
   }
 }
 

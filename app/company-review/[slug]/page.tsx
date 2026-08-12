@@ -22,7 +22,7 @@ export async function generateMetadata({
   const company = getCompany(slug)
   if (!company) return {}
 
-  const { name, label, services, description, address } = company
+  const { name, label, services, description, address, sourceArticle } = company
   const year = new Date().getFullYear()
   const location = address ? 'Singapore' : ''
   const serviceSnippet = services.slice(0, 2).join(' & ')
@@ -38,6 +38,9 @@ export async function generateMetadata({
   const metaDesc = (firstSentence + descSuffix).slice(0, 160)
 
   const url = `${BASE_URL}/company-review/${slug}`
+  const ogImage = sourceArticle.coverImage
+    ? `${BASE_URL}${sourceArticle.coverImage}`
+    : undefined
 
   return {
     title,
@@ -49,7 +52,9 @@ export async function generateMetadata({
       title,
       description: metaDesc,
       publishedTime: PUBLISHED_DATE,
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
+    ...(ogImage ? { twitter: { card: 'summary_large_image', images: [ogImage] } } : {}),
   }
 }
 

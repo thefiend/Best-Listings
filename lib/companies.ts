@@ -134,7 +134,7 @@ function getIntProp(propsStr: string, key: string): number | undefined {
 
 function parseCompaniesFromContent(
   content: string,
-  sourceArticle: { title: string; slug: string; category: string }
+  sourceArticle: { title: string; slug: string; category: string; coverImage?: string }
 ): Company[] {
   // Split on business anchor tags
   const sections = content.split(/(?=<a id="business-\d+"><\/a>)/)
@@ -224,6 +224,7 @@ export function getAllCompanies(baseDir = process.cwd()): Company[] {
       title: review.title,
       slug: review.slug,
       category: review.category,
+      coverImage: review.coverImage,
     })
 
     for (const company of parsed) {
