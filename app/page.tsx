@@ -36,7 +36,7 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-brand-navy to-brand-blue text-white py-14 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-green/20 text-brand-green text-xs font-bold tracking-wide px-3 py-1 rounded-full mb-5">
-            Singapore-only · Independent · No paid placements
+            Singapore-only · Independent · Genuine
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">
