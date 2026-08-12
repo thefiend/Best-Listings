@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Writing Style
+
+Never use " — " (em dash with spaces) anywhere in content, titles, or code comments. Use a colon, comma, or rewrite the sentence instead.
+
 @AGENTS.md
 
 ## Commands
@@ -52,9 +56,9 @@ Jest + React Testing Library. Tests in `__tests__/` mirror the source structure 
 
 ### Frontmatter requirements
 
-- **`title`**: Follow format `"[N] Best [Topic] in Singapore (2026) — [Differentiator]"` or `"Best [Topic] Singapore (2026) — Top [N] Ranked by Reviews"`. Include year. Max 60 chars.
+- **`title`**: Follow format `"[N] Best [Topic] in Singapore (2026): [Differentiator]"` or `"Best [Topic] Singapore (2026): Top [N] Ranked by Reviews"`. Include year. Max 60 chars.
 - **`slug`**: Never include the year. Use `best-topic-singapore`, never `best-topic-singapore-2026`. The year lives in the title only.
-- **`excerpt`** (meta description): 150–160 chars. Include: primary keyword + best pick with star rating + use-case signal + year. Example: `"Top 10 aircon cleaning services in Singapore ranked by Google reviews and pricing. Best overall: SJR Aircon (5.0★, 300+ reviews). HDB, condo, commercial — 2026."`
+- **`excerpt`** (meta description): 150–160 chars. Include: primary keyword + best pick with star rating + use-case signal + year. Example: `"Top 10 aircon cleaning services in Singapore ranked by Google reviews and pricing. Best overall: SJR Aircon (5.0★, 300+ reviews). HDB, condo, commercial, 2026."`
 - **`updatedAt`**: Update this date whenever article content is refreshed. Freshness is a ranking signal.
 - **`publishedAt`**: Set to actual first publish date. Never fabricate.
 - **`rating`**: 0–10 numeric. Reflects overall quality of the category's top pick.
