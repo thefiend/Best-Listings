@@ -43,7 +43,7 @@ export default function HomePage() {
             Singapore&apos;s Best-Reviewed Services &amp; Professionals
           </h1>
           <p className="text-white/70 text-base mb-6 max-w-xl mx-auto">
-            Every ranking is built on verified Google reviews, direct provider visits, and consistent scoring criteria — not sponsored listings.
+            Every ranking is built on verified Google reviews, direct provider visits, and consistent scoring criteria.
           </p>
 
           {/* Trust bar */}
