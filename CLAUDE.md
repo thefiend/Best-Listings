@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+Before committing or pushing, always run `git diff --staged` and review all staged changes carefully. Verify every file is correct and intentional before proceeding.
+
 ## Writing Style
 
 Never use " — " (em dash with spaces) anywhere in content, titles, or code comments. Use a colon, comma, or rewrite the sentence instead.
