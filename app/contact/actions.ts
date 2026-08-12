@@ -38,7 +38,7 @@ export async function submitContact(
     },
     body: JSON.stringify({
       sender: { name, email },
-      to: [{ email: 'hello@bestthingreview.com', name: 'Best Thing Review' }],
+      to: [{ email: 'jasyscotech@gmail.com', name: 'Best Thing Review' }],
       replyTo: { email, name },
       subject: `[Contact] ${subject}`,
       textContent: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
