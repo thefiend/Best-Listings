@@ -145,6 +145,16 @@ const nextConfig: NextConfig = {
       "best-music-schools-singapore",
       "best-immigration-consultants-singapore",
       "best-business-coaches-singapore",
+      "best-cardiologist-singapore",
+      "best-hotpot-singapore",
+      "best-omakase-singapore",
+      "best-nightclubs-singapore",
+      "best-car-detailing-singapore",
+      "best-steakhouse-singapore",
+      "best-language-classes-singapore",
+      "best-buffet-singapore",
+      "best-rooftop-bars-singapore",
+      "best-funeral-services-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({

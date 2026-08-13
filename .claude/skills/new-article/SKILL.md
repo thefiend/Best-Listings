@@ -52,7 +52,7 @@ Follow `docs/article-generation-spec.md` exactly. Required sections in order:
 4. `<ProsCons>` (top pick only)
 5. `## How We Ranked These <Business Type>`
 6. `## Our Top Picks` + `<PicksList>`
-7. Per-business H3 sections — each ends with: description → contact block → customer quote → CTA block
+7. Per-business H3 sections — each ends with: description → contact block → customer quote → CTA block. Business photo (`<img>`) is injected after the H3 by `fetch-place-photos.py` in step 7 — do not add manually.
 8. `## How They Compare` + `<ComparisonTable>`
 9. `## What to Look for When Hiring a <Business Type>`
 10. `## Frequently Asked Questions` (8–12 Q&A, H3 per question)
@@ -73,13 +73,30 @@ Follow `docs/article-generation-spec.md` exactly. Required sections in order:
 npx tsx scripts/generate-og-image.ts --article content/reviews/<CATEGORY>/best-<BUSINESS_TYPE>-singapore-2026.mdx
 ```
 
+The script saves with a title-derived filename. Rename to match the frontmatter `coverImage` path:
+```bash
+mv "public/images/og/<title-derived-name>.png" "public/images/og/best-<BUSINESS_TYPE>-singapore-2026.png"
+```
+
 ### 6. Save article
 ```
 content/reviews/<CATEGORY>/best-<BUSINESS_TYPE>-singapore-2026.mdx
 ```
 Set `coverImage` frontmatter to `/images/og/best-<BUSINESS_TYPE>-singapore-2026.png`.
 
-### 7. Verify
+### 7. Fetch and inject business photos
+```bash
+python3 scripts/fetch-place-photos.py --inject content/reviews/<CATEGORY>/best-<BUSINESS_TYPE>-singapore-2026.mdx
+```
+This downloads the top Google Places photo for each business (compressed to 800px wide, quality 80) and injects an `<img>` tag immediately after the H3 heading in each company section. Photos saved to `public/images/places/best-<BUSINESS_TYPE>-singapore/`.
+
+**Notes:**
+- Script is idempotent — already-downloaded photos are skipped
+- Uses `placeId` from `<CompanyRating>` if present, otherwise searches by name
+- If a business has no photos or cannot be found, it is skipped silently
+- All downloaded images are auto-compressed; no manual compression needed
+
+### 8. Verify
 ```bash
 npm run build
 ```

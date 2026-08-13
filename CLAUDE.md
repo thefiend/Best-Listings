@@ -124,3 +124,4 @@ Before publishing any article:
 - [ ] Individual company anchors use `<a id="business-[N]"></a>` format
 - [ ] Slug added to `businessSlugs` in `next.config.ts`
 - [ ] Entry added to `public/llms.txt`
+- [ ] Business photos fetched and injected: `python3 scripts/fetch-place-photos.py --inject <mdx-path>`
