@@ -154,7 +154,7 @@ function parseCompaniesFromContent(
     // Description: between heading and first 📍
     const descMatch = section.match(/### \d+\. [^\n]+\n+([\s\S]+?)\n+📍/)
     const description = descMatch
-      ? descMatch[1].trim().replace(/\n+/g, ' ')
+      ? descMatch[1].trim().replace(/<[^>]+>/g, '').replace(/\n+/g, ' ').trim()
       : ''
 
     // CompanyRating props
