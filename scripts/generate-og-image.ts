@@ -282,6 +282,7 @@ async function main() {
   let title: string
   let category: string
   let location: string | undefined
+  let frontmatterSlug: string | undefined
 
   if (values.article) {
     // Read from MDX frontmatter
@@ -289,9 +290,10 @@ async function main() {
     const raw = readFileSync(articlePath, 'utf8')
     const { data } = matter(raw)
 
-    title    = (values.title    as string | undefined) ?? data.title    ?? ''
-    category = (values.category as string | undefined) ?? capitalize(data.category ?? '')
-    location = (values.location as string | undefined) ?? data.location ?? undefined
+    title          = (values.title    as string | undefined) ?? data.title    ?? ''
+    category       = (values.category as string | undefined) ?? capitalize(data.category ?? '')
+    location       = (values.location as string | undefined) ?? data.location ?? undefined
+    frontmatterSlug = data.slug as string | undefined
 
     if (!title) throw new Error(`No title found in ${articlePath} — add --title`)
   } else {
@@ -324,7 +326,7 @@ async function main() {
     }
   }
 
-  const slug = toSlug(title)
+  const slug = frontmatterSlug ?? toSlug(title)
   const outPath = (values.output as string | undefined) ?? `public/images/og/${slug}.png`
 
   log(`Generating OG image: "${title}"`)
