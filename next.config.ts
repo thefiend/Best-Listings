@@ -155,6 +155,17 @@ const nextConfig: NextConfig = {
       "best-buffet-singapore",
       "best-rooftop-bars-singapore",
       "best-funeral-services-singapore",
+      // SinHao contractor articles — August 2026
+      "best-composite-timber-decking-singapore",
+      "best-stainless-steel-fabrication-singapore",
+      "best-aluminium-fabrication-singapore",
+      "best-balcony-canopy-contractors-singapore",
+      "best-polycarbonate-awning-singapore",
+      "best-mcst-contractors-singapore",
+      "best-frosted-glass-singapore",
+      "best-tempered-glass-contractors-singapore",
+      "best-parquet-flooring-singapore",
+      "best-aa-works-contractors-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
@@ -186,6 +197,22 @@ const nextConfig: NextConfig = {
       {
         source: "/tech/best-laptops-2024",
         destination: "/tech/best-laptops",
+        permanent: true,
+      },
+      // Travel articles (year-suffixed redirect)
+      {
+        source: "/travel/best-private-car-singapore-johor-bahru-2026",
+        destination: "/travel/best-private-car-singapore-johor-bahru",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-hourly-chauffeur-singapore-2026",
+        destination: "/travel/best-hourly-chauffeur-singapore",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-private-city-tour-car-singapore-2026",
+        destination: "/travel/best-private-city-tour-car-singapore",
         permanent: true,
       },
     ];
