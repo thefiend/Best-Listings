@@ -37,8 +37,6 @@ const nextConfig: NextConfig = {
       "best-airport-transfer-singapore",
       "best-audit-firms-singapore",
       "best-bakeries-singapore",
-      "best-bhutan-7-day-itinerary-packages",
-      "best-bhutan-honeymoon-packages",
       "best-bhutan-travel-agencies-singapore",
       "best-breakfast-singapore",
       "best-brunch-cafes-singapore",
@@ -179,10 +177,6 @@ const nextConfig: NextConfig = {
       "best-tempered-glass-contractors-singapore",
       "best-parquet-flooring-singapore",
       "best-aa-works-contractors-singapore",
-      "best-bhutan-hotels-resorts",
-      "best-bhutan-nepal-tour-packages",
-      "best-bhutan-trekking-packages",
-      "best-bhutan-family-tour-packages",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
@@ -240,6 +234,47 @@ const nextConfig: NextConfig = {
       {
         source: "/travel/best-bhutan-luxury-tours-2026",
         destination: "/travel/best-bhutan-luxury-tours",
+        permanent: true,
+      },
+      // Bhutan travel articles — August 2026 batch
+      {
+        source: "/travel/best-bhutan-7-day-itinerary-packages-2026",
+        destination: "/travel/best-bhutan-7-day-itinerary-packages",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-family-tour-packages-2026",
+        destination: "/travel/best-bhutan-family-tour-packages",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-festival-tours-2026",
+        destination: "/travel/best-bhutan-festival-tours",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-honeymoon-packages-2026",
+        destination: "/travel/best-bhutan-honeymoon-packages",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-hotels-resorts-2026",
+        destination: "/travel/best-bhutan-hotels-resorts",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-nepal-tour-packages-2026",
+        destination: "/travel/best-bhutan-nepal-tour-packages",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-tour-packages-singapore-2026",
+        destination: "/travel/best-bhutan-tour-packages-singapore",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-trekking-packages-2026",
+        destination: "/travel/best-bhutan-trekking-packages",
         permanent: true,
       },
     ];
