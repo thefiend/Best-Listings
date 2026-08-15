@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
       "best-airport-transfer-singapore",
       "best-audit-firms-singapore",
       "best-bakeries-singapore",
+      "best-bhutan-7-day-itinerary-packages",
+      "best-bhutan-honeymoon-packages",
       "best-bhutan-travel-agencies-singapore",
       "best-breakfast-singapore",
       "best-brunch-cafes-singapore",
@@ -125,6 +127,17 @@ const nextConfig: NextConfig = {
       "best-wedding-car-rental-singapore",
       "best-yoga-studios-singapore",
       "best-zi-char-singapore",
+      // SJR Air-Conditioned aircon articles — August 2026
+      "best-aircon-installation-singapore",
+      "best-daikin-aircon-repair-singapore",
+      "best-mitsubishi-aircon-repair-singapore",
+      "best-emergency-aircon-repair-singapore",
+      "best-commercial-aircon-services-singapore",
+      "best-industrial-hvac-singapore",
+      "best-aircon-gas-top-up-singapore",
+      "best-aircon-compressor-repair-singapore",
+      "best-aircon-water-leaking-repair-singapore",
+      "best-aircon-maintenance-contracts-singapore",
       // New articles — August 2026 batch
       "best-lasik-clinics-singapore",
       "best-fertility-clinics-singapore",
@@ -166,6 +179,10 @@ const nextConfig: NextConfig = {
       "best-tempered-glass-contractors-singapore",
       "best-parquet-flooring-singapore",
       "best-aa-works-contractors-singapore",
+      "best-bhutan-hotels-resorts",
+      "best-bhutan-nepal-tour-packages",
+      "best-bhutan-trekking-packages",
+      "best-bhutan-family-tour-packages",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
@@ -180,6 +197,11 @@ const nextConfig: NextConfig = {
       {
         source: "/business/best-bhutan-travel-agency-2026",
         destination: "/travel/best-bhutan-travel-agency",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-budget-bhutan-tour-packages-2026",
+        destination: "/travel/best-budget-bhutan-tour-packages",
         permanent: true,
       },
       // Preschool location pages (filename suffix differs from slug)
@@ -213,6 +235,11 @@ const nextConfig: NextConfig = {
       {
         source: "/travel/best-private-city-tour-car-singapore-2026",
         destination: "/travel/best-private-city-tour-car-singapore",
+        permanent: true,
+      },
+      {
+        source: "/travel/best-bhutan-luxury-tours-2026",
+        destination: "/travel/best-bhutan-luxury-tours",
         permanent: true,
       },
     ];
