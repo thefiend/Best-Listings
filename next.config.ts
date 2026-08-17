@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
       "best-aircon-servicing-singapore",
       "best-airport-transfer-singapore",
       "best-audit-firms-singapore",
+      "best-bak-kut-teh-singapore",
       "best-bakeries-singapore",
       "best-bhutan-travel-agencies-singapore",
       "best-breakfast-singapore",
@@ -187,6 +188,23 @@ const nextConfig: NextConfig = {
       "best-tempered-glass-contractors-singapore",
       "best-parquet-flooring-singapore",
       "best-aa-works-contractors-singapore",
+      // Indian restaurant — August 2026
+      "best-indian-restaurant-singapore",
+      // Nasi lemak — August 2026
+      "best-nasi-lemak-singapore",
+      // Satay — August 2026
+      "best-satay-singapore",
+      // Fine dining — August 2026
+      "best-fine-dining-singapore",
+      // Wonton mee — August 2026
+      "best-wonton-mee-singapore",
+      // Laksa — August 2026
+      "best-laksa-singapore",
+      // Burger — August 2026
+      "best-burger-singapore",
+      // Food/dining articles — August 2026 batch
+      "best-chinese-restaurant-singapore",
+      "best-char-kway-teow-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
