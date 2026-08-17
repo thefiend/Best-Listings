@@ -188,6 +188,20 @@ const nextConfig: NextConfig = {
       "best-tempered-glass-contractors-singapore",
       "best-parquet-flooring-singapore",
       "best-aa-works-contractors-singapore",
+      // Therapist and counsellors — August 2026
+      "best-therapist-singapore",
+      // Health screening — August 2026
+      "best-health-screening-singapore",
+      // Orthopaedic surgeon — August 2026
+      "best-orthopaedic-surgeon-singapore",
+      // Teeth whitening — August 2026
+      "best-teeth-whitening-singapore",
+      // Skin clinic — August 2026
+      "best-skin-clinic-singapore",
+      // Dental implant — August 2026
+      "best-dental-implant-singapore",
+      // ENT specialist — August 2026
+      "best-ent-specialist-singapore",
       // Indian restaurant — August 2026
       "best-indian-restaurant-singapore",
       // Nasi lemak — August 2026
@@ -205,6 +219,12 @@ const nextConfig: NextConfig = {
       // Food/dining articles — August 2026 batch
       "best-chinese-restaurant-singapore",
       "best-char-kway-teow-singapore",
+      // Hair transplant — August 2026
+      "best-hair-transplant-singapore",
+      // Gynaecologist — August 2026
+      "best-gynaecologist-singapore",
+      // Hair loss treatment — August 2026
+      "best-hair-loss-treatment-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
