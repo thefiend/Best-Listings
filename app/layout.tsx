@@ -81,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `}</Script>
           </>
         )}
+        <Script src="https://news.google.com/swg/js/v1/publisher.js" strategy="afterInteractive" />
         <Nav />
         <main>{children}</main>
         <Footer />
