@@ -58,8 +58,8 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 mb-4">
-          <div google-add-preferred-source-btn data-theme="dark" data-lang="en"></div>
+        <div className="mt-8 mb-4 relative h-10">
+          <div google-add-preferred-source-btn="" data-theme="dark" data-lang="en"></div>
         </div>
         <p className="text-xs text-white/40">
           © {new Date().getFullYear()} BestThingReview.com · All rights reserved
