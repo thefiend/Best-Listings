@@ -37,7 +37,7 @@ export async function submitContact(
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      sender: { name, email },
+      sender: { name: 'Best Thing Review', email: 'noreply@bestthingreview.com' },
       to: [{ email: 'jasyscotech@gmail.com', name: 'Best Thing Review' }],
       replyTo: { email, name },
       subject: `[Contact] ${subject}`,
