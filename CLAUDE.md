@@ -14,6 +14,10 @@ Never write one-off scripts for tasks already covered by existing scripts. Alway
 - **Business photos:** `python3 scripts/fetch-place-photos.py --inject <mdx-files...>` — auto-compresses on download (800px, quality 80, mozjpeg)
 - **Company data:** `python3 scripts/generate-company-data.py`
 
+## Article-Specific Image Overrides
+
+- **Best Web Design Singapore:** always use `assets/best-web-design-singapore.png` as the business/hero image. Do not fetch or replace with Google Places photos.
+
 ## Images — Always Compress
 
 All images added to the repo must be compressed before committing. Never commit raw unoptimized images.

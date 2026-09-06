@@ -225,6 +225,24 @@ const nextConfig: NextConfig = {
       "best-gynaecologist-singapore",
       // Hair loss treatment — August 2026
       "best-hair-loss-treatment-singapore",
+      // Best Web Design Singapore service articles — September 2026
+      "best-google-ads-agencies-singapore",
+      "best-wordpress-web-design-singapore",
+      "best-shopify-developers-singapore",
+      "best-ecommerce-web-design-singapore",
+      "best-social-media-marketing-agencies-singapore",
+      "best-facebook-ads-agencies-singapore",
+      "best-landing-page-design-singapore",
+      "best-local-seo-services-singapore",
+      "best-technical-seo-services-singapore",
+      "best-content-marketing-agencies-singapore",
+      "best-website-redesign-singapore",
+      "best-affordable-website-design-singapore",
+      "best-link-building-services-singapore",
+      "best-seo-copywriting-services-singapore",
+      "best-website-maintenance-services-singapore",
+      "best-xiaohongshu-marketing-agencies-singapore",
+      "best-ai-seo-services-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
@@ -255,6 +273,12 @@ const nextConfig: NextConfig = {
       {
         source: "/business/best-preschools-katong-2026",
         destination: "/business/best-preschools-katong-singapore",
+        permanent: true,
+      },
+      // SEO cannibalization fix: company → agency (agency has more content, updated Aug 2026)
+      {
+        source: "/business/best-seo-company-singapore",
+        destination: "/business/best-seo-agency-singapore",
         permanent: true,
       },
       // Tech slug cleanup
