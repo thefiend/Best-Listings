@@ -3,7 +3,7 @@
 interface CompanyRatingProps {
   name: string
   rating: number        // Google rating 1–5
-  reviewCount: number
+  reviewCount?: number  // omit to skip AggregateRating microdata
   businessType?: string // Schema.org type, default 'LocalBusiness'
   address?: string
   postalCode?: string
@@ -56,22 +56,29 @@ export function CompanyRating({
         </span>
       )}
 
-      <span
-        itemScope
-        itemType="https://schema.org/AggregateRating"
-        itemProp="aggregateRating"
-        className="inline-flex items-center gap-1.5"
-      >
-        <meta itemProp="bestRating" content="5" />
-        <meta itemProp="worstRating" content="1" />
-        <Stars rating={rating} />
-        <strong className="text-sm font-bold text-gray-900">
-          <span itemProp="ratingValue">{rating.toFixed(1)}</span>
-        </strong>
-        <span className="text-sm text-gray-500">
-          (<span itemProp="ratingCount">{reviewCount}</span> Google reviews)
+      {reviewCount != null ? (
+        <span
+          itemScope
+          itemType="https://schema.org/AggregateRating"
+          itemProp="aggregateRating"
+          className="inline-flex items-center gap-1.5"
+        >
+          <meta itemProp="bestRating" content="5" />
+          <meta itemProp="worstRating" content="1" />
+          <Stars rating={rating} />
+          <strong className="text-sm font-bold text-gray-900">
+            <span itemProp="ratingValue">{rating.toFixed(1)}</span>
+          </strong>
+          <span className="text-sm text-gray-500">
+            (<span itemProp="ratingCount">{reviewCount}</span> Google reviews)
+          </span>
         </span>
-      </span>
+      ) : (
+        <span className="inline-flex items-center gap-1.5">
+          <Stars rating={rating} />
+          <strong className="text-sm font-bold text-gray-900">{rating.toFixed(1)}</strong>
+        </span>
+      )}
     </div>
   )
 }
