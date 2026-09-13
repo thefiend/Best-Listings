@@ -243,6 +243,11 @@ const nextConfig: NextConfig = {
       "best-website-maintenance-services-singapore",
       "best-xiaohongshu-marketing-agencies-singapore",
       "best-ai-seo-services-singapore",
+      // DA-boost cross-link articles — September 2026
+      "best-ux-ui-design-agencies-singapore",
+      "best-branding-agencies-singapore",
+      "best-cro-agencies-singapore",
+      "best-website-speed-optimization-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
