@@ -132,6 +132,23 @@ function getIntProp(propsStr: string, key: string): number | undefined {
   return m ? parseInt(m[1]) : undefined
 }
 
+function parsePlainDetails(section: string) {
+  const ratingLine = section.match(/^⭐ \*\*Rating:\*\* ([\d.]+) \(([\d,]+) Google reviews?\)/m)
+  if (!ratingLine) return undefined
+
+  const addressLine = section.match(/^📍 \*\*Address:\*\* ([^\\\n]+)/m)?.[1].trim()
+  const postalMatch = addressLine?.match(/,?\s*Singapore (\d{6})\s*$/)
+  const phone = section.match(/^📞 \*\*Phone:\*\* ([^\\\n]+)/m)?.[1].trim()
+
+  return {
+    rating: parseFloat(ratingLine[1]),
+    reviewCount: parseInt(ratingLine[2].replace(/,/g, '')),
+    address: postalMatch ? addressLine!.slice(0, postalMatch.index).trim() : addressLine,
+    postalCode: postalMatch?.[1],
+    phone,
+  }
+}
+
 function parseCompaniesFromContent(
   content: string,
   sourceArticle: { title: string; slug: string; category: string; coverImage?: string }
@@ -157,18 +174,18 @@ function parseCompaniesFromContent(
       ? descMatch[1].trim().replace(/<[^>]+>/g, '').replace(/\n+/g, ' ').trim()
       : ''
 
-    // CompanyRating props
+    // CompanyRating props, falling back to the plain "⭐ **Rating:**" / "📍 **Address:**" lines
     const ratingMatch = section.match(/<CompanyRating ([^/]+)\/>/)
-    if (!ratingMatch) continue
-    const propsStr = ratingMatch[1]
+    const propsStr = ratingMatch ? ratingMatch[1] : ''
+    const fallback = ratingMatch ? undefined : parsePlainDetails(section)
 
-    const rating = getNumProp(propsStr, 'rating')
-    const reviewCount = getIntProp(propsStr, 'reviewCount')
+    const rating = ratingMatch ? getNumProp(propsStr, 'rating') : fallback?.rating
+    const reviewCount = ratingMatch ? getIntProp(propsStr, 'reviewCount') : fallback?.reviewCount
     if (rating === undefined || reviewCount === undefined) continue
 
-    const address = getProp(propsStr, 'address')
-    const postalCode = getProp(propsStr, 'postalCode')
-    const phone = getProp(propsStr, 'phone')
+    const address = ratingMatch ? getProp(propsStr, 'address') : fallback?.address
+    const postalCode = ratingMatch ? getProp(propsStr, 'postalCode') : fallback?.postalCode
+    const phone = ratingMatch ? getProp(propsStr, 'phone') : fallback?.phone
     const businessType = getProp(propsStr, 'businessType') ?? 'LocalBusiness'
 
     // Website
@@ -251,4 +268,15 @@ export function getAllCompanies(baseDir = process.cwd()): Company[] {
 
 export function getCompany(slug: string, baseDir = process.cwd()): Company | undefined {
   return getAllCompanies(baseDir).find(c => c.slug === slug)
+}
+
+// Companies ranked in an article, in rank order, resolved to their /company-review pages
+export function getCompaniesInArticle(content: string, baseDir = process.cwd()): Company[] {
+  const bySlug = new Map(getAllCompanies(baseDir).map(c => [c.slug, c]))
+  return parseCompaniesFromContent(content, { title: '', slug: '', category: '' })
+    .map(c => {
+      const company = bySlug.get(c.slug)
+      return company ? { ...company, rank: c.rank, label: c.label } : undefined
+    })
+    .filter((c): c is Company => c !== undefined)
 }

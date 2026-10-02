@@ -3,9 +3,65 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getAllCompanies, getCompany } from '@/lib/companies'
+import { getAllReviews } from '@/lib/content'
+import type { Company } from '@/lib/types'
 
 const BASE_URL = 'https://www.bestthingreview.com'
 const PUBLISHED_DATE = '2026-05-27'
+
+function getSourceDates(company: Company): { publishedAt: string; updatedAt: string } {
+  const review = getAllReviews().find(
+    r => r.slug === company.sourceArticle.slug && r.category === company.sourceArticle.category
+  )
+  return {
+    publishedAt: review?.publishedAt ?? PUBLISHED_DATE,
+    updatedAt: review?.updatedAt ?? PUBLISHED_DATE,
+  }
+}
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+}
+
+// "10 Best Moving Companies in Singapore (2026): ..." -> "moving companies in Singapore"
+function articleTopic(title: string): string {
+  return title
+    .replace(/(\s+of)?\s+\(?\d{4}\)?.*$/, '')
+    .replace(/^(\d+\s+)?Best\s+/i, '')
+    .replace(/\s+(in\s+|for\s+\S+\s+)?Singapore(\s+Travellers)?$/i, ' in Singapore')
+    .trim()
+}
+
+function buildFaqs(company: Company): Array<{ question: string; answer: string }> {
+  const { name, rating, reviewCount, rank, label, address, postalCode, phone, website, sourceArticle } = company
+  const topic = articleTopic(sourceArticle.title)
+  const fullAddress = address ? `${address}${postalCode ? `, Singapore ${postalCode}` : ''}` : undefined
+  const faqs = [
+    {
+      question: `Is ${name} good?`,
+      answer: `${name} holds a ${rating.toFixed(1)} out of 5 Google rating from ${reviewCount.toLocaleString()} reviews and is ranked #${rank} (${label}) in BestThingReview's independent ranking of the best ${topic}.`,
+    },
+    {
+      question: `What do customers say about ${name}?`,
+      answer: company.reviewQuote
+        ? `A verified reviewer${company.reviewerName ? `, ${company.reviewerName},` : ''} wrote: "${company.reviewQuote}"`
+        : `Across ${reviewCount.toLocaleString()} Google reviews, ${name} averages ${rating.toFixed(1)} stars.`,
+    },
+  ]
+  if (fullAddress) {
+    faqs.push({ question: `Where is ${name} located?`, answer: `${name} is located at ${fullAddress}.` })
+  }
+  if (phone || website) {
+    faqs.push({
+      question: `How do I contact ${name}?`,
+      answer: [
+        phone ? `Call ${name} on ${phone}` : '',
+        website ? `${phone ? 'or visit' : 'Visit'} ${website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}` : '',
+      ].filter(Boolean).join(' ') + '.',
+    })
+  }
+  return faqs
+}
 
 export const dynamicParams = false
 
@@ -22,20 +78,15 @@ export async function generateMetadata({
   const company = getCompany(slug)
   if (!company) return {}
 
-  const { name, label, services, description, address, sourceArticle } = company
+  const { name, rating, reviewCount, rank, label, sourceArticle } = company
   const year = new Date().getFullYear()
-  const location = address ? 'Singapore' : ''
-  const serviceSnippet = services.slice(0, 2).join(' & ')
+  const { publishedAt, updatedAt } = getSourceDates(company)
 
-  // Keyword-rich title: Name — Services Label | Brand
-  const title = serviceSnippet
-    ? `${name} — ${serviceSnippet} | ${label} ${year}`
-    : `${name} Review & Rating ${year} | ${label}`
+  // Matches "[company] reviews" searches, which is how these pages get found
+  const title = { absolute: `${name} Reviews (${year}): ${rating.toFixed(1)}★ Rating & Verdict | BestThingReview` }
 
-  // Full first sentence for description
-  const firstSentence = description.match(/^[^.!?]+[.!?]/)?.[0] ?? description.slice(0, 155)
-  const descSuffix = location ? ` Based in ${location}.` : ''
-  const metaDesc = (firstSentence + descSuffix).slice(0, 160)
+  const metaDesc = `${name} reviews: ${rating.toFixed(1)}★ from ${reviewCount.toLocaleString()} Google reviews. Ranked #${rank} ${label.toLowerCase()} in our ${articleTopic(sourceArticle.title)} guide. Address, contact, verdict.`
+    .slice(0, 160)
 
   const url = `${BASE_URL}/company-review/${slug}`
   const ogImage = sourceArticle.coverImage
@@ -49,9 +100,10 @@ export async function generateMetadata({
     openGraph: {
       type: 'article',
       url,
-      title,
+      title: title.absolute,
       description: metaDesc,
-      publishedTime: PUBLISHED_DATE,
+      publishedTime: publishedAt,
+      modifiedTime: updatedAt,
       ...(ogImage ? { images: [ogImage] } : {}),
     },
     ...(ogImage ? { twitter: { card: 'summary_large_image', images: [ogImage] } } : {}),
@@ -73,14 +125,6 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-function bestForStatement(label: string, services: string[]): string {
-  const clean = label.replace(/^Best\s+/i, '').replace(/^for\s+/i, '')
-  if (services.length > 0) {
-    return `${name} is best for ${clean.toLowerCase()} needing ${services.slice(0, 2).join(' or ').toLowerCase()} services in Singapore.`
-  }
-  return `${name} is best for ${clean.toLowerCase()} in Singapore.`
-}
-
 export default async function CompanyReviewPage({
   params,
 }: {
@@ -100,6 +144,8 @@ export default async function CompanyReviewPage({
 
   const pageUrl = `${BASE_URL}/company-review/${slug}`
   const year = new Date().getFullYear()
+  const { updatedAt } = getSourceDates(company)
+  const faqs = buildFaqs(company)
 
   // Related companies from same article (excluding self, max 4)
   const related = getAllCompanies()
@@ -148,7 +194,7 @@ export default async function CompanyReviewPage({
     } : {}),
     review: {
       '@type': 'Review',
-      datePublished: PUBLISHED_DATE,
+      datePublished: updatedAt,
       reviewRating: {
         '@type': 'Rating',
         ratingValue: rating.toFixed(1),
@@ -173,10 +219,21 @@ export default async function CompanyReviewPage({
     ],
   }
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       {/* Breadcrumb */}
       <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5 flex-wrap">
@@ -193,7 +250,7 @@ export default async function CompanyReviewPage({
           #{rank} {label}
         </p>
         <h1 className="text-2xl md:text-3xl font-bold text-brand-navy leading-tight mb-3">
-          {name}
+          {name} Reviews
         </h1>
         <div className="flex items-center gap-3 flex-wrap">
           <StarRating rating={rating} />
@@ -202,6 +259,9 @@ export default async function CompanyReviewPage({
             {reviewCount.toLocaleString()} Google reviews
           </span>
         </div>
+        <p className="text-xs text-gray-400 mt-2">
+          Last updated {formatDate(updatedAt)} · By BestThingReview
+        </p>
       </div>
 
       {/* Contact details */}
@@ -318,6 +378,19 @@ export default async function CompanyReviewPage({
               }
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mb-8">
+        <h2 className="text-lg font-bold text-brand-navy mb-3">{name} FAQs</h2>
+        <div className="space-y-4">
+          {faqs.map(({ question, answer }) => (
+            <div key={question}>
+              <h3 className="text-sm font-semibold text-gray-900">{question}</h3>
+              <p className="text-sm text-gray-700 leading-relaxed mt-1">{answer}</p>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -13,11 +13,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.bestthingreview.com'),
   title: {
-    default: 'BestThingReview — Trusted Reviews & Buying Guides',
+    default: 'BestThingReview: Best Singapore Businesses Ranked by Reviews',
     template: '%s | BestThingReview',
   },
   description:
-    'Expert reviews, in-depth comparisons, and buying guides across tech, home, software, lifestyle, and travel.',
+    'Independent rankings of the best Singapore businesses and services, scored on verified Google reviews, licensing, and pricing. 200+ guides, updated 2026.',
   icons: {
     icon: [
       { url: '/favicon/favicon.ico' },
@@ -39,7 +39,18 @@ const siteSchema = {
       '@type': 'Organization',
       '@id': 'https://www.bestthingreview.com/#organization',
       name: 'BestThingReview',
+      alternateName: ['Best Thing Review', 'BestThingReview.com'],
       url: 'https://www.bestthingreview.com',
+      description:
+        'Independent Singapore review platform ranking local businesses and services by verified Google reviews, licensing, and pricing transparency.',
+      areaServed: { '@type': 'Country', name: 'Singapore' },
+      founder: {
+        '@type': 'Person',
+        name: 'Jason Kam',
+        jobTitle: 'Lead Service Reviewer',
+        sameAs: ['https://www.linkedin.com/in/jasonkammf/'],
+      },
+      publishingPrinciples: 'https://www.bestthingreview.com/editorial-policy',
       logo: {
         '@type': 'ImageObject',
         url: 'https://www.bestthingreview.com/favicon/android-chrome-512x512.png',
@@ -53,11 +64,7 @@ const siteSchema = {
       url: 'https://www.bestthingreview.com',
       name: 'BestThingReview',
       publisher: { '@id': 'https://www.bestthingreview.com/#organization' },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: 'https://www.bestthingreview.com/?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
-      },
+      inLanguage: 'en-SG',
     },
   ],
 }

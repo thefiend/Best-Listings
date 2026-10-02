@@ -7,7 +7,8 @@ import Image from 'next/image'
 import { compile, run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { getAllReviews, getReview } from '@/lib/content'
-import { Category } from '@/lib/types'
+import { getCompaniesInArticle } from '@/lib/companies'
+import { Category, Review } from '@/lib/types'
 import { RatingBadge } from '@/components/rating-badge'
 import { CategoryBadge } from '@/components/category-badge'
 import { mdxComponents } from '@/lib/mdx-components'
@@ -49,6 +50,27 @@ function extractFAQs(content: string): Array<{ question: string; answer: string 
     if (question && answer) faqs.push({ question, answer })
   }
   return faqs
+}
+
+const GENERIC_SLUG_TOKENS = new Set(['best', 'singapore', 'top', 'services', 'service', 'companies', 'company', '2026'])
+
+function slugTokens(slug: string): Set<string> {
+  return new Set(slug.split('-').filter(t => !GENERIC_SLUG_TOKENS.has(t)))
+}
+
+// Topically closest articles first (shared slug keywords), then newest in the same category
+function getRelatedReviews(current: Review, limit: number): Review[] {
+  const tokens = slugTokens(current.slug)
+  return getAllReviews()
+    .filter(r => r.slug !== current.slug)
+    .map(r => {
+      const overlap = [...slugTokens(r.slug)].filter(t => tokens.has(t)).length
+      return { r, score: overlap * 2 + (r.category === current.category ? 1 : 0) }
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ r }) => r)
 }
 
 async function MDXContent({ source }: { source: string }) {
@@ -126,13 +148,15 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
 
   const headings = extractHeadings(content)
 
-  const related = getAllReviews()
-    .filter(r => r.category === category && r.slug !== slug)
-    .slice(0, 3)
+  const related = getRelatedReviews(review, 6)
+  const relatedCards = related.slice(0, 3)
+  const seeAlso = related.length > 3 ? related.slice(3) : related
 
   const faqs = extractFAQs(content)
   const picks = extractPicks(content)
   const canonicalUrl = `${BASE_URL}/${category}/${slug}`
+  const rankedCompanies = getCompaniesInArticle(content)
+  const companyByRank = new Map(rankedCompanies.map(c => [c.rank, c]))
 
   const pageSchema = {
     '@context': 'https://schema.org',
@@ -194,13 +218,17 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         name: title,
         description: excerpt,
         numberOfItems: picks.length,
-        itemListElement: picks.map(({ rank, name, label }) => ({
-          '@type': 'ListItem',
-          position: rank,
-          name: name,
-          description: label,
-          url: `${canonicalUrl}#business-${rank}`,
-        })),
+        itemListOrder: 'https://schema.org/ItemListOrderAscending',
+        itemListElement: picks.map(({ rank, name, label }) => {
+          const company = companyByRank.get(rank)
+          return {
+            '@type': 'ListItem',
+            position: rank,
+            name: name,
+            description: label,
+            url: company ? `${BASE_URL}/company-review/${company.slug}` : `${canonicalUrl}#business-${rank}`,
+          }
+        }),
       }] : []),
     ],
   }
@@ -280,11 +308,27 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
       <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
         <article className="prose prose-gray prose-headings:text-brand-navy prose-a:text-brand-blue max-w-none min-w-0">
           <MDXContent source={content} />
-          {related.length > 0 && (
+          {rankedCompanies.length > 0 && (
+            <div className="not-prose mt-10 p-5 bg-white rounded-xl border border-gray-200">
+              <p className="text-sm font-bold text-gray-700 mb-3">Full Reviews of Every Ranked Company</p>
+              <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+                {rankedCompanies.map(c => (
+                  <li key={c.slug} className="text-sm">
+                    <span className="text-gray-400 mr-1">#{c.rank}</span>
+                    <Link href={`/company-review/${c.slug}`} className="text-brand-blue hover:underline">
+                      {c.name} review
+                    </Link>
+                    <span className="text-gray-400">: {c.rating.toFixed(1)}★, {c.reviewCount.toLocaleString()} reviews</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {seeAlso.length > 0 && (
             <div className="not-prose mt-10 p-5 bg-gray-50 rounded-xl border border-gray-100">
               <p className="text-sm font-bold text-gray-700 mb-3">See Also</p>
               <ul className="space-y-2">
-                {related.map(r => (
+                {seeAlso.map(r => (
                   <li key={r.slug}>
                     <Link href={`/${r.category}/${r.slug}`} className="text-brand-blue text-sm hover:underline">
                       {r.title}
@@ -318,11 +362,11 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
       )}
 
       {/* Related articles */}
-      {related.length > 0 && (
+      {relatedCards.length > 0 && (
         <div className="mt-12 pt-8 border-t border-gray-100">
-          <h2 className="text-lg font-bold text-brand-navy mb-4">More in {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+          <h2 className="text-lg font-bold text-brand-navy mb-4">Related Guides</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            {related.map(r => (
+            {relatedCards.map(r => (
               <Link
                 key={r.slug}
                 href={`/${r.category}/${r.slug}`}
