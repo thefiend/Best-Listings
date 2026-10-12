@@ -248,6 +248,12 @@ const nextConfig: NextConfig = {
       "best-branding-agencies-singapore",
       "best-cro-agencies-singapore",
       "best-website-speed-optimization-singapore",
+      // Home fittings and flooring articles: October 2026
+      "best-window-mesh-singapore",
+      "best-vinyl-flooring-singapore",
+      "best-composite-timber-flooring-singapore",
+      "best-tiles-singapore",
+      "best-interior-fittings-singapore",
     ];
 
     const businessRedirects = businessSlugs.map((slug) => ({
