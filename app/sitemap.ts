@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next'
 import { getAllReviews, getAllComparisons } from '@/lib/content'
-import { getAllCompanies } from '@/lib/companies'
 import { getAllDeals } from '@/lib/deals'
 
 const BASE_URL = 'https://www.bestthingreview.com'
@@ -43,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ]
 
-  const reviewRoutes: MetadataRoute.Sitemap = reviews.map(review => ({
+  const reviewRoutes: MetadataRoute.Sitemap = reviews.filter(r => !r.noindex).map(review => ({
     url: `${BASE_URL}/${review.category}/${review.slug}`,
     lastModified: new Date(review.updatedAt),
   }))
@@ -53,17 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(c.publishedAt),
   }))
 
-  const companies = getAllCompanies()
-  const reviewsBySlug = Object.fromEntries(
-    reviews.map(r => [`${r.category}/${r.slug}`, r])
-  )
-  const companyRoutes: MetadataRoute.Sitemap = companies.map(c => {
-    const sourceReview = reviewsBySlug[`${c.sourceArticle.category}/${c.sourceArticle.slug}`]
-    return {
-      url: `${BASE_URL}/company-review/${c.slug}`,
-      lastModified: sourceReview ? new Date(sourceReview.updatedAt) : latestDate,
-    }
-  })
+  // Individual /company-review/* pages are noindex, so they stay out of the sitemap
 
   const dealRoutes: MetadataRoute.Sitemap = deals.map(d => ({
     url: `${BASE_URL}/deals/${d.slug}`,
@@ -75,5 +64,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(Math.max(...deals.map(d => new Date(d.updatedAt).getTime()))),
   }] : []
 
-  return [...staticRoutes, ...reviewRoutes, ...comparisonRoutes, ...companyRoutes, ...dealIndexRoute, ...dealRoutes]
+  return [...staticRoutes, ...reviewRoutes, ...comparisonRoutes, ...dealIndexRoute, ...dealRoutes]
 }

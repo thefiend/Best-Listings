@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.bestthingreview.com' },
 }
 
+// Rendering every featured list made the homepage HTML ~885 KB; the rest are
+// one click away on the category pages
+const HOMEPAGE_GRID_LIMIT = 17
+
 const CATEGORIES: { slug: Category; label: string; emoji: string }[] = [
   { slug: 'business',  label: 'Business Services', emoji: '💼' },
   { slug: 'home',      label: 'Home & Living',      emoji: '🏠' },
@@ -28,7 +32,10 @@ export default function HomePage() {
     categoryCounts[slug] = allReviews.filter(r => r.category === slug).length
   }
 
-  const [spotlightReview, ...gridReviews] = featured
+  // Most recently updated first, so the capped grid shows fresh lists
+  const [spotlightReview, ...gridReviews] = [...featured].sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  )
 
   return (
     <>
@@ -36,14 +43,14 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-brand-navy to-brand-blue text-white py-14 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-brand-green/20 text-brand-green text-xs font-bold tracking-wide px-3 py-1 rounded-full mb-5">
-            Singapore-only · Independent · Genuine
+            Singapore-only · Google review data · Partners disclosed
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">
             Singapore&apos;s Best-Reviewed Services &amp; Professionals
           </h1>
           <p className="text-white/70 text-base mb-6 max-w-xl mx-auto">
-            Every ranking is built on verified Google reviews, direct provider visits, and consistent scoring criteria.
+            Every ranking is built on Google reviews, pricing and licensing checks, and consistent scoring criteria.
           </p>
 
           {/* Trust bar */}
@@ -99,8 +106,8 @@ export default function HomePage() {
 
         {/* Spotlight + grid */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-brand-navy">Top Singapore Rankings</h2>
-          <span className="text-sm text-gray-400">{featured.length} lists · updated Aug 2026</span>
+          <h2 className="text-xl font-bold text-brand-navy">Latest Singapore Rankings</h2>
+          <span className="text-sm text-gray-400">{allReviews.length} lists in total</span>
         </div>
 
         {spotlightReview && (
@@ -109,11 +116,23 @@ export default function HomePage() {
 
         {gridReviews.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {gridReviews.map((review, i) => (
-              <ReviewCard key={review.slug} review={review} preload={i === 0} />
+            {gridReviews.slice(0, HOMEPAGE_GRID_LIMIT).map(review => (
+              <ReviewCard key={review.slug} review={review} />
             ))}
           </div>
         )}
+
+        <div className="flex flex-wrap justify-center gap-3 mt-10">
+          {CATEGORIES.filter(({ slug }) => categoryCounts[slug] > 0).map(({ slug, label }) => (
+            <Link
+              key={slug}
+              href={`/${slug}`}
+              className="px-5 py-2.5 rounded-lg bg-brand-navy text-white text-sm font-semibold hover:bg-brand-blue transition-colors"
+            >
+              All {label} ({categoryCounts[slug]})
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   )

@@ -43,13 +43,13 @@ export async function generateMetadata({
   const firstCode = deal.codes[0]?.code ?? ''
 
   return {
-    title: `${deal.merchant} Promo Code Singapore — ${firstCode}`,
+    title: `${deal.merchant} Promo Code Singapore: ${firstCode}`,
     description: deal.excerpt,
     alternates: { canonical: canonicalUrl },
     openGraph: {
       type: 'article',
       url: canonicalUrl,
-      title: `${deal.merchant} Promo Code Singapore — ${firstCode}`,
+      title: `${deal.merchant} Promo Code Singapore: ${firstCode}`,
       description: deal.excerpt,
       publishedTime: deal.publishedAt,
       modifiedTime: deal.updatedAt,
@@ -192,7 +192,7 @@ export default async function DealPage({ params }: { params: Promise<{ slug: str
       {/* Affiliate disclosure */}
       <div className="mt-12 pt-6 border-t border-gray-100">
         <p className="text-xs text-gray-400">
-          <strong>Affiliate disclosure:</strong> This page contains affiliate and referral links. We may earn a commission at no extra cost to you. Codes are verified at time of publication — always check the merchant site for current terms.
+          <strong>Affiliate disclosure:</strong> This page contains affiliate and referral links. We may earn a commission at no extra cost to you. Codes are verified at time of publication. Always check the merchant site for current terms.
         </p>
       </div>
     </div>

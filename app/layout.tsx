@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s | BestThingReview',
   },
   description:
-    'Independent rankings of the best Singapore businesses and services, scored on verified Google reviews, licensing, and pricing. 200+ guides, updated 2026.',
+    'Rankings of the best Singapore businesses and services, scored on Google reviews, licensing, and pricing. 200+ guides, updated 2026.',
   icons: {
     icon: [
       { url: '/favicon/favicon.ico' },
@@ -42,7 +42,7 @@ const siteSchema = {
       alternateName: ['Best Thing Review', 'BestThingReview.com'],
       url: 'https://www.bestthingreview.com',
       description:
-        'Independent Singapore review platform ranking local businesses and services by verified Google reviews, licensing, and pricing transparency.',
+        'Singapore review platform ranking local businesses and services by Google reviews, licensing, and pricing transparency.',
       areaServed: { '@type': 'Country', name: 'Singapore' },
       founder: {
         '@type': 'Person',
@@ -71,7 +71,7 @@ const siteSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-SG">
       <body className={inter.className}>
         <script
           type="application/ld+json"

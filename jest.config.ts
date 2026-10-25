@@ -10,6 +10,9 @@ const customConfig: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  // Git worktrees carry their own copies of the tests and node_modules
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/.worktrees/'],
+  modulePathIgnorePatterns: ['<rootDir>/.worktrees/'],
 }
 
 export default createJestConfig(customConfig)

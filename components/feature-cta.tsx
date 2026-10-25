@@ -7,9 +7,9 @@ interface FeatureCtaProps {
 }
 
 export function FeatureCta({
-  heading = 'Want to be featured?',
-  subtext = 'Get your business listed as a top pick and reach thousands of Singapore customers actively searching for your services.',
-  buttonText = 'Contact Us Now',
+  heading = 'Run a business in this category?',
+  subtext = 'Ask us about featured placement. Featured partners are disclosed on every guide they appear in.',
+  buttonText = 'Contact Us',
   href = '/contact',
 }: FeatureCtaProps) {
   return (

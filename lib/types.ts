@@ -19,6 +19,7 @@ export interface ReviewFrontmatter {
   updatedAt: string
   coverImage?: string
   author?: ReviewAuthor
+  noindex?: boolean     // keep page live but out of Google's index and the sitemap
 }
 
 export interface Review extends ReviewFrontmatter {
@@ -69,8 +70,6 @@ export interface Company {
   email?: string
   website?: string
   description: string
-  reviewQuote?: string
-  reviewerName?: string
   highlights: string[]
   services: string[]
   sourceArticle: {

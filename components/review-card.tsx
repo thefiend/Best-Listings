@@ -23,6 +23,7 @@ export function ReviewCard({ review, preload = false }: ReviewCardProps) {
             alt={title}
             width={1200}
             height={628}
+            sizes="(min-width: 1024px) 352px, (min-width: 640px) 50vw, 100vw"
             className="w-full h-auto group-hover:scale-[1.02] transition-transform duration-300"
             preload={preload}
           />

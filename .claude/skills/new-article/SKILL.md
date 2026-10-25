@@ -111,7 +111,7 @@ category: <CATEGORY>
 slug: best-<business-type>-singapore
 excerpt: "<145–160 chars: how many evaluated, criteria, what reader gets>"
 rating: <top business Google rating × 2>
-featured: false
+featured: true
 publishedAt: "<YYYY-MM-DD>"
 updatedAt: "<YYYY-MM-DD>"
 coverImage: "/images/og/best-<business-type>-singapore-2026.png"

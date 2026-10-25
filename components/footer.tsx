@@ -66,7 +66,7 @@ export function Footer() {
         </p>
         <p className="text-xs mt-2 text-white/40">
           Website Design and SEO by{' '}
-          <a href="https://bestwebdesign.sg/" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors underline">
+          <a href="https://bestwebdesign.sg/" target="_blank" rel="nofollow noopener noreferrer" className="hover:text-white/70 transition-colors underline">
             Best Web Design Singapore
           </a>
         </p>

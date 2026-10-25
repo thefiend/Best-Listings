@@ -17,13 +17,13 @@ export default function EditorialPolicyPage() {
       </nav>
 
       <h1 className="text-3xl font-bold text-brand-navy mb-2">Editorial Policy &amp; Methodology</h1>
-      <p className="text-gray-500 text-sm mb-8">Last updated: June 2026</p>
+      <p className="text-gray-500 text-sm mb-8">Last updated: October 2026</p>
 
       <section className="prose prose-gray max-w-none">
         <h2>Our Mission</h2>
         <p>
-          BestThingReview publishes independent ranked guides to help Singapore consumers identify
-          the best service providers in competitive, hard-to-evaluate categories — renovation, legal,
+          BestThingReview publishes ranked guides to help Singapore consumers identify
+          the best service providers in competitive, hard-to-evaluate categories such as renovation, legal,
           financial, healthcare, and professional services. Our goal is to reduce the information
           asymmetry between service providers and the people hiring them.
         </p>
@@ -35,7 +35,7 @@ export default function EditorialPolicyPage() {
         <ol>
           <li>The quality gap between providers is significant and consequential to consumers</li>
           <li>Verification data (Google reviews, regulatory registration) is publicly available</li>
-          <li>Direct engagement with providers is feasible for meaningful first-hand evaluation</li>
+          <li>Providers publish enough information (pricing, services, credentials) to compare them meaningfully</li>
         </ol>
         <p>
           We do not publish guides where we cannot meaningfully differentiate providers or where
@@ -49,61 +49,60 @@ export default function EditorialPolicyPage() {
           Common criteria across categories include:
         </p>
         <ul>
-          <li><strong>Google review rating</strong> — verified aggregate rating on Google Maps</li>
-          <li><strong>Review volume</strong> — total number of verified Google reviews (minimum threshold: 30)</li>
-          <li><strong>Review recency</strong> — proportion of reviews within the last 12 months</li>
-          <li><strong>Regulatory standing</strong> — verified registration or licensing with the relevant authority</li>
-          <li><strong>Response quality</strong> — responsiveness to enquiries, transparency on pricing and process</li>
-          <li><strong>Service breadth</strong> — range of relevant services or specialisations offered</li>
+          <li><strong>Google review rating</strong>: aggregate rating on Google Maps</li>
+          <li><strong>Review volume</strong>: total number of Google reviews. Minimum thresholds vary by category and are stated in each guide.</li>
+          <li><strong>Review recency</strong>: proportion of reviews within the last 12 months</li>
+          <li><strong>Regulatory standing</strong>: registration or licensing with the relevant authority, where one applies</li>
+          <li><strong>Pricing transparency</strong>: whether pricing and process are published or provided on request</li>
+          <li><strong>Service breadth</strong>: range of relevant services or specialisations offered</li>
         </ul>
         <p>
-          Final rankings reflect the composite score. Where two providers have identical scores,
-          the provider with higher review volume is ranked higher as a tiebreaker.
+          Scores and rankings are editorial judgements built from these criteria. Rank order does not
+          strictly follow the score, and commercial partners may be placed higher (see Commercial
+          Relationships below).
         </p>
 
         <h2>Research Process</h2>
         <ol>
-          <li><strong>Longlist compilation</strong> — 30–50 providers per category identified from Google Maps, ACRA/MOM/MOH registries, and industry directories.</li>
-          <li><strong>Data collection</strong> — Google Maps rating and review data captured at time of evaluation. Regulatory registration verified via official public registries.</li>
-          <li><strong>Direct engagement</strong> — Shortlisted providers are contacted directly by our reviewer to assess responsiveness, pricing transparency, and service quality.</li>
-          <li><strong>Scoring and ranking</strong> — Providers scored against category-specific criteria. Top 10 are selected for publication.</li>
-          <li><strong>Publication and update</strong> — Articles are published with date of evaluation. Material changes (rating shifts, regulatory changes, closures) trigger a review and update cycle.</li>
+          <li><strong>Longlist compilation</strong>: 30–50 providers per category identified from Google Maps, ACRA/MOM/MOH registries, and industry directories.</li>
+          <li><strong>Data collection</strong>: Google Maps rating and review data captured at time of evaluation. Regulatory registration checked against official public registries where one applies.</li>
+          <li><strong>Website review</strong>: provider websites checked for published pricing, service range, and credentials.</li>
+          <li><strong>Scoring and ranking</strong>: providers scored against category-specific criteria. Top 10 are selected for publication.</li>
+          <li><strong>Publication and update</strong>: articles are published with date of evaluation. Material changes (rating shifts, regulatory changes, closures) trigger a review and update cycle.</li>
         </ol>
 
         <h2>Commercial Relationships</h2>
         <p>
-          BestThingReview generates revenue through <strong>featured listing placements</strong>.
-          Featured providers pay for enhanced visibility on relevant ranking pages (e.g., an expanded
-          description, a &quot;Featured&quot; badge, or priority placement within the same ranking tier).
+          BestThingReview generates revenue through <strong>commercial partnerships</strong> with some
+          of the businesses that appear in our guides. Partners pay for featured placement, which can
+          include a higher position in a ranking, an expanded description, and a link to their website.
         </p>
-        <p><strong>What featured placement does and does not affect:</strong></p>
+        <p><strong>How we disclose partnerships:</strong></p>
         <ul>
-          <li>Featured placement does <strong>not</strong> affect a provider&apos;s rank position. Rank is determined solely by score.</li>
-          <li>Featured placement does <strong>not</strong> guarantee inclusion. Providers must meet our minimum threshold (30+ Google reviews, valid regulatory registration) to be considered.</li>
-          <li>Featured placement does <strong>not</strong> protect providers from removal. If a provider&apos;s score drops below threshold or regulatory standing is revoked, they are removed regardless of commercial relationship.</li>
+          <li>Every guide that includes a commercial partner shows a disclosure note at the top of the article.</li>
+          <li>Links to partner websites are marked <code>rel=&quot;sponsored&quot;</code>.</li>
+          <li>Ratings and review counts shown for partners are their real Google Maps figures, the same as for every other business.</li>
         </ul>
         <p>
-          Pages containing featured providers are marked with a disclosure note. If you have questions
-          about a specific commercial relationship, contact us via the{' '}
+          If you have questions about a specific commercial relationship, contact us via the{' '}
           <Link href="/contact" className="text-brand-blue hover:underline">contact page</Link>.
         </p>
 
         <h2>Corrections and Updates</h2>
         <p>
-          We aim to keep rankings current. If you identify an error — factual inaccuracy, outdated
-          information, or a provider that has closed or changed materially — please contact us.
+          We aim to keep rankings current. If you identify an error (a factual inaccuracy, outdated
+          information, or a provider that has closed or changed materially), please contact us.
           Verified corrections are made within 5 business days with a correction note on the article.
         </p>
         <p>
-          Providers may not request removal from rankings, changes to their rank position, or
-          modification of factual review content as a condition of any commercial relationship.
+          No commercial relationship lets a provider change factual content (ratings, review counts,
+          prices, licensing) or have competitors removed from a guide.
         </p>
 
-        <h2>Independence Statement</h2>
+        <h2>Editorial Control</h2>
         <p>
-          Editorial decisions — which providers to include, how they are ranked, and what is written
-          about them — are made solely by our editorial team. No advertiser, featured provider, or
-          third party has editorial approval rights over our content.
+          Our editorial team writes every guide. Partners can buy featured placement, but they do not
+          write or approve what we publish about them or about other businesses in the same guide.
         </p>
       </section>
     </div>
