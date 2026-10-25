@@ -32,6 +32,27 @@ function articleTopic(title: string): string {
     .trim()
 }
 
+// Cut at a word boundary so meta descriptions never end mid-word
+function truncateWords(text: string, max: number): string {
+  if (text.length <= max) return text
+  return text.slice(0, max + 1).replace(/\s+\S*$/, '').replace(/[\s,.:;]+$/, '') + '.'
+}
+
+// First two sentences, without splitting on abbreviations like "PTE. LTD."
+function firstSentences(text: string, count: number): string {
+  const sentences = text.match(/.*?[.!?](?=\s+[A-Z]|$)/g) ?? [text]
+  const merged: string[] = []
+  for (const s of sentences) {
+    const prev = merged[merged.length - 1]
+    if (prev && /\b(?:PTE|Pte|LTD|Ltd|Co|Inc|Dr|St|No|Ave|Blk)\.$/.test(prev)) {
+      merged[merged.length - 1] = `${prev}${s}`
+    } else {
+      merged.push(s.trim())
+    }
+  }
+  return merged.slice(0, count).join(' ').trim()
+}
+
 function buildFaqs(company: Company): Array<{ question: string; answer: string }> {
   const { name, rating, reviewCount, rank, label, address, postalCode, phone, website, sourceArticle } = company
   const topic = articleTopic(sourceArticle.title)
@@ -39,13 +60,11 @@ function buildFaqs(company: Company): Array<{ question: string; answer: string }
   const faqs = [
     {
       question: `Is ${name} good?`,
-      answer: `${name} holds a ${rating.toFixed(1)} out of 5 Google rating from ${reviewCount.toLocaleString()} reviews and is ranked #${rank} (${label}) in BestThingReview's independent ranking of the best ${topic}.`,
+      answer: `${name} holds a ${rating.toFixed(1)} out of 5 Google rating from ${reviewCount.toLocaleString()} reviews and is ranked #${rank} (${label}) in BestThingReview's ranking of the best ${topic}.`,
     },
     {
       question: `What do customers say about ${name}?`,
-      answer: company.reviewQuote
-        ? `A verified reviewer${company.reviewerName ? `, ${company.reviewerName},` : ''} wrote: "${company.reviewQuote}"`
-        : `Across ${reviewCount.toLocaleString()} Google reviews, ${name} averages ${rating.toFixed(1)} stars.`,
+      answer: `Across ${reviewCount.toLocaleString()} Google reviews, ${name} averages ${rating.toFixed(1)} stars.`,
     },
   ]
   if (fullAddress) {
@@ -85,8 +104,10 @@ export async function generateMetadata({
   // Matches "[company] reviews" searches, which is how these pages get found
   const title = { absolute: `${name} Reviews (${year}): ${rating.toFixed(1)}★ Rating & Verdict | BestThingReview` }
 
-  const metaDesc = `${name} reviews: ${rating.toFixed(1)}★ from ${reviewCount.toLocaleString()} Google reviews. Ranked #${rank} ${label.toLowerCase()} in our ${articleTopic(sourceArticle.title)} guide. Address, contact, verdict.`
-    .slice(0, 160)
+  const metaDesc = truncateWords(
+    `${name} reviews: ${rating.toFixed(1)}★ from ${reviewCount.toLocaleString()} Google reviews. Ranked #${rank} ${label.toLowerCase()} in our ${articleTopic(sourceArticle.title)} guide. Address, contact, verdict.`,
+    160,
+  )
 
   const url = `${BASE_URL}/company-review/${slug}`
   const ogImage = sourceArticle.coverImage
@@ -97,6 +118,9 @@ export async function generateMetadata({
     title,
     description: metaDesc,
     alternates: { canonical: url },
+    // Templated pages derived from article sections: keep out of the index so
+    // they don't count as scaled content, but let crawlers follow links
+    robots: { index: false, follow: true },
     openGraph: {
       type: 'article',
       url,
@@ -137,7 +161,7 @@ export default async function CompanyReviewPage({
   const {
     name, businessType, rating, reviewCount,
     address, postalCode, phone, email, website,
-    description, reviewQuote, reviewerName,
+    description,
     highlights, services,
     label, rank, sourceArticle,
   } = company
@@ -154,7 +178,7 @@ export default async function CompanyReviewPage({
 
   // Verdict: rank-based qualifier + label
   const rankLabel = rank === 1 ? 'top-ranked' : rank <= 3 ? 'top-3 ranked' : `#${rank} ranked`
-  const verdictText = `${name} is the ${rankLabel} ${label.toLowerCase()} on BestThingReview's independent evaluation of ${sourceArticle.title.replace(/^\d+\s+Best\s+/i, '')}. ${description.split('. ').slice(0, 2).join('. ')}.`
+  const verdictText = `${name} is the ${rankLabel} ${label.toLowerCase()} in BestThingReview's evaluation of ${sourceArticle.title.replace(/^\d+\s+Best\s+/i, '')}. ${firstSentences(description, 2)}`
 
   // Schema
   const businessSchema: Record<string, unknown> = {
@@ -174,13 +198,8 @@ export default async function CompanyReviewPage({
         addressCountry: 'SG',
       },
     } : {}),
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: rating.toFixed(1),
-      ratingCount: reviewCount,
-      bestRating: '5',
-      worstRating: '1',
-    },
+    // No aggregateRating or review: the rating comes from Google Maps, and
+    // Google's guidelines don't allow marking up ratings aggregated from other sites
     ...(services.length > 0 ? {
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
@@ -192,21 +211,6 @@ export default async function CompanyReviewPage({
         })),
       },
     } : {}),
-    review: {
-      '@type': 'Review',
-      datePublished: updatedAt,
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: rating.toFixed(1),
-        bestRating: '5',
-      },
-      author: {
-        '@type': 'Organization',
-        name: 'BestThingReview',
-        url: BASE_URL,
-      },
-      reviewBody: verdictText,
-    },
   }
 
   const breadcrumbSchema = {
@@ -333,19 +337,6 @@ export default async function CompanyReviewPage({
         </section>
       )}
 
-      {/* Customer Review */}
-      {reviewQuote && (
-        <section className="mb-8">
-          <h2 className="text-lg font-bold text-brand-navy mb-3">Customer Review</h2>
-          <blockquote className="border-l-4 border-brand-gold bg-amber-50 pl-4 pr-4 py-4 rounded-r-lg">
-            <p className="text-gray-800 italic leading-relaxed">"{reviewQuote}"</p>
-            {reviewerName && (
-              <footer className="mt-2 text-sm text-gray-500">— {reviewerName}</footer>
-            )}
-          </blockquote>
-        </section>
-      )}
-
       {/* Our Verdict */}
       <section className="mb-8 bg-emerald-50 border border-emerald-200 rounded-lg p-5">
         <h2 className="text-lg font-bold text-brand-navy mb-2">Our Verdict</h2>
@@ -373,7 +364,7 @@ export default async function CompanyReviewPage({
             <p className="font-semibold text-gray-900 text-sm">{label}</p>
             <p className="text-sm text-gray-600 mt-1">
               {label.toLowerCase().includes('overall')
-                ? `${name} is our top overall pick — balancing rating, review volume, transparency, and service range.`
+                ? `${name} is our top overall pick, balancing rating, review volume, transparency, and service range.`
                 : `${name} stands out specifically for ${label.replace(/^Best\s+(for\s+)?/i, '').toLowerCase()}, making it the strongest choice for customers with this priority.`
               }
             </p>
@@ -397,7 +388,7 @@ export default async function CompanyReviewPage({
       {/* Source article */}
       <section className="border-t border-gray-100 pt-6 mb-8">
         <p className="text-sm text-gray-500 mb-2">
-          {name} is ranked #{rank} in our independent evaluation:
+          {name} is ranked #{rank} in our evaluation:
         </p>
         <Link
           href={`/${sourceArticle.category}/${sourceArticle.slug}`}

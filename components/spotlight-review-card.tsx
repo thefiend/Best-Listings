@@ -27,8 +27,9 @@ export function SpotlightReviewCard({ review }: SpotlightReviewCardProps) {
               alt={title}
               width={1200}
               height={628}
+              sizes="(min-width: 1024px) 732px, 100vw"
               className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-              priority
+              preload
             />
           </div>
         ) : (

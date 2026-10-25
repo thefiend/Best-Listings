@@ -106,6 +106,7 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
     },
+    ...(review.noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: 'article',
       url: canonicalUrl,
@@ -156,7 +157,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
   const picks = extractPicks(content)
   const canonicalUrl = `${BASE_URL}/${category}/${slug}`
   const rankedCompanies = getCompaniesInArticle(content)
-  const companyByRank = new Map(rankedCompanies.map(c => [c.rank, c]))
+  const hasSponsoredLinks = content.includes('rel="sponsored')
 
   const pageSchema = {
     '@context': 'https://schema.org',
@@ -219,16 +220,13 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
         description: excerpt,
         numberOfItems: picks.length,
         itemListOrder: 'https://schema.org/ItemListOrderAscending',
-        itemListElement: picks.map(({ rank, name, label }) => {
-          const company = companyByRank.get(rank)
-          return {
-            '@type': 'ListItem',
-            position: rank,
-            name: name,
-            description: label,
-            url: company ? `${BASE_URL}/company-review/${company.slug}` : `${canonicalUrl}#business-${rank}`,
-          }
-        }),
+        itemListElement: picks.map(({ rank, name, label }) => ({
+          '@type': 'ListItem',
+          position: rank,
+          name: name,
+          description: label,
+          url: `${canonicalUrl}#business-${rank}`,
+        })),
       }] : []),
     ],
   }
@@ -303,6 +301,14 @@ export default async function ReviewPage({ params }: { params: Promise<{ categor
       <p className="text-gray-600 text-base leading-relaxed mb-8 border-b border-gray-100 pb-8">
         {excerpt}
       </p>
+
+      {hasSponsoredLinks && (
+        <p className="text-xs text-gray-500 bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-8">
+          <span className="font-semibold text-gray-700">Disclosure:</span> Some businesses in this guide are
+          commercial partners of BestThingReview. Links to partner websites are marked as sponsored. See our{' '}
+          <Link href="/editorial-policy" className="text-brand-blue hover:underline">editorial policy</Link>.
+        </p>
+      )}
 
       {/* MDX body + TOC sidebar */}
       <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">

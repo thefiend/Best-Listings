@@ -1,10 +1,14 @@
 // components/company-rating.tsx
 
+// Display-only. No Schema.org markup: the rating comes from Google Maps, and
+// Google's review snippet guidelines don't allow marking up ratings aggregated
+// from other sites. The extra props stay so existing MDX keeps compiling, and
+// lib/companies.ts still reads them from the source.
 interface CompanyRatingProps {
   name: string
   rating: number        // Google rating 1–5
-  reviewCount?: number  // omit to skip AggregateRating microdata
-  businessType?: string // Schema.org type, default 'LocalBusiness'
+  reviewCount?: number  // Google review count
+  businessType?: string
   address?: string
   postalCode?: string
   phone?: string
@@ -28,55 +32,17 @@ function Stars({ rating }: { rating: number }) {
   )
 }
 
-export function CompanyRating({
-  name,
-  rating,
-  reviewCount,
-  businessType = 'LocalBusiness',
-  address,
-  postalCode,
-  phone,
-  image,
-}: CompanyRatingProps) {
+export function CompanyRating({ name, rating, reviewCount }: CompanyRatingProps) {
   return (
     <div
-      className="inline-flex items-center gap-2 my-1 not-prose"
-      itemScope
-      itemType={`https://schema.org/${businessType}`}
+      className="inline-flex items-center gap-1.5 my-1 not-prose"
+      aria-label={`${name}: ${rating.toFixed(1)} out of 5 on Google`}
     >
-      <meta itemProp="name" content={name} />
-      {image && <meta itemProp="image" content={image} />}
-      {phone && <meta itemProp="telephone" content={phone} />}
-      {(address || postalCode) && (
-        <span itemScope itemType="https://schema.org/PostalAddress" itemProp="address" className="hidden">
-          {address && <meta itemProp="streetAddress" content={address} />}
-          <meta itemProp="addressLocality" content="Singapore" />
-          {postalCode && <meta itemProp="postalCode" content={postalCode} />}
-          <meta itemProp="addressCountry" content="SG" />
-        </span>
-      )}
-
-      {reviewCount != null ? (
-        <span
-          itemScope
-          itemType="https://schema.org/AggregateRating"
-          itemProp="aggregateRating"
-          className="inline-flex items-center gap-1.5"
-        >
-          <meta itemProp="bestRating" content="5" />
-          <meta itemProp="worstRating" content="1" />
-          <Stars rating={rating} />
-          <strong className="text-sm font-bold text-gray-900">
-            <span itemProp="ratingValue">{rating.toFixed(1)}</span>
-          </strong>
-          <span className="text-sm text-gray-500">
-            (<span itemProp="ratingCount">{reviewCount}</span> Google reviews)
-          </span>
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-1.5">
-          <Stars rating={rating} />
-          <strong className="text-sm font-bold text-gray-900">{rating.toFixed(1)}</strong>
+      <Stars rating={rating} />
+      <strong className="text-sm font-bold text-gray-900">{rating.toFixed(1)}</strong>
+      {reviewCount != null && (
+        <span className="text-sm text-gray-500">
+          ({reviewCount.toLocaleString()} Google {reviewCount === 1 ? 'review' : 'reviews'})
         </span>
       )}
     </div>

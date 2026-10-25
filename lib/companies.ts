@@ -112,7 +112,7 @@ function buildHighlights(rank: number, label: string, rating: number, reviewCoun
   return [
     `#${rank} ${label}`,
     `${rating.toFixed(1)} / 5.0 Google Rating`,
-    `${reviewCount.toLocaleString()} Verified Google Reviews`,
+    `${reviewCount.toLocaleString()} Google Reviews`,
     ...(address ? ['Singapore Based'] : []),
   ]
 }
@@ -196,11 +196,6 @@ function parseCompaniesFromContent(
     const emailMatch = section.match(/✉️ \*\*Email:\*\* <a href="mailto:([^"]+)"/)
     const email = emailMatch ? emailMatch[1] : undefined
 
-    // Review quote and reviewer name
-    const quoteMatch = section.match(/^> "([^"]+)"[^*]*\*([^★\n*]+)/m)
-    const reviewQuote = quoteMatch ? quoteMatch[1].trim() : undefined
-    const reviewerName = quoteMatch ? quoteMatch[2].trim().replace(/,\s*$/, '') : undefined
-
     companies.push({
       name,
       slug: slugify(name),
@@ -215,8 +210,6 @@ function parseCompaniesFromContent(
       email,
       website,
       description,
-      reviewQuote,
-      reviewerName,
       highlights: buildHighlights(rank, label, rating, reviewCount, address),
       services: extractServices(sourceArticle.slug, description),
       sourceArticle,

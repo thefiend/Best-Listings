@@ -25,7 +25,7 @@ export default function ContactPage() {
             <div>
               <p className="text-sm font-semibold text-brand-navy mb-1">Featured Listings</p>
               <p className="text-sm text-gray-600">
-                Want your business featured at the top of a category? We work with select partners across Singapore.
+                Interested in featured placement? We work with select partners across Singapore, and every partnership is disclosed on the guides it appears in.
               </p>
             </div>
             <div>

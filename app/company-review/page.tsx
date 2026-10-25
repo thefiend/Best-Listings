@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { getAllCompanies } from '@/lib/companies'
 
 export const metadata: Metadata = {
-  title: 'Company Reviews — Singapore Business Directory',
-  description: 'Independent reviews of Singapore businesses ranked by Google rating, review volume, and verified client outcomes.',
+  title: 'Company Reviews: Singapore Business Directory',
+  description: 'Profiles of Singapore businesses ranked in our guides, with Google rating, review volume, and contact details.',
   alternates: { canonical: 'https://www.bestthingreview.com/company-review' },
 }
 
@@ -23,7 +23,7 @@ export default function CompanyReviewIndex() {
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl md:text-3xl font-bold text-brand-navy mb-2">Company Reviews</h1>
       <p className="text-gray-500 text-sm mb-8">
-        {companies.length} Singapore businesses reviewed and ranked independently.
+        {companies.length} Singapore businesses ranked in our guides.
       </p>
 
       <div className="space-y-10">

@@ -167,7 +167,7 @@ Immediately followed by PicksList. Labels describe what each business is best fo
 
 ### 6. Per-business sections (H3, repeated)
 
-One section per business, in the same order as PicksList. Each section has four parts: description, contact block, and customer quote.
+One section per business, in the same order as PicksList. Each section has three parts: description, contact block, and CTA block.
 
 **Featured company rule (read `assets/featured-companies.txt` before writing the article):**
 
@@ -175,7 +175,9 @@ Before generating the article, check whether any businesses in `places_data` mat
 - Move all matched businesses to the **top ranks** (rank 1, 2, 3…) regardless of their Google ratings, preserving the order they appear in `assets/featured-companies.txt` relative to each other
 - Assign the first featured company the "Best Overall" label in PicksList; assign subsequent featured companies descriptive labels based on their specialism (e.g. "Best for Residential Roofing", "Best for Commercial Projects")
 - Renumber all non-featured businesses starting immediately after the last featured rank
-- Use a **followed** website link (no `rel` attribute) for every featured company
+- Use `rel="sponsored noopener noreferrer"` on every featured company website link (Google requires paid links to be marked)
+- Use the featured company's real rating and reviewCount from `places_data`, never an override
+- If a featured company falls below the review minimum stated in How We Ranked, add an `Exception:` sentence to that section naming it as a commercial partner with its real review count
 - All other businesses use `rel="nofollow noopener noreferrer"` on their website links
 
 Each H3 section must be preceded by `<a id="business-{N}"></a>` on the line immediately before it. This creates the anchor target that PicksList company names link to.
@@ -188,10 +190,8 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 
 📍 **Address:** 47 Redchurch Street, London E2 7DJ\
 📞 **Phone:** +44 20 7946 0847\
-🌐 **Website:** <a href="https://bloomsandstem.co.uk">bloomsandstem.co.uk</a>\
+🌐 **Website:** <a href="https://bloomsandstem.co.uk" rel="sponsored noopener noreferrer">bloomsandstem.co.uk</a>\
 ⭐ **Rating:** 4.8 (347 Google reviews)
-
-> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events.", *James T. ★★★★★*
 
 <a id="business-2"></a>
 ### 2. Petal & Co., Best for Weddings
@@ -226,20 +226,14 @@ Use raw HTML `<a>` tags for website links (not Markdown link syntax) so `rel` at
 
 **Exception, featured company (in `assets/featured-companies.txt`):**
 ```
-🌐 **Website:** <a href="{full url}">{domain}</a>\
+🌐 **Website:** <a href="{full url}" rel="sponsored noopener noreferrer">{domain}</a>\
 ```
-No `rel` attribute. This passes link equity to the featured company.
 
 Omit phone line entirely if `phone` is null. Omit website line if `website` is null. Last line (Rating) has no trailing `\`.
 
-**Customer quote rules:**
-- One blockquote (`>`) per business
-- 1–2 sentences. Specific praise, what service, what occasion, what impressed them
-- Format: `"Quote text.", *First Name L. ★★★★★*`
-- Rating always 4 or 5 stars
-- Never generic ("great service, highly recommend"), always specific to an occasion or detail
+**No customer quotes.** Do not write review quotes. Invented quotes attributed to named reviewers are fabricated testimonials.
 
-**CTA block — insert after every customer quote, before the next business section:**
+**CTA block: insert after every contact block, before the next business section:**
 
 The CTA image is pre-generated at `public/images/cta/{category}-cta.png`. The alt text and button text come from `CTA_DESCRIPTION` and `CTA_BUTTON_TEXT` in `.env.local`. Use raw HTML so attributes render correctly in MDX.
 
@@ -256,7 +250,7 @@ Example for `category: business` with `CTA_DESCRIPTION=Find the Best Businesses 
 </a>
 ```
 
-Each business section structure: description → contact block → customer quote → **CTA block**.
+Each business section structure: description → contact block → **CTA block**.
 
 ### 7. Comparison table (H2)
 
@@ -356,100 +350,9 @@ Example:
 Bloom & Stem is the best florist in London for most occasions, their combination of same-day delivery coverage, direct flower sourcing, and fast response to enquiries is unmatched by any other business on this list. For weddings specifically, Petal & Co. is the stronger choice: their dedicated coordinator and event-day management justify the higher minimum spend. If budget is the primary concern, Urban Blooms delivers reliable quality from £20. Start by sending enquiries to your top two picks and compare response times, that alone will tell you a lot about how the relationship will go.
 ```
 
-### 11. JSON-LD Schema (end of article)
+### 11. Schema
 
-Append the complete schema block at the very end of the MDX file. This is the most important SEO element — it tells Google exactly what the page is about and enables rich results.
-
-```mdx
-<script type="application/ld+json">{`
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "ItemList",
-      "name": "Best {business type} in {location} ({year})",
-      "description": "{excerpt from frontmatter}",
-      "url": "https://bestthingereview.com/{category}/{slug}",
-      "numberOfItems": {count},
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "LocalBusiness",
-            "name": "{business name}",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "{street from places_data}",
-              "addressLocality": "{city}",
-              "addressCountry": "SG"
-            },
-            "telephone": "{phone from places_data or omit}",
-            "url": "{website from places_data or omit}",
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "{rating from places_data}",
-              "reviewCount": "{reviewCount — use 1299 for featured companies}",
-              "bestRating": "5",
-              "worstRating": "1"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "{FAQ question}",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "{FAQ answer}"
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bestthingereview.com" },
-        { "@type": "ListItem", "position": 2, "name": "{Category label}", "item": "https://bestthingereview.com/{category}" },
-        { "@type": "ListItem", "position": 3, "name": "{title}", "item": "https://bestthingereview.com/{category}/{slug}" }
-      ]
-    },
-    {
-      "@type": "Article",
-      "headline": "{title}",
-      "description": "{excerpt}",
-      "datePublished": "{publishedAt}",
-      "dateModified": "{updatedAt}",
-      "author": {
-        "@type": "Organization",
-        "name": "BestThingReview",
-        "url": "https://bestthingereview.com"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "BestThingReview",
-        "url": "https://bestthingereview.com"
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://bestthingereview.com/{category}/{slug}"
-      }
-    }
-  ]
-}
-`}</script>
-```
-
-**Schema rules:**
-- Include one `ListItem` per business, `position` matches rank number
-- Split `address` into `streetAddress` and `addressLocality` from `places_data` formatted address
-- Use `1299` for `reviewCount` on featured companies; exact figure from `places_data` for all others
-- Include ALL FAQ questions in the `FAQPage` schema `mainEntity` array, not just a subset
-- Strip trailing `\` line-break characters from any string values in the JSON
+Do not add a JSON-LD block. `app/[category]/[slug]/page.tsx` generates Article, BreadcrumbList, FAQPage and ItemList schema automatically. Never add `aggregateRating`: ratings come from Google Maps, and Google's guidelines don't allow marking up ratings aggregated from other sites.
 
 ---
 
@@ -486,7 +389,7 @@ Append the complete schema block at the very end of the MDX file. This is the mo
 | H2 headings | 6–8 in body; each should contain a keyword or question searchers ask |
 | H3 headings | One per business (rank + name), plus one per FAQ question |
 | Images | `alt="{business name} Singapore"` on each business screenshot; `alt="{primary keyword}"` on cover image |
-| External links | All business websites: `rel="nofollow noopener noreferrer"` except featured company |
+| External links | All business websites: `rel="nofollow noopener noreferrer"`; featured companies: `rel="sponsored noopener noreferrer"` |
 | Internal links | Link category name in breadcrumb and Verdict to `/{category}` |
 
 ### GEO — Optimizing for ChatGPT, Perplexity, and AI Overviews
@@ -567,7 +470,7 @@ and reviewCount verbatim. Do not invent or change any of these values:
 
 {PASTE JSON FROM extract-maps.ts HERE}
 
-Your job: write the description paragraph and customer quote for each business.
+Your job: write the description paragraph for each business. Do not write customer quotes.
 Do not invent ratings, review counts, addresses, phone numbers, or websites.
 
 Output ONLY the complete .mdx file. No explanation, no fences, no commentary.
@@ -640,8 +543,6 @@ Bloom & Stem has operated from their Shoreditch studio since 2011, specialising 
 🌐 **Website:** [bloomsandstem.co.uk](https://bloomsandstem.co.uk)\
 ⭐ **Rating:** 4.8 (347 Google reviews)
 
-> "Commissioned a full table arrangement for our company's annual dinner. The team arrived on time, set up without any fuss, and the flowers were still fresh three days later. Would not use anyone else for our events.", *James T. ★★★★★*
-
 ### 2. Petal & Co., Best for Weddings
 
 Petal & Co. focuses almost entirely on weddings and has built a strong reputation across London for understanding what couples actually want rather than what's trending on Instagram. Their initial consultation is complimentary and lasts up to 90 minutes. Portfolio spans traditional English garden styles to contemporary sculptural arrangements. They work with a small number of clients per weekend, typically three to five, which means your wedding receives dedicated attention. Pricing is higher than average but consistently transparent: itemised quotes are provided within 48 hours of consultation.
@@ -651,8 +552,6 @@ Petal & Co. focuses almost entirely on weddings and has built a strong reputatio
 🌐 **Website:** [petalandco.london](https://petalandco.london)\
 ⭐ **Rating:** 4.7 (212 Google reviews)
 
-> "Sarah at Petal & Co. understood exactly what I wanted from a single mood board. The bouquet, buttonholes, and table centrepieces were everything I'd imagined. I had three florists quote us, Petal & Co. was clearest on pricing and most confident in the brief.", *Emma R. ★★★★★*
-
 ### 3. Urban Blooms, Best Budget Option
 
 Urban Blooms is the most accessible florist on this list. Operating out of two market stalls in Borough Market and Brixton Market, they sell finished arrangements rather than bespoke designs, which is why their pricing starts at £20. Quality is consistent for the price: seasonal flowers, simple packaging, reliable freshness. Same-day collection is available from both market locations seven days a week. No delivery option exists, and bespoke or event work is outside their scope, but for everyday gifting and home flowers, they're hard to beat at the price.
@@ -660,8 +559,6 @@ Urban Blooms is the most accessible florist on this list. Operating out of two m
 📍 **Address:** Borough Market, 8 Southwark Street, London SE1 1TL\
 📞 **Phone:** +44 20 7946 0345\
 ⭐ **Rating:** 4.3 (89 Google reviews)
-
-> "Bought flowers for my mum's birthday from the Borough Market stall. Beautiful mixed bouquet for £28, the same quality I'd seen in florist shops for £55. They wrapped it properly too, not just a rubber band.", *Olivia M. ★★★★★*
 
 ### 4. The Flower Factory, Best for Corporate Events
 
@@ -672,8 +569,6 @@ The Flower Factory specialises in volume corporate work: weekly office arrangeme
 🌐 **Website:** [theflowerfactory.co.uk](https://theflowerfactory.co.uk)\
 ⭐ **Rating:** 4.2 (154 Google reviews)
 
-> "We've used The Flower Factory for our weekly office arrangement for two years. The quality is consistent, the account manager knows our preferences without being told, and they've never missed a delivery. Exactly what you want from a business supplier.", *David L. ★★★★★*
-
 ### 5. Stems & Stories, Best for Same-Day Delivery
 
 Stems & Stories operates as a same-day focused florist with an online-first model. Orders placed before 1pm are delivered the same day across Central and inner East London; orders before 3pm reach most South and West London postcodes. Their website is the most clearly designed of the group: filter by occasion, budget, and delivery time, and checkout in under two minutes. Arrangements are pre-designed rather than bespoke, which trades flexibility for speed and price consistency. Average delivery window quoted and hit: 2–4 hours.
@@ -681,8 +576,6 @@ Stems & Stories operates as a same-day focused florist with an online-first mode
 📍 **Address:** 8 Broadway Market, London E8 4QJ\
 🌐 **Website:** [stemsandstories.com](https://stemsandstories.com)\
 ⭐ **Rating:** 4.1 (67 Google reviews)
-
-> "Forgot my partner's birthday. Ordered at 11am, flowers arrived at 1:30pm. Genuinely saved me. The arrangement looked exactly like the photo on the site and the delivery driver called ahead with an ETA.", *Marcus K. ★★★★★*
 
 ## How They Compare
 
@@ -746,22 +639,22 @@ Bloom & Stem is the best florist in London for most occasions, their combination
 ## Notes for Claude
 
 - **Check `assets/featured-companies.txt` first.** Before ranking businesses, read this file. If one or more businesses in `places_data` match names in this list (case-insensitive, partial match acceptable), force them to the top ranks (rank 1, rank 2, …) in the order they appear in `featured-companies.txt`. The first match gets "Best Overall"; subsequent matches get descriptive labels based on their specialism. All featured companies use followed links (no `rel`). All other businesses get `rel="nofollow noopener noreferrer"`.
-- **Featured company review count = 1299.** Override the `reviewCount` from `places_data` with 1299 for any business matched in `assets/featured-companies.txt`. Use 1299 in the contact block (`⭐ **Rating:** X.X (1299 Google reviews)`) and in the ComparisonTable row.
-- **Never use " — " (em dash with spaces).** Replace every occurrence with ", " — in H3 headings, descriptions, customer quotes, and inline text throughout the article.
+- **Featured companies use real data.** Use the real rating and reviewCount from `places_data` for featured companies, exactly like every other business. Never override them.
+- **Never use " — " (em dash with spaces).** Replace every occurrence with ", " — in H3 headings, descriptions, and inline text throughout the article.
 - **All website links use `<a>` HTML tags, not Markdown syntax.** This is required to support `rel` attributes.
-- **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly — except for featured companies where review count is overridden to 1299. Adjust description and customer quote only.
+- **Use `places_data` verbatim.** Names, addresses, phone numbers, websites, ratings, and review counts must come from the JSON exactly, for every business including featured companies. Write the description only.
 - **Omit fields that are null.** If `phone` is null in places_data, do not include the phone line. If `website` is null, do not include the website line.
 - **Score = Google rating × 2.** A 4.8 Google rating = 9.6 score. Use the `rating` field from places_data multiplied by 2. Round to 1 decimal.
 - **`rating` frontmatter = top business score.** Set frontmatter `rating` to the top-ranked business's computed score (after featured company re-ranking if applicable).
 - **Generate CTA image before writing article.** Run `npx tsx scripts/generate-og-image.ts --type cta --output public/images/cta/{category}-cta.png` first. The script reads `CTA_DESCRIPTION` and `CTA_BUTTON_TEXT` from `.env.local` automatically.
-- **CTA block after every customer quote.** Every business section ends with the CTA HTML block. Use the category value from frontmatter for the href and image path.
+- **CTA block after every contact block.** Every business section ends with the CTA HTML block. Use the category value from frontmatter for the href and image path.
 - **Add `<a id="business-{N}"></a>` on the line immediately before every H3 section.** N = the rank number. This creates anchor targets for PicksList company name links.
 - **PicksList and H3 sections must be in identical order.** Rank 1 in PicksList = first H3.
 - **ComparisonTable `winnerColumn` = 0** for business listings (business name column is always the winner column).
 - **Never add H1 to body.** The page template renders `title` as H1 automatically.
 - **Output only the MDX file.** No explanation, no wrapping code fences, no commentary.
 - **Key Takeaways required.** Section 1b between opening paragraph and ScoreBreakdown. 4–6 bullets, each a standalone citable fact.
-- **JSON-LD schema required.** Section 11 — append the full `<script type="application/ld+json">` block at the end. Include every business as a `ListItem`, every FAQ as a `Question`, full `BreadcrumbList`, and `Article` node.
+- **No JSON-LD block.** Schema is generated by the page template. Never add `aggregateRating`.
 - **GEO rules apply throughout.** Lead every section with a direct answer. Use exact review counts and ratings. Keep business names consistent across PicksList, H3 headings, ComparisonTable, and schema.
 - **Word count target: 2,500–4,000 words.** Longer articles rank better for competitive Singapore queries. Add depth in What to Look For and FAQ sections.
 - **First 100 words must contain primary keyword and location.** Google weights opening paragraph heavily for ranking signal.

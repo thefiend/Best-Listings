@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'BestThingReview privacy policy — how we collect, use, and protect your personal data under the Singapore Personal Data Protection Act (PDPA).',
+  description: 'BestThingReview privacy policy: how we collect, use, and protect your personal data under the Singapore Personal Data Protection Act (PDPA).',
   alternates: { canonical: 'https://www.bestthingreview.com/privacy' },
 }
 
@@ -29,9 +29,9 @@ export default function PrivacyPage() {
         <h2>1. Data We Collect</h2>
         <p>We collect the following categories of personal data:</p>
         <ul>
-          <li><strong>Contact form submissions</strong> — name, email address, and message content when you use our contact form.</li>
-          <li><strong>Analytics data</strong> — anonymised usage data including pages visited, time on site, device type, and approximate geographic location, collected via Google Analytics 4 (GA4). This data does not identify individual users.</li>
-          <li><strong>Technical data</strong> — IP address, browser type, and referral source collected automatically by our hosting provider (Vercel) as part of standard server operation. This data is retained for up to 30 days for security purposes.</li>
+          <li><strong>Contact form submissions</strong>: name, email address, and message content when you use our contact form.</li>
+          <li><strong>Analytics data</strong>: anonymised usage data including pages visited, time on site, device type, and approximate geographic location, collected via Google Analytics 4 (GA4). This data does not identify individual users.</li>
+          <li><strong>Technical data</strong>: IP address, browser type, and referral source collected automatically by our hosting provider (Vercel) as part of standard server operation. This data is retained for up to 30 days for security purposes.</li>
         </ul>
 
         <h2>2. How We Use Your Data</h2>
@@ -45,8 +45,8 @@ export default function PrivacyPage() {
         <h2>3. Third-Party Services</h2>
         <p>We use the following third-party services that may process your data:</p>
         <ul>
-          <li><strong>Google Analytics 4</strong> — web analytics. Data is processed in accordance with Google&apos;s privacy policy. IP addresses are anonymised. You can opt out via <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Google&apos;s opt-out browser add-on</a>.</li>
-          <li><strong>Vercel</strong> — hosting and content delivery. Processes request logs as a data processor. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Vercel&apos;s privacy policy</a>.</li>
+          <li><strong>Google Analytics 4</strong>: web analytics. Data is processed in accordance with Google&apos;s privacy policy. IP addresses are anonymised. You can opt out via <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Google&apos;s opt-out browser add-on</a>.</li>
+          <li><strong>Vercel</strong>: hosting and content delivery. Processes request logs as a data processor. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">Vercel&apos;s privacy policy</a>.</li>
         </ul>
 
         <h2>4. Data Retention</h2>
